@@ -2,6 +2,7 @@ package ru.sberbank.dspincidenthandle.view;
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.github.appreciated.apexcharts.ApexChartsBuilder;
 import com.github.appreciated.apexcharts.config.builder.*;
+import com.github.appreciated.apexcharts.config.chart.StackType;
 import com.github.appreciated.apexcharts.config.chart.Type;
 import com.github.appreciated.apexcharts.config.chart.builder.ToolbarBuilder;
 import com.github.appreciated.apexcharts.config.chart.builder.ZoomBuilder;
@@ -52,6 +53,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataCountPerMonth;
 import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataTop10;
 import ru.sberbank.dspincidenthandle.domain.DSPIncidentData;
+import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataTotalCount;
 import ru.sberbank.dspincidenthandle.repo.*;
 import ru.sberbank.dspincidenthandle.service.ExporToCSV;
 
@@ -307,7 +309,8 @@ public class Analitics extends VerticalLayout {
     private ApexCharts donutChartInit(List<Double>seriesData, List<String>labelsData ){
         String periodDate = start_Date.getValue().format(europeanDateFormatter) + " - " + end_Date.getValue().format(europeanDateFormatter);
         ApexCharts donutChart = ApexChartsBuilder.get()
-                .withChart(ChartBuilder.get().withType(Type.donut)
+                .withChart(ChartBuilder.get()
+                        .withType(Type.DONUT)
                         .withZoom(ZoomBuilder.get()
                                 .withEnabled(true)
                                 .withAutoScaleYaxis(true)
@@ -321,7 +324,7 @@ public class Analitics extends VerticalLayout {
                         .build())
                 .withTitle(TitleSubtitleBuilder.get()
                         .withText("Количество инцидентов за период " + periodDate)
-                        .withAlign(Align.center)
+                        .withAlign(Align.CENTER)
                         .build())
                 .withPlotOptions(PlotOptionsBuilder.get().withPie(PieBuilder.get()
                         .withDonut(DonutBuilder.get()
@@ -334,8 +337,8 @@ public class Analitics extends VerticalLayout {
                         .build())
                         .build())
                 .withLegend(LegendBuilder.get()
-                        .withPosition(Position.bottom)
-                        .withHorizontalAlign(HorizontalAlign.center)
+                        .withPosition(Position.BOTTOM)
+                        .withHorizontalAlign(HorizontalAlign.CENTER)
 //                        .withHeight(10.0)
 //                        .withFloating(true)
 //                        .withFontSize("15")
@@ -349,7 +352,7 @@ public class Analitics extends VerticalLayout {
                         .withBreakpoint(480.0)
                         .withOptions(OptionsBuilder.get()
                                 .withLegend(LegendBuilder.get()
-                                        .withPosition(Position.bottom)
+                                        .withPosition(Position.BOTTOM)
                                         .build())
                                 .build())
                         .build())
@@ -369,13 +372,13 @@ public class Analitics extends VerticalLayout {
         String periodDate = start_Date.getValue().format(europeanDateFormatter) + " - " + end_Date.getValue().format(europeanDateFormatter);
         ApexCharts lineChart = ApexChartsBuilder.get()
                 .withChart(ChartBuilder.get()
-                        .withType(Type.line)
+                        .withType(Type.LINE)
                         .withZoom(ZoomBuilder.get()
                                 .withEnabled(true)
                                 .build())
                         .build())
                 .withStroke(StrokeBuilder.get()
-                        .withCurve(Curve.straight)
+                        .withCurve(Curve.SMOOTH)
                         .build())
                 .withMarkers(MarkersBuilder.get()
                         .withSize(1.0, 1.0)
@@ -383,7 +386,7 @@ public class Analitics extends VerticalLayout {
                         .build())
                 .withTitle(TitleSubtitleBuilder.get()
                         .withText("Динамика инцидентов по месяцам за период " + periodDate)
-                        .withAlign(Align.center)
+                        .withAlign(Align.CENTER)
                         .build())
                 .withGrid(GridBuilder.get()
                         .withRow(RowBuilder.get()
@@ -469,15 +472,16 @@ public class Analitics extends VerticalLayout {
 //        String assignmentGroup = Files.readString(Paths.get("usp_incident_assignmentGroup.txt"));
         startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
+        List<IDSPIncidentDataTotalCount> incHandleDataTotalCount = dataTotalCountRepo.findIncHandleByAffectedItemCount();
 
 //            seriesData = dataTotalCountRepo.findIncByAffectedItemCount(startDate, endDate)
-        incHandleSeriesData = dataTotalCountRepo.findIncAutoByAffectedItemCount()
+        incHandleSeriesData = incHandleDataTotalCount
                     .stream()
                     .map(t -> t.getCount_Inc().doubleValue())
                     .collect(Collectors.toList());
 
 //            labelsData = dataTotalCountRepo.findIncByAffectedItemCount(startDate, endDate)
-        incHandleLabelsData = dataTotalCountRepo.findIncAutoByAffectedItemCount()
+        incHandleLabelsData = incHandleDataTotalCount
                     .stream()
                     .map(t -> t.getAffected_Item())
                     .collect(Collectors.toList());
@@ -488,15 +492,16 @@ public class Analitics extends VerticalLayout {
 //        String assignmentGroup = Files.readString(Paths.get("usp_incident_assignmentGroup.txt"));
         startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
+        List<IDSPIncidentDataTotalCount> incAutoDataTotalCount = dataTotalCountRepo.findIncAutoByAffectedItemCount();
 
 //            seriesData = dataTotalCountRepo.findIncByAffectedItemCount(startDate, endDate)
-        incAutoSeriesData = dataTotalCountRepo.findIncHandleByAffectedItemCount()
+        incAutoSeriesData = incAutoDataTotalCount
                 .stream()
                 .map(t -> t.getCount_Inc().doubleValue())
                 .collect(Collectors.toList());
 
 //            labelsData = dataTotalCountRepo.findIncByAffectedItemCount(startDate, endDate)
-        incAutoLabelsData = dataTotalCountRepo.findIncHandleByAffectedItemCount()
+        incAutoLabelsData = incAutoDataTotalCount
                 .stream()
                 .map(t -> t.getAffected_Item())
                 .collect(Collectors.toList());
@@ -797,8 +802,9 @@ public class Analitics extends VerticalLayout {
 
         VerticalBarChartIncCompare = ApexChartsBuilder.get()
                 .withChart(ChartBuilder.get()
-                        .withType(Type.bar)
+                        .withType(Type.BAR)
                         .withStacked(true)
+                        .withStackType(StackType.FULL)
                         .build())
                 .withPlotOptions(PlotOptionsBuilder.get()
                         .withBar(BarBuilder.get()
@@ -809,7 +815,7 @@ public class Analitics extends VerticalLayout {
                 .withDataLabels(DataLabelsBuilder.get()
                         .withEnabled(true).build())
                 .withStroke(StrokeBuilder.get()
-                        .withLineCap(LineCap.round)
+                        .withLineCap(LineCap.ROUND)
                         .withShow(true)
                         .withWidth(2.0)
                         .withColors("transparent")
@@ -845,7 +851,7 @@ public class Analitics extends VerticalLayout {
     private ApexCharts donutChartIncCompareInit(List<Double>seriesData, List<String>labelsData ){
 //        String periodDate = start_Date.getValue().format(europeanDateFormatter) + " - " + end_Date.getValue().format(europeanDateFormatter);
         donutChartIncCompare = ApexChartsBuilder.get()
-                .withChart(ChartBuilder.get().withType(Type.donut)
+                .withChart(ChartBuilder.get().withType(Type.DONUT)
                         .withZoom(ZoomBuilder.get()
                                 .withEnabled(true)
                                 .withAutoScaleYaxis(true)
@@ -873,8 +879,8 @@ public class Analitics extends VerticalLayout {
                         .build())
                         .build())
                 .withLegend(LegendBuilder.get()
-                        .withPosition(Position.bottom)
-                        .withHorizontalAlign(HorizontalAlign.center)
+                        .withPosition(Position.BOTTOM)
+                        .withHorizontalAlign(HorizontalAlign.CENTER)
 //                        .withHeight(10.0)
 //                        .withFloating(true)
 //                        .withFontSize("15")
@@ -889,7 +895,7 @@ public class Analitics extends VerticalLayout {
                         .withBreakpoint(480.0)
                         .withOptions(OptionsBuilder.get()
                                 .withLegend(LegendBuilder.get()
-                                        .withPosition(Position.bottom)
+                                        .withPosition(Position.BOTTOM)
                                         .build())
                                 .build())
                         .build())

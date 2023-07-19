@@ -28,7 +28,7 @@ import '@vaadin/date-time-picker/theme/lumo/vaadin-date-time-picker.js';
 import '@vaadin/details/theme/lumo/vaadin-details.js';
 import '@vaadin/dialog/theme/lumo/vaadin-dialog.js';
 import '@vaadin/email-field/theme/lumo/vaadin-email-field.js';
-import '@vaadin/flow-frontend/com/github/appreciated/apexcharts/apexcharts-wrapper.js';
+import '@vaadin/flow-frontend/com/github/appreciated/apexcharts/apexcharts-wrapper.ts';
 import '@vaadin/flow-frontend/comboBoxConnector.js';
 import '@vaadin/flow-frontend/contextMenuConnector.js';
 import '@vaadin/flow-frontend/datepickerConnector.js';

@@ -113,7 +113,7 @@
   "@polymer/polymer": "3.4.1",
   "@vaadin/common-frontend": "0.0.17",
   "@vaadin/flow-frontend": "./target/flow-frontend",
-  "apexcharts": "3.30.0",
+  "apexcharts": "3.35.0",
   "construct-style-sheets-polyfill": "3.0.4",
   "date-fns": "2.23.0",
   "lit": "2.1.4",
