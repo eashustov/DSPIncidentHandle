@@ -738,33 +738,24 @@ public class Analitics extends VerticalLayout {
         typeStatisticsComboBox.addThemeVariants(ComboBoxVariant.LUMO_SMALL);
 
         typeAnaliticsDataSelect.addValueChangeListener(e-> {
-            //Блок отрисовки на Общих
-            if (typeAnaliticsDataSelect.getValue().equals("Общая (ПРОМ + ТЕСТ)")) {
-                //Блок прорисовки аналитики по услугам ИТ
-                renderChartsAnaliticsPrc();
-                //Блок отрисовки на ПРОМ данных
-            } else if (typeAnaliticsDataSelect.getValue().equals("ПРОМ")){
-                renderChartsAnaliticsPrc();
-                //Блок отрисовки на ТЕСТ данных
-            } else if (typeAnaliticsDataSelect.getValue().equals("ТЕСТ")){
-                renderChartsAnaliticsPrc();
-            }
+            renderChartsAnaliticsPrc();
+//            //Блок отрисовки на Общих данных
+//            if (typeAnaliticsDataSelect.getValue().equals("Общая (ПРОМ + ТЕСТ)")) {
+//                //Блок отрисовки аналитики по услугам ИТ
+//                renderChartsAnaliticsPrc();
+//                //Блок отрисовки на ПРОМ данных
+//            } else if (typeAnaliticsDataSelect.getValue().equals("ПРОМ")){
+//                renderChartsAnaliticsPrc();
+//                //Блок отрисовки на ТЕСТ данных
+//            } else if (typeAnaliticsDataSelect.getValue().equals("ТЕСТ")){
+//                renderChartsAnaliticsPrc();
+//            }
 
         });
 
         //Блок прорисовки при измении тпа аналитики - Суммарно, По услугам ИТ
         typeStatisticsComboBox.addValueChangeListener(e-> {
             renderChartsAnaliticsPrc();
-
-//                if(!typeStatisticsComboBox.getValue().equals("Суммарно")) {
-//                    IncComparelayout.remove(donutChartIncCompare);
-//                    IncComparelayout.add(VerticalBarChartIncCompareInit());
-//                }else {
-//                    IncComparelayout.remove(VerticalBarChartIncCompare);
-//                    IncComparelayout.add(donutChartIncCompareInit(
-//                            new ArrayList<Double>(Arrays.asList(incAutomaticCount, incHadleCount)),
-//                            new ArrayList<>(Arrays.asList("Автоматические", "Зарег. вручную"))));
-//                }
         });
 
 
@@ -783,12 +774,46 @@ public class Analitics extends VerticalLayout {
     private void renderChartsAnaliticsPrc(){
 
         if(!typeStatisticsComboBox.getValue().equals("Суммарно")) {
-            IncComparelayout.remove(donutChartIncCompare, VerticalBarChartIncCompare);
-            IncComparelayout.add(VerticalBarChartIncCompare);
+            System.out.println("По услугам ИТ");
+            switch (typeAnaliticsDataSelect.getValue()) {
+                case  ("Общая (ПРОМ + ТЕСТ)"):
+                    System.out.println("Общая (ПРОМ + ТЕСТ)");
+                    IncComparelayout.remove(donutChartIncCompare, VerticalBarChartIncCompare);
+                    IncComparelayout.add(VerticalBarChartIncCompare);
+                    break;
+                case ("ПРОМ"):
+                    System.out.println("ПРОМ");
+                    IncComparelayout.remove(donutChartIncCompare, VerticalBarChartIncCompare);
+                    IncComparelayout.add(VerticalBarChartIncCompare);
+                    break;
+                case ("ТЕСТ"):
+                    System.out.println("ТЕСТ");
+                    IncComparelayout.remove(donutChartIncCompare, VerticalBarChartIncCompare);
+                    IncComparelayout.add(VerticalBarChartIncCompare);
+                    break;
+            }
         }else {
-            IncComparelayout.remove(VerticalBarChartIncCompare, donutChartIncCompare);
-            IncComparelayout.add(donutChartIncCompare);
-        }
+            System.out.println("Суммарно");
+            switch (typeAnaliticsDataSelect.getValue()) {
+                case  ("Общая (ПРОМ + ТЕСТ)"):
+                    System.out.println("Общая (ПРОМ + ТЕСТ)");
+                    IncComparelayout.remove(VerticalBarChartIncCompare, donutChartIncCompare);
+                    IncComparelayout.add(donutChartIncCompare);
+                    break;
+                case ("ПРОМ"):
+                    System.out.println("ПРОМ");
+                    IncComparelayout.remove(VerticalBarChartIncCompare, donutChartIncCompare);
+                    IncComparelayout.add(donutChartIncCompare);
+                    break;
+                case ("ТЕСТ"):
+                    System.out.println("ТЕСТ");
+                    IncComparelayout.remove(VerticalBarChartIncCompare, donutChartIncCompare);
+                    IncComparelayout.add(donutChartIncCompare);
+                    break;
+            }
+
+        };
+
 
     }
 
