@@ -41,6 +41,8 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
@@ -101,12 +103,23 @@ public class Analitics extends VerticalLayout {
 
     IncTop10Filter incTop10Filter;
 
-    //ZabbixAPI
-
     ComboBox<String> typeStatisticsComboBox;
     static Map<String, String> triggersSeverityComboBoxHumanItemsMap;
-    Dialog listTriggerDialog;
     Anchor downloadToCSV;
+
+    //Обьявление выбора типа данных для аналитики
+    private RadioButtonGroup<String> typeAnaliticsDataSelect;
+
+    //Обьявление уровня процентного сравнения инцидентов
+    private VerticalLayout IncComparelayout;
+
+    //Получение количества по инцидентам
+//        int incAutomaticCount = Integer.valueOf(repoAnalitics.findIncAutomaticCount(startDate, endDate));
+//        int incHadleCount = dataView_analitics.getItemCount();
+    double incAutomaticCount;
+    double incHadleCount;
+
+
 
     public Analitics(DSPIncidentDataTotalCountRepo dataTotalCountRepo, DSPIncidentDataCountPerMonthRepo dataCountPerMonthRepo, DSPIncidentAnaliticsRepo repoAnalitics,
                      DSPIncidentDataTop10Repo dataTop10IncRepo) {
@@ -425,7 +438,7 @@ public class Analitics extends VerticalLayout {
         top10IncGrid.setMaxWidth("100%");
         top10IncGrid.setWidth("900px");
         top10IncGrid.setMaxHeight("100%");
-        top10IncGrid.setHeight("600px");
+        top10IncGrid.setHeight("650px");
 
         //Создание фильтра для ИТ услуги
         incTop10Filter = new Analitics.IncTop10Filter(top10IncDataView);
@@ -617,7 +630,8 @@ public class Analitics extends VerticalLayout {
         return dataView_analitics;
     };
 
-    private Component createFilterHeader(String labelText, Consumer<String> filterChangeConsumer, GridListDataView<IDSPIncidentDataTop10> incTop10DataViewFiltered) {
+    private Component createFilterHeader(String labelText, Consumer<String> filterChangeConsumer,
+                                         GridListDataView<IDSPIncidentDataTop10> incTop10DataViewFiltered) {
         Label label = new Label(labelText);
         label.getStyle().set("padding-top", "var(--lumo-space-m)")
                 .set("font-size", "var(--lumo-font-size-xs)");
@@ -678,14 +692,31 @@ public class Analitics extends VerticalLayout {
     }
 
     private VerticalLayout IncComparelayout() {
-        VerticalLayout IncComparelayout = new VerticalLayout();
-        H5 VerticalBarChartIncCoverHeader = new H5("Процент инцидентов зарегистиррованных вручную");
+        IncComparelayout = new VerticalLayout();
+        String periodDate = start_Date.getValue().format(europeanDateFormatter) + " - " + end_Date.getValue().format(europeanDateFormatter);
+        H5 VerticalBarChartIncCoverHeader = new H5("Процентное соотношение инцидентов (автоматические/зарег. вручную) за период " + periodDate);
 
         //Получение количества по инцидентам
 //        int incAutomaticCount = Integer.valueOf(repoAnalitics.findIncAutomaticCount(startDate, endDate));
 //        int incHadleCount = dataView_analitics.getItemCount();
-        double incAutomaticCount = 150;
-        double incHadleCount = 27;
+        incAutomaticCount = 150;
+        incHadleCount = 27;
+
+        //Инициализация donut Chart сравнения инцидетов
+        donutChartIncCompare = donutChartIncCompareInit(
+                new ArrayList<Double>(Arrays.asList(incAutomaticCount, incHadleCount)),
+                new ArrayList<>(Arrays.asList("Автоматические", "Зарег. вручную")));
+
+        //Инициализация BarChart сравнения инцидентов
+        VerticalBarChartIncCompare = VerticalBarChartIncCompareInit();
+
+
+        //ВЫбор типа данных - Общая (ПРОМ + ТЕСТ), ПРОМ, ТЕСТ
+        typeAnaliticsDataSelect = new RadioButtonGroup<>();
+        typeAnaliticsDataSelect.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+        typeAnaliticsDataSelect.setLabel("Тип данных");
+        typeAnaliticsDataSelect.setItems("Общая (ПРОМ + ТЕСТ)", "ПРОМ", "ТЕСТ");
+        typeAnaliticsDataSelect.setValue("Общая (ПРОМ + ТЕСТ)");
 
 
         //Выбор типа статистики
@@ -693,41 +724,67 @@ public class Analitics extends VerticalLayout {
         typeStatisticsComboBox.setLabel("Выбор типа статистики");
         typeStatisticsComboBox.setPlaceholder("Выбор типа статистики");
         typeStatisticsComboBox.setItems(
-                "Общая статистика",
+                "Суммарно",
                 "По услугам ИТ"
                 );
-        typeStatisticsComboBox.setValue("Общая статистика");
+        typeStatisticsComboBox.setValue("Суммарно");
         typeStatisticsComboBox.setClearButtonVisible(false);
         typeStatisticsComboBox.setAllowCustomValue(false);
         typeStatisticsComboBox.addThemeVariants(ComboBoxVariant.LUMO_SMALL);
 
-        typeStatisticsComboBox.addValueChangeListener(e-> {
+        typeAnaliticsDataSelect.addValueChangeListener(e-> {
+            //Блок отрисовки на Общих
+            if (typeAnaliticsDataSelect.getValue().equals("Общая (ПРОМ + ТЕСТ)")) {
+                //Блок прорисовки аналитики по услугам ИТ
+                renderChartsAnaliticsPrc();
+                //Блок отрисовки на ПРОМ данных
+            } else if (typeAnaliticsDataSelect.getValue().equals("ПРОМ")){
+                renderChartsAnaliticsPrc();
+                //Блок отрисовки на ТЕСТ данных
+            } else if (typeAnaliticsDataSelect.getValue().equals("ТЕСТ")){
+                renderChartsAnaliticsPrc();
+            }
 
-                if(!typeStatisticsComboBox.getValue().equals("Общая статистика")) {
-                    IncComparelayout.remove(donutChartIncCompare);
-                    IncComparelayout.add(VerticalBarChartIncCompareInit());
-                }else {
-                    IncComparelayout.remove(VerticalBarChartIncCompare);
-                    IncComparelayout.add(donutChartIncCompareInit(
-                            new ArrayList<Double>(Arrays.asList(incAutomaticCount, incHadleCount)),
-                            new ArrayList<>(Arrays.asList("Автоматические", "Зарег. вручную"))));
-                }
-//            }
+        });
+
+        //Блок прорисовки при измении тпа аналитики - Суммарно, По услугам ИТ
+        typeStatisticsComboBox.addValueChangeListener(e-> {
+            renderChartsAnaliticsPrc();
+
+//                if(!typeStatisticsComboBox.getValue().equals("Суммарно")) {
+//                    IncComparelayout.remove(donutChartIncCompare);
+//                    IncComparelayout.add(VerticalBarChartIncCompareInit());
+//                }else {
+//                    IncComparelayout.remove(VerticalBarChartIncCompare);
+//                    IncComparelayout.add(donutChartIncCompareInit(
+//                            new ArrayList<Double>(Arrays.asList(incAutomaticCount, incHadleCount)),
+//                            new ArrayList<>(Arrays.asList("Автоматические", "Зарег. вручную"))));
+//                }
         });
 
 
         HorizontalLayout IncCompareHeaderLayout = new HorizontalLayout(VerticalBarChartIncCoverHeader);
-        HorizontalLayout comboBoxLayout = new HorizontalLayout(typeStatisticsComboBox);
-        comboBoxLayout.setVerticalComponentAlignment(Alignment.END, typeStatisticsComboBox);
+        HorizontalLayout comboBoxLayout = new HorizontalLayout(typeAnaliticsDataSelect, typeStatisticsComboBox);
+        comboBoxLayout.setVerticalComponentAlignment(Alignment.START, typeStatisticsComboBox);
         setHorizontalComponentAlignment(Alignment.CENTER, comboBoxLayout);
         IncCompareHeaderLayout.setVerticalComponentAlignment(Alignment.END, VerticalBarChartIncCoverHeader);
         setHorizontalComponentAlignment(Alignment.CENTER, IncCompareHeaderLayout);
 //        IncComparelayout.add(IncCompareHeaderLayout, comboBoxLayout, VerticalBarChartIncCompareInit(
 //                typeStatisticsComboBox.getValue()));
-        IncComparelayout.add(IncCompareHeaderLayout, comboBoxLayout, donutChartIncCompareInit(
-                new ArrayList<Double>(Arrays.asList(incAutomaticCount, incHadleCount)),
-                new ArrayList<>(Arrays.asList("Автоматические", "Зарег. вручную"))));
+        IncComparelayout.add(IncCompareHeaderLayout, comboBoxLayout, donutChartIncCompare);
         return IncComparelayout;
+    }
+
+    private void renderChartsAnaliticsPrc(){
+
+        if(!typeStatisticsComboBox.getValue().equals("Суммарно")) {
+            IncComparelayout.remove(donutChartIncCompare, VerticalBarChartIncCompare);
+            IncComparelayout.add(VerticalBarChartIncCompare);
+        }else {
+            IncComparelayout.remove(VerticalBarChartIncCompare, donutChartIncCompare);
+            IncComparelayout.add(donutChartIncCompare);
+        }
+
     }
 
     private ApexCharts VerticalBarChartIncCompareInit() {
@@ -786,7 +843,7 @@ public class Analitics extends VerticalLayout {
     }
 
     private ApexCharts donutChartIncCompareInit(List<Double>seriesData, List<String>labelsData ){
-        String periodDate = start_Date.getValue().format(europeanDateFormatter) + " - " + end_Date.getValue().format(europeanDateFormatter);
+//        String periodDate = start_Date.getValue().format(europeanDateFormatter) + " - " + end_Date.getValue().format(europeanDateFormatter);
         donutChartIncCompare = ApexChartsBuilder.get()
                 .withChart(ChartBuilder.get().withType(Type.donut)
                         .withZoom(ZoomBuilder.get()
@@ -800,10 +857,10 @@ public class Analitics extends VerticalLayout {
 //                        .withOffsetX(-100.0)
                         .withOffsetY(0.0) //-30 Это смешение вверх
                         .build())
-                .withTitle(TitleSubtitleBuilder.get()
-                        .withText("Соотношение инцидентов (автоматические/зарег. вручную) за период " + periodDate)
-                        .withAlign(Align.center)
-                        .build())
+//                .withTitle(TitleSubtitleBuilder.get()
+//                        .withText("Процентное соотношение инцидентов (автоматические/зарег. вручную) за период " + periodDate)
+//                        .withAlign(Align.center)
+//                        .build())
                 .withPlotOptions(PlotOptionsBuilder.get().withPie(PieBuilder.get()
                         .withDonut(DonutBuilder.get()
                                 .withLabels(LabelsBuilder.get()
