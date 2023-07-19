@@ -22,20 +22,16 @@ public class ExporToCSV {
     public static StreamResource exportToCSV(GridListDataView<DSPIncidentData> dataView) {
 
         //        Export to CSV
-        var streamResource = new StreamResource("uspIncidents.csv",
+        var streamResource = new StreamResource("DSPIncidents.csv",
                 () -> {
-                    Stream<DSPIncidentData> uspIncidentList = dataView.getItems();
+                    Stream<DSPIncidentData> DSPIncidentList = dataView.getItems();
                     StringWriter output = new StringWriter();
                     StatefulBeanToCsv<DSPIncidentData> beanToCSV = null;
+                    beanToCSV = new StatefulBeanToCsvBuilder<DSPIncidentData>(output)
+//                                .withIgnoreField(DSPIncidentData.class, DSPIncidentData.class.getDeclaredField("ACTION"))
+                            .build();
                     try {
-                        beanToCSV = new StatefulBeanToCsvBuilder<DSPIncidentData>(output)
-                                .withIgnoreField(DSPIncidentData.class, DSPIncidentData.class.getDeclaredField("ACTION"))
-                                .build();
-                    } catch (NoSuchFieldException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        beanToCSV.write(uspIncidentList);
+                        beanToCSV.write(DSPIncidentList);
                         var contents = output.toString();
                         return new ByteArrayInputStream(contents.getBytes());
                     } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {

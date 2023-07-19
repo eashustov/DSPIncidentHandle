@@ -1,5 +1,4 @@
 package ru.sberbank.dspincidenthandle.view;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.github.appreciated.apexcharts.ApexChartsBuilder;
 import com.github.appreciated.apexcharts.config.builder.*;
@@ -16,6 +15,7 @@ import com.github.appreciated.apexcharts.config.plotoptions.builder.PieBuilder;
 import com.github.appreciated.apexcharts.config.plotoptions.pie.builder.*;
 import com.github.appreciated.apexcharts.config.responsive.builder.OptionsBuilder;
 import com.github.appreciated.apexcharts.config.stroke.Curve;
+import com.github.appreciated.apexcharts.config.stroke.LineCap;
 import com.github.appreciated.apexcharts.config.subtitle.Align;
 import com.github.appreciated.apexcharts.config.yaxis.builder.TitleBuilder;
 import com.github.appreciated.apexcharts.helper.Series;
@@ -41,8 +41,6 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
-import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
@@ -54,6 +52,7 @@ import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataTop10;
 import ru.sberbank.dspincidenthandle.domain.DSPIncidentData;
 import ru.sberbank.dspincidenthandle.repo.*;
 import ru.sberbank.dspincidenthandle.service.ExporToCSV;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -72,7 +71,8 @@ public class Analitics extends VerticalLayout {
     private H4 header;
     ApexCharts donutChart;
     ApexCharts lineChart;
-    ApexCharts VerticalBarChartIncCover;
+    ApexCharts VerticalBarChartIncCompare;
+    ApexCharts donutChartIncCompare;
     String startDate;
     String endDate;
     DatePicker start_Date;
@@ -82,8 +82,10 @@ public class Analitics extends VerticalLayout {
     private GridListDataView<DSPIncidentData> dataView_analitics;
 
     DateTimeFormatter europeanDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    List<String> labelsData;
-    List<Double> seriesData;
+    List<String> incHandleLabelsData;
+    List<Double> incHandleSeriesData;
+    List<String> incAutoLabelsData;
+    List<Double> incAutoSeriesData;
     @Autowired
     private DSPIncidentDataTotalCountRepo dataTotalCountRepo;
     @Autowired
@@ -100,9 +102,8 @@ public class Analitics extends VerticalLayout {
     IncTop10Filter incTop10Filter;
 
     //ZabbixAPI
-    private RadioButtonGroup<String> typeSeveritySelect;
-    public static String typeSeverity;
-    ComboBox<String> triggersSeverityComboBox;
+
+    ComboBox<String> typeStatisticsComboBox;
     static Map<String, String> triggersSeverityComboBoxHumanItemsMap;
     Dialog listTriggerDialog;
     Anchor downloadToCSV;
@@ -180,16 +181,16 @@ public class Analitics extends VerticalLayout {
             formLayout.removeAll();
             remove(formLayout);
             downloadToCSV.setHref(exportToCSV(initGridIncData (start_Date,end_Date)));
-            getTotalCountAnaliticsData(start_Date,end_Date);
+            getIncHandleTotalCountAnaliticsData(start_Date,end_Date);
             assignmentGroupMapToMonthData = getTotalCounPerMonthAnaliticsData(start_Date,end_Date);
             lineChart = LineChartInit();
-            donutChart = donutChartInit(seriesData,labelsData);
+            donutChart = donutChartInit(incHandleSeriesData, incHandleLabelsData);
             donutChart.setMaxWidth("100%");
             donutChart.setWidth("900px");
             donutChart.setMaxHeight("100%");
             donutChart.setHeight("600px");
             try {
-                formLayout.add(donutChart, lineChart, top10IncGridInit(), BarChartIncCoverlayout());
+                formLayout.add(donutChart, lineChart, top10IncGridInit(), IncComparelayout());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -451,23 +452,42 @@ public class Analitics extends VerticalLayout {
     }
 
     @SneakyThrows
-    private void getTotalCountAnaliticsData(DatePicker start_Date, DatePicker end_Date){
+    private void getIncHandleTotalCountAnaliticsData(DatePicker start_Date, DatePicker end_Date){
 //        String assignmentGroup = Files.readString(Paths.get("usp_incident_assignmentGroup.txt"));
         startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
 
 //            seriesData = dataTotalCountRepo.findIncByAffectedItemCount(startDate, endDate)
-        seriesData = dataTotalCountRepo.findIncByAffectedItemCount()
+        incHandleSeriesData = dataTotalCountRepo.findIncAutoByAffectedItemCount()
                     .stream()
                     .map(t -> t.getCount_Inc().doubleValue())
                     .collect(Collectors.toList());
 
 //            labelsData = dataTotalCountRepo.findIncByAffectedItemCount(startDate, endDate)
-        labelsData = dataTotalCountRepo.findIncByAffectedItemCount()
+        incHandleLabelsData = dataTotalCountRepo.findIncAutoByAffectedItemCount()
                     .stream()
                     .map(t -> t.getAffected_Item())
                     .collect(Collectors.toList());
        }
+
+    @SneakyThrows
+    private void getIncAutoTotalCountAnaliticsData(DatePicker start_Date, DatePicker end_Date){
+//        String assignmentGroup = Files.readString(Paths.get("usp_incident_assignmentGroup.txt"));
+        startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
+        endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
+
+//            seriesData = dataTotalCountRepo.findIncByAffectedItemCount(startDate, endDate)
+        incAutoSeriesData = dataTotalCountRepo.findIncHandleByAffectedItemCount()
+                .stream()
+                .map(t -> t.getCount_Inc().doubleValue())
+                .collect(Collectors.toList());
+
+//            labelsData = dataTotalCountRepo.findIncByAffectedItemCount(startDate, endDate)
+        incAutoLabelsData = dataTotalCountRepo.findIncHandleByAffectedItemCount()
+                .stream()
+                .map(t -> t.getAffected_Item())
+                .collect(Collectors.toList());
+    }
 
 
     private Map<String,Map<String, Integer>> getTotalCounPerMonthAnaliticsData(DatePicker start_Date, DatePicker end_Date){
@@ -657,121 +677,71 @@ public class Analitics extends VerticalLayout {
         }
     }
 
-    private VerticalLayout BarChartIncCoverlayout() throws JsonProcessingException {
-        VerticalLayout VerticalBarChartIncCoverlayout = new VerticalLayout();
-        H5 VerticalBarChartIncCoverHeader = new H5("Покрытие автоинцидентами");
-        //Создание combobox для выбора критичности триггера
-        triggersSeverityComboBoxHumanItemsMap = new HashMap<>(){{
-            put("0", "Не классифицировано");
-            put("1", "Информация");
-            put("2", "Предупреждение");
-            put("3", "Средняя");
-            put("4", "Высокая");
-            put("5", "Чрезвычайная");
-        }};
-        //Выбор типа сравнения по критичности
-        typeSeveritySelect = new RadioButtonGroup<>();
-        typeSeveritySelect.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-        typeSeveritySelect.setLabel("");
-        typeSeveritySelect.setItems(">=", "=");
-        typeSeveritySelect.setValue(">=");
-        typeSeverity = typeSeveritySelect.getValue();
-        //Выбор критичности
-        triggersSeverityComboBox = new ComboBox<>();
-        triggersSeverityComboBox.setLabel("Критичность триггера");
-        triggersSeverityComboBox.setPlaceholder("Критичность триггера");
-        triggersSeverityComboBox.setItems(
-                triggersSeverityComboBoxHumanItemsMap.get("0"),
-                triggersSeverityComboBoxHumanItemsMap.get("1"),
-                triggersSeverityComboBoxHumanItemsMap.get("2"),
-                triggersSeverityComboBoxHumanItemsMap.get("3"),
-                triggersSeverityComboBoxHumanItemsMap.get("4"),
-                triggersSeverityComboBoxHumanItemsMap.get("5"));
-        triggersSeverityComboBox.setValue(triggersSeverityComboBoxHumanItemsMap.get("4"));
-        triggersSeverityComboBox.setClearButtonVisible(false);
-        triggersSeverityComboBox.setAllowCustomValue(false);
-        triggersSeverityComboBox.addThemeVariants(ComboBoxVariant.LUMO_SMALL);
+    private VerticalLayout IncComparelayout() {
+        VerticalLayout IncComparelayout = new VerticalLayout();
+        H5 VerticalBarChartIncCoverHeader = new H5("Процент инцидентов зарегистиррованных вручную");
 
-        typeSeveritySelect.addValueChangeListener(e-> {
-            typeSeverity = typeSeveritySelect.getValue();
-            if (VerticalBarChartIncCoverlayout.getComponentCount() == 3){
-                VerticalBarChartIncCoverlayout.remove(VerticalBarChartIncCover);
-                try {
-                    VerticalBarChartIncCoverlayout.add(VerticalBarChartIncCoverInit(triggersSeverityComboBoxHumanItemsMap
-                            .entrySet()
-                            .stream()
-                            .filter(entry -> entry.getValue().equals(triggersSeverityComboBox.getValue()))
-                            .map(Map.Entry::getKey)
-                            .findFirst().get()));
+        //Получение количества по инцидентам
+//        int incAutomaticCount = Integer.valueOf(repoAnalitics.findIncAutomaticCount(startDate, endDate));
+//        int incHadleCount = dataView_analitics.getItemCount();
+        double incAutomaticCount = 150;
+        double incHadleCount = 27;
 
-                } catch (JsonProcessingException jsonProcessingException) {
-                    jsonProcessingException.printStackTrace();
+
+        //Выбор типа статистики
+        typeStatisticsComboBox = new ComboBox<>();
+        typeStatisticsComboBox.setLabel("Выбор типа статистики");
+        typeStatisticsComboBox.setPlaceholder("Выбор типа статистики");
+        typeStatisticsComboBox.setItems(
+                "Общая статистика",
+                "По услугам ИТ"
+                );
+        typeStatisticsComboBox.setValue("Общая статистика");
+        typeStatisticsComboBox.setClearButtonVisible(false);
+        typeStatisticsComboBox.setAllowCustomValue(false);
+        typeStatisticsComboBox.addThemeVariants(ComboBoxVariant.LUMO_SMALL);
+
+        typeStatisticsComboBox.addValueChangeListener(e-> {
+
+                if(!typeStatisticsComboBox.getValue().equals("Общая статистика")) {
+                    IncComparelayout.remove(donutChartIncCompare);
+                    IncComparelayout.add(VerticalBarChartIncCompareInit());
+                }else {
+                    IncComparelayout.remove(VerticalBarChartIncCompare);
+                    IncComparelayout.add(donutChartIncCompareInit(
+                            new ArrayList<Double>(Arrays.asList(incAutomaticCount, incHadleCount)),
+                            new ArrayList<>(Arrays.asList("Автоматические", "Зарег. вручную"))));
                 }
-            } else {
-                try {
-                    VerticalBarChartIncCoverlayout.add(VerticalBarChartIncCoverInit(triggersSeverityComboBoxHumanItemsMap
-                            .entrySet()
-                            .stream()
-                            .filter(entry -> entry.getValue().equals(triggersSeverityComboBox.getValue()))
-                            .map(Map.Entry::getKey)
-                            .findFirst().get()));
-                } catch (JsonProcessingException jsonProcessingException) {
-                    jsonProcessingException.printStackTrace();
-                }
-            }
-
+//            }
         });
 
-        triggersSeverityComboBox.addValueChangeListener(e->{
 
-            if (VerticalBarChartIncCoverlayout.getComponentCount() == 3){
-                VerticalBarChartIncCoverlayout.remove(VerticalBarChartIncCover);
-                try {
-                    VerticalBarChartIncCoverlayout.add(VerticalBarChartIncCoverInit(triggersSeverityComboBoxHumanItemsMap
-                            .entrySet()
-                            .stream()
-                            .filter(entry -> entry.getValue().equals(triggersSeverityComboBox.getValue()))
-                            .map(Map.Entry::getKey)
-                            .findFirst().get()));
-
-                } catch (JsonProcessingException jsonProcessingException) {
-                    jsonProcessingException.printStackTrace();
-                }
-            } else {
-                try {
-                    VerticalBarChartIncCoverlayout.add(VerticalBarChartIncCoverInit(triggersSeverityComboBoxHumanItemsMap
-                            .entrySet()
-                            .stream()
-                            .filter(entry -> entry.getValue().equals(triggersSeverityComboBox.getValue()))
-                            .map(Map.Entry::getKey)
-                            .findFirst().get()));
-                } catch (JsonProcessingException jsonProcessingException) {
-                    jsonProcessingException.printStackTrace();
-                }
-            }
-        });
-
-        HorizontalLayout triggersWithIncHeaderLayout = new HorizontalLayout(VerticalBarChartIncCoverHeader);
-        HorizontalLayout comboBoxLayout = new HorizontalLayout(typeSeveritySelect, triggersSeverityComboBox);
-        comboBoxLayout.setVerticalComponentAlignment(Alignment.END,triggersSeverityComboBox);
+        HorizontalLayout IncCompareHeaderLayout = new HorizontalLayout(VerticalBarChartIncCoverHeader);
+        HorizontalLayout comboBoxLayout = new HorizontalLayout(typeStatisticsComboBox);
+        comboBoxLayout.setVerticalComponentAlignment(Alignment.END, typeStatisticsComboBox);
         setHorizontalComponentAlignment(Alignment.CENTER, comboBoxLayout);
-        triggersWithIncHeaderLayout.setVerticalComponentAlignment(Alignment.END, VerticalBarChartIncCoverHeader);
-        setHorizontalComponentAlignment(Alignment.CENTER, triggersWithIncHeaderLayout);
-        VerticalBarChartIncCoverlayout.add(triggersWithIncHeaderLayout, comboBoxLayout, VerticalBarChartIncCoverInit(triggersSeverityComboBoxHumanItemsMap
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getValue().equals(triggersSeverityComboBox.getValue()))
-                .map(Map.Entry::getKey)
-                .findFirst().get()));
-
-        return VerticalBarChartIncCoverlayout;
+        IncCompareHeaderLayout.setVerticalComponentAlignment(Alignment.END, VerticalBarChartIncCoverHeader);
+        setHorizontalComponentAlignment(Alignment.CENTER, IncCompareHeaderLayout);
+//        IncComparelayout.add(IncCompareHeaderLayout, comboBoxLayout, VerticalBarChartIncCompareInit(
+//                typeStatisticsComboBox.getValue()));
+        IncComparelayout.add(IncCompareHeaderLayout, comboBoxLayout, donutChartIncCompareInit(
+                new ArrayList<Double>(Arrays.asList(incAutomaticCount, incHadleCount)),
+                new ArrayList<>(Arrays.asList("Автоматические", "Зарег. вручную"))));
+        return IncComparelayout;
     }
 
-    private ApexCharts VerticalBarChartIncCoverInit(String severity) throws JsonProcessingException {
+    private ApexCharts VerticalBarChartIncCompareInit() {
+        //Получение данных по количеству авто инцидентов для графика
+        getIncAutoTotalCountAnaliticsData(start_Date,end_Date);
+//        System.out.println("Автоматические: " + incAutoSeriesData + " " + "Ручные: " + incHandleSeriesData);
+//        System.out.println("Автоматические лейблы: " + incAutoLabelsData + " " + "Ручные лейблы: " + incHandleLabelsData);
 
-        VerticalBarChartIncCover = ApexChartsBuilder.get()
+        //Данные по ручным инцидентам формируются в обработчике кнопки
+
+        VerticalBarChartIncCompare = ApexChartsBuilder.get()
                 .withChart(ChartBuilder.get()
                         .withType(Type.bar)
+                        .withStacked(true)
                         .build())
                 .withPlotOptions(PlotOptionsBuilder.get()
                         .withBar(BarBuilder.get()
@@ -780,48 +750,102 @@ public class Analitics extends VerticalLayout {
                                 .build())
                         .build())
                 .withDataLabels(DataLabelsBuilder.get()
-                        .withEnabled(false).build())
+                        .withEnabled(true).build())
                 .withStroke(StrokeBuilder.get()
+                        .withLineCap(LineCap.round)
                         .withShow(true)
                         .withWidth(2.0)
                         .withColors("transparent")
                         .build())
-//                .withSeries(
-//                        // Столбцы продуктов ОИП
-//                        new Series<>( "SOWA", ZabbixAPI.percentOfCoverByIncidentForSOWA),
-//                        new Series<>("Kafka", ZabbixAPI.percentOfCoverByIncidentForKafka),
-//                        new Series<>("MQSeries", ZabbixAPI.percentOfCoverByIncidentForMQ),
-//                        new Series<>("DataPower", ZabbixAPI.percentOfCoverByIncidentForDP),
-//                        //Столбцы продуктов Стандартных платформ
-//                        new Series<>("Nginx","", ZabbixAPI.percentOfCoverByIncidentForNginx),
-//                        new Series<>("WAS","", ZabbixAPI.percentOfCoverByIncidentForWAS),
-//                        new Series<>("WildFly","", ZabbixAPI.percentOfCoverByIncidentForWildFly),
-//                        new Series<>("WebLogic","", ZabbixAPI.percentOfCoverByIncidentForWebLogic),
-//                        new Series<>("Siebel","", ZabbixAPI.percentOfCoverByIncidentForSiebel),
-//                        //Столбцы OpenShift
-//                        new Series<>("OpenShift","","", ZabbixAPI.percentOfCoverByIncidentForOpenShift)
-//                        )
-                .withYaxis(YAxisBuilder.get()
+                .withSeries(
+                        // Столбцы продуктов ДСП
+                        new Series<>("Автоматические", incAutoSeriesData.stream().toArray(Double[]::new)),
+                        new Series<>( "Зар. вручную", incHandleSeriesData.stream().toArray(Double[]::new)))
+//                        new Series<>("Автоматические", 90, 80, 70, 60, 50, 40),
+//                        new Series<>( "Зар. вручную", 10, 20, 30, 40, 50, 60))
+                        .withYaxis(YAxisBuilder.get()
                         .withTitle(TitleBuilder.get()
                                 .withText("%")
                                 .build())
                         .build())
-                .withXaxis(XAxisBuilder.get().withCategories("ОИП", "Стандартные платформы", "OpenShift").build())
+//                .withXaxis(XAxisBuilder.get().withCategories("SOWA", "Corax", "MQSeries", "DataPower", "Nginx", "WAS",
+//                        "WildFly", "WebLogic", "Siebel", "OpenShift").build())
+                .withXaxis(XAxisBuilder.get().withCategories(incHandleLabelsData.stream().toArray(String[]::new)).build())
                 .withFill(FillBuilder.get()
                         .withOpacity(1.0).build())
                 .withTooltip(TooltipBuilder.get()
                         .build())
                 .build();
-        VerticalBarChartIncCover.setColors("#FF0000", "#800000", "#FF8C00", "#808000", "#00FF00", "#008000",
-                "#00FFFF", "#008080", "#0000FF", "#000080", "#800080", "#FF00FF", "#808080", "#000000");
-        VerticalBarChartIncCover.setMaxWidth("100%");
-        VerticalBarChartIncCover.setWidth("900px");
-        VerticalBarChartIncCover.setMaxHeight("100%");
-        VerticalBarChartIncCover.setHeight("500px");
+        VerticalBarChartIncCompare.setColors("#006400", "#FF0000");
+        VerticalBarChartIncCompare.setMaxWidth("100%");
+        VerticalBarChartIncCompare.setWidth("900px");
+        VerticalBarChartIncCompare.setMaxHeight("100%");
+        VerticalBarChartIncCompare.setHeight("550px");
 
-        return VerticalBarChartIncCover;
+        return VerticalBarChartIncCompare;
     }
 
+    private ApexCharts donutChartIncCompareInit(List<Double>seriesData, List<String>labelsData ){
+        String periodDate = start_Date.getValue().format(europeanDateFormatter) + " - " + end_Date.getValue().format(europeanDateFormatter);
+        donutChartIncCompare = ApexChartsBuilder.get()
+                .withChart(ChartBuilder.get().withType(Type.donut)
+                        .withZoom(ZoomBuilder.get()
+                                .withEnabled(true)
+                                .withAutoScaleYaxis(true)
+                                .build())
+                        .withToolbar(ToolbarBuilder.get()
+                                .withShow(true)
+                                .withTools(new Tools())
+                                .build())
+//                        .withOffsetX(-100.0)
+                        .withOffsetY(0.0) //-30 Это смешение вверх
+                        .build())
+                .withTitle(TitleSubtitleBuilder.get()
+                        .withText("Соотношение инцидентов (автоматические/зарег. вручную) за период " + periodDate)
+                        .withAlign(Align.center)
+                        .build())
+                .withPlotOptions(PlotOptionsBuilder.get().withPie(PieBuilder.get()
+                        .withDonut(DonutBuilder.get()
+                                .withLabels(LabelsBuilder.get()
+                                        .withShow(true)
+                                        .withName(NameBuilder.get().withShow(true).build())
+                                        .withTotal(TotalBuilder.get().withShow(true).withLabel("Всего")
+                                                .withColor("#000000").build())
+                                        .build())
+                                .build())
+                        .build())
+                        .build())
+                .withLegend(LegendBuilder.get()
+                        .withPosition(Position.bottom)
+                        .withHorizontalAlign(HorizontalAlign.center)
+//                        .withHeight(10.0)
+//                        .withFloating(true)
+//                        .withFontSize("15")
+//                        .withOffsetX(0.0)
+                        .withOffsetY(5.0)
+                        .build())
+//                .withSeries(incAutomaticPrc, incHandlePrc)
+//                .withLabels("Автоматические", "Зарег. вручную")
+                .withSeries(seriesData.stream().toArray(Double[]::new))
+                .withLabels(labelsData.stream().toArray(String[]::new))
+                .withResponsive(ResponsiveBuilder.get()
+                        .withBreakpoint(480.0)
+                        .withOptions(OptionsBuilder.get()
+                                .withLegend(LegendBuilder.get()
+                                        .withPosition(Position.bottom)
+                                        .build())
+                                .build())
+                        .build())
+                .build();
+
+        donutChartIncCompare.setColors("#006400","#FF0000");
+        donutChartIncCompare.setMaxWidth("100%");
+        donutChartIncCompare.setWidth("900px");
+        donutChartIncCompare.setMaxHeight("100%");
+        donutChartIncCompare.setHeight("550px");
+
+        return donutChartIncCompare;
+    }
 
 }
 
