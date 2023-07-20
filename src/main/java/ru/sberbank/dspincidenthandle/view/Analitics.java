@@ -53,7 +53,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataCountPerMonth;
 import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataTop10;
 import ru.sberbank.dspincidenthandle.domain.DSPIncidentData;
-import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataTotalCount;
 import ru.sberbank.dspincidenthandle.repo.*;
 import ru.sberbank.dspincidenthandle.service.ExporToCSV;
 
@@ -86,20 +85,55 @@ public class Analitics extends VerticalLayout {
     private GridListDataView<DSPIncidentData> dataView_analitics;
 
     DateTimeFormatter europeanDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    List<String> incHandleLabelsData;
-    List<Double> incHandleSeriesData;
-    List<String> incAutoLabelsData;
-    List<Double> incAutoSeriesData;
+    //Данные для количество инцидентов за период donut chart
+    List<String> labelsDataDonut;
+    List<Double> seriesDataDonut;
+
+    //Данные для BarChart по услугам ИТ
+    List<String> incHandleLabelsDataBar;
+    List<Double> incHandleSeriesDataBar;
+    List<String> incAutoLabelsDataBar;
+    List<Double> incAutoSeriesDataBar;
+    List<Double> incHandleSeriesDataBarTotal;
+    List<String> incHandleLabelsDataBarTotal;
+    List<Double> incHandleSeriesDataBarProm;
+    List<String> incHandleLabelsDataBarProm;
+    List<Double> incHandleSeriesDataBarTest;
+    List<String> incHandleLabelsDataBarTest;
+    List<Double> incAutoSeriesDataBarTotal;
+    List<String> incAutoLabelsDataBarTotal;
+    List<Double> incAutoSeriesDataBarProm;
+    List<String> incAutoLabelsDataBarProm;
+    List<Double> incAutoSeriesDataBarTest;
+    List<String> incAutoLabelsDataBarTest;
+
+    //Данные для donut Chart по суммарным данным
+    //Получение легенды
+    List<String> incLabelsDataDonut;
+
+    //Получение количества по инцидентам для суммарных данных по процентам Donut Chart
+    double incAutomaticCountDonutTotal;
+    double incAutomaticCountDonutProm;
+    double incAutomaticCountDonutTest;
+    double incHandleCountDonutTotal;
+    double incHandleCountDonutProm;
+    double incHandleCountDonutTest;
+    double incAutomaticDonutCount;
+    double incHandleDonutCount;
+
+
     @Autowired
-    private DSPIncidentDataTotalCountRepo dataTotalCountRepo;
+    private DSPIncidentAffectedDataTotalCountRepo incidentAffectedDataTotalCountRepo;
     @Autowired
-    private DSPIncidentDataCountPerMonthRepo dataCountPerMonthRepo;
+    private DSPIncidentDataCountPerMonthRepo incidentDataCountPerMonthRepo;
     @Autowired
-    private DSPIncidentAnaliticsRepo repoAnalitics;
+    private DSPIncidentAnaliticsRepo incidentAnaliticsRepo;
     @Autowired
-    private DSPIncidentDataTop10Repo dataTop10IncRepo;
+    private DSPIncidentDataTop10Repo incidentDataTop10Repo;
     @Autowired
-    private DSPIncidentRepo repo;
+    private DSPIncidentRepo incidentRepo;
+    @Autowired
+    private DSPIncidentPrcCountRepo incidentPrcCountRepo;
 
     private Map<String,Map<String, Integer>> assignmentGroupMapToMonthData;
 
@@ -115,16 +149,9 @@ public class Analitics extends VerticalLayout {
     //Обьявление уровня процентного сравнения инцидентов
     private VerticalLayout IncComparelayout;
 
-    //Получение количества по инцидентам
-//        int incAutomaticCount = Integer.valueOf(repoAnalitics.findIncAutomaticCount(startDate, endDate));
-//        int incHadleCount = dataView_analitics.getItemCount();
-    double incAutomaticCount;
-    double incHadleCount;
 
-
-
-    public Analitics(DSPIncidentDataTotalCountRepo dataTotalCountRepo, DSPIncidentDataCountPerMonthRepo dataCountPerMonthRepo, DSPIncidentAnaliticsRepo repoAnalitics,
-                     DSPIncidentDataTop10Repo dataTop10IncRepo) {
+    public Analitics(DSPIncidentAffectedDataTotalCountRepo incidentAffectedDataTotalCountRepo, DSPIncidentDataCountPerMonthRepo incidentDataCountPerMonthRepo, DSPIncidentAnaliticsRepo incidentAnaliticsRepo,
+                     DSPIncidentDataTop10Repo incidentDataTop10Repo, DSPIncidentPrcCountRepo incidentPrcCountRepo) {
         this.header = new H4("Аналитика инцидентов ДСП зарегистрированных вручную за период");
         setHorizontalComponentAlignment(Alignment.CENTER, header);
         LocalDate now = LocalDate.now(ZoneId.systemDefault());
@@ -140,10 +167,11 @@ public class Analitics extends VerticalLayout {
         start_Date.setMax(end_Date.getValue());
         startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
-        this.dataTotalCountRepo = dataTotalCountRepo;
-        this.dataCountPerMonthRepo = dataCountPerMonthRepo;
-        this.repoAnalitics = repoAnalitics;
-        this.dataTop10IncRepo = dataTop10IncRepo;
+        this.incidentAffectedDataTotalCountRepo = incidentAffectedDataTotalCountRepo;
+        this.incidentDataCountPerMonthRepo = incidentDataCountPerMonthRepo;
+        this.incidentAnaliticsRepo = incidentAnaliticsRepo;
+        this.incidentDataTop10Repo = incidentDataTop10Repo;
+        this.incidentPrcCountRepo = incidentPrcCountRepo;
 
         //Кнопка поиска
         TextField searchField = new TextField();
@@ -196,10 +224,10 @@ public class Analitics extends VerticalLayout {
             formLayout.removeAll();
             remove(formLayout);
             downloadToCSV.setHref(exportToCSV(initGridIncData (start_Date,end_Date)));
-            getIncHandleTotalCountAnaliticsData(start_Date,end_Date);
+//            getIncHandleTotalCountAnaliticsData(start_Date,end_Date, typeAnaliticsDataSelect.getValue());
             assignmentGroupMapToMonthData = getTotalCounPerMonthAnaliticsData(start_Date,end_Date);
             lineChart = LineChartInit();
-            donutChart = donutChartInit(incHandleSeriesData, incHandleLabelsData);
+            donutChart = donutChartInit();
             donutChart.setMaxWidth("100%");
             donutChart.setWidth("900px");
             donutChart.setMaxHeight("100%");
@@ -236,7 +264,7 @@ public class Analitics extends VerticalLayout {
         setHorizontalComponentAlignment(Alignment.END, closeButton);
 
         Grid<DSPIncidentData> searchGrid = new Grid<>(DSPIncidentData.class, false);
-        GridListDataView<DSPIncidentData> searchDataView = searchGrid.setItems(repoAnalitics.findIncBySearchFilter(startDate,endDate,searchValue));
+        GridListDataView<DSPIncidentData> searchDataView = searchGrid.setItems(incidentAnaliticsRepo.findIncBySearchFilter(startDate,endDate,searchValue));
 
 //        searchGrid.setAllRowsVisible(true); //Автоматическая высота таблицы в зависимости от количества строк
         searchGrid.setHeight("77%");
@@ -306,8 +334,9 @@ public class Analitics extends VerticalLayout {
 
     }
 
-    private ApexCharts donutChartInit(List<Double>seriesData, List<String>labelsData ){
+    private ApexCharts donutChartInit(){
         String periodDate = start_Date.getValue().format(europeanDateFormatter) + " - " + end_Date.getValue().format(europeanDateFormatter);
+        getTotalCountIncAnaliticsData(start_Date, end_Date);
         ApexCharts donutChart = ApexChartsBuilder.get()
                 .withChart(ChartBuilder.get()
                         .withType(Type.DONUT)
@@ -346,8 +375,8 @@ public class Analitics extends VerticalLayout {
                         .withOffsetY(5.0)
                         .build())
 //                .withSeries(44.0, 55.0, 41.0, 17.0, 15.0, 14.0, 65.0)
-                .withSeries(seriesData.stream().toArray(Double[]::new))
-                .withLabels(labelsData.stream().toArray(String[]::new))
+                .withSeries(seriesDataDonut.stream().toArray(Double[]::new))
+                .withLabels(labelsDataDonut.stream().toArray(String[]::new))
                 .withResponsive(ResponsiveBuilder.get()
                         .withBreakpoint(480.0)
                         .withOptions(OptionsBuilder.get()
@@ -422,7 +451,7 @@ public class Analitics extends VerticalLayout {
 //        GridListDataView<IDSPIncidentDataTop10> top10IncDataView = top10IncGrid.setItems(
 //                dataTop10IncRepo.findTop10IncCount(startDate,endDate));
         GridListDataView<IDSPIncidentDataTop10> top10IncDataView = top10IncGrid.setItems(
-                dataTop10IncRepo.findTop10IncCount());
+                incidentDataTop10Repo.findTop10IncCount());
 
         top10IncGrid.addThemeVariants(GridVariant.LUMO_COMPACT, GridVariant.LUMO_ROW_STRIPES);
         top10IncGrid.setColumnReorderingAllowed(true);
@@ -453,7 +482,7 @@ public class Analitics extends VerticalLayout {
 
         //Anchor block
 
-        Anchor top10IncDownloadToCSV = new Anchor(ExporToCSV.exportTop10ToCSV(dataTop10IncRepo, startDate,endDate), "Сохранить в CSV");
+        Anchor top10IncDownloadToCSV = new Anchor(ExporToCSV.exportTop10ToCSV(incidentDataTop10Repo, startDate,endDate), "Сохранить в CSV");
         Button top10IncButtonDownloadCSV = new Button(new Icon(VaadinIcon.DOWNLOAD));
         top10IncButtonDownloadCSV.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_ICON);
         top10IncDownloadToCSV.removeAll();
@@ -468,43 +497,72 @@ public class Analitics extends VerticalLayout {
     }
 
     @SneakyThrows
-    private void getIncHandleTotalCountAnaliticsData(DatePicker start_Date, DatePicker end_Date){
+    private void getIncHandlePrcCountAnaliticsData(DatePicker start_Date, DatePicker end_Date){
 //        String assignmentGroup = Files.readString(Paths.get("usp_incident_assignmentGroup.txt"));
         startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
-        List<IDSPIncidentDataTotalCount> incHandleDataTotalCount = dataTotalCountRepo.findIncHandleByAffectedItemCount();
 
-//            seriesData = dataTotalCountRepo.findIncByAffectedItemCount(startDate, endDate)
-        incHandleSeriesData = incHandleDataTotalCount
-                    .stream()
-                    .map(t -> t.getCount_Inc().doubleValue())
-                    .collect(Collectors.toList());
+        incHandleSeriesDataBarTotal = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTotal()
+                        .stream()
+                        .map(t -> t.getCount_Inc().doubleValue())
+                        .collect(Collectors.toList());
+        incHandleLabelsDataBarTotal = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTotal()
+                        .stream()
+                        .map(t -> t.getAffected_Item())
+                        .collect(Collectors.toList());
 
-//            labelsData = dataTotalCountRepo.findIncByAffectedItemCount(startDate, endDate)
-        incHandleLabelsData = incHandleDataTotalCount
-                    .stream()
-                    .map(t -> t.getAffected_Item())
-                    .collect(Collectors.toList());
-       }
-
-    @SneakyThrows
-    private void getIncAutoTotalCountAnaliticsData(DatePicker start_Date, DatePicker end_Date){
-//        String assignmentGroup = Files.readString(Paths.get("usp_incident_assignmentGroup.txt"));
-        startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
-        endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
-        List<IDSPIncidentDataTotalCount> incAutoDataTotalCount = dataTotalCountRepo.findIncAutoByAffectedItemCount();
-
-//            seriesData = dataTotalCountRepo.findIncByAffectedItemCount(startDate, endDate)
-        incAutoSeriesData = incAutoDataTotalCount
+        incHandleSeriesDataBarProm = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarProm()
                 .stream()
                 .map(t -> t.getCount_Inc().doubleValue())
                 .collect(Collectors.toList());
-
-//            labelsData = dataTotalCountRepo.findIncByAffectedItemCount(startDate, endDate)
-        incAutoLabelsData = incAutoDataTotalCount
+        incHandleLabelsDataBarProm = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarProm()
                 .stream()
                 .map(t -> t.getAffected_Item())
                 .collect(Collectors.toList());
+
+        incHandleSeriesDataBarTest = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTest()
+                .stream()
+                .map(t -> t.getCount_Inc().doubleValue())
+                .collect(Collectors.toList());
+        incHandleLabelsDataBarTest = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTest()
+                .stream()
+                .map(t -> t.getAffected_Item())
+                .collect(Collectors.toList());
+
+       }
+
+    @SneakyThrows
+    private void getIncAutoPrcCountAnaliticsData(DatePicker start_Date, DatePicker end_Date){
+//        String assignmentGroup = Files.readString(Paths.get("usp_incident_assignmentGroup.txt"));
+        startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
+        endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
+        incAutoSeriesDataBarTotal = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTotal()
+                .stream()
+                .map(t -> t.getCount_Inc().doubleValue())
+                .collect(Collectors.toList());
+        incAutoLabelsDataBarTotal = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTotal()
+                .stream()
+                .map(t -> t.getAffected_Item())
+                .collect(Collectors.toList());
+
+        incAutoSeriesDataBarProm = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarProm()
+                .stream()
+                .map(t -> t.getCount_Inc().doubleValue())
+                .collect(Collectors.toList());
+        incAutoLabelsDataBarProm = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarProm()
+                .stream()
+                .map(t -> t.getAffected_Item())
+                .collect(Collectors.toList());
+
+        incAutoSeriesDataBarTest = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTest()
+                .stream()
+                .map(t -> t.getCount_Inc().doubleValue())
+                .collect(Collectors.toList());
+        incAutoLabelsDataBarTest = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTest()
+                .stream()
+                .map(t -> t.getAffected_Item())
+                .collect(Collectors.toList());
+
     }
 
 
@@ -519,7 +577,7 @@ public class Analitics extends VerticalLayout {
         //По ИТ услуге
 //            List<IDSPIncidentDataCountPerMonth> TotalCounPerMonthAnaliticsData = dataCountPerMonthRepo
 //                    .findIncAffectedItemCountPerMonth(startDate, endDate);
-            List<IDSPIncidentDataCountPerMonth> TotalCounPerMonthAnaliticsData = dataCountPerMonthRepo
+            List<IDSPIncidentDataCountPerMonth> TotalCounPerMonthAnaliticsData = incidentDataCountPerMonthRepo
                     .findIncAffectedItemCountPerMonth();
             ListIterator<IDSPIncidentDataCountPerMonth> totalCounPerMonthAnaliticsDataIter = TotalCounPerMonthAnaliticsData.listIterator();
             while (totalCounPerMonthAnaliticsDataIter.hasNext()) {
@@ -631,7 +689,7 @@ public class Analitics extends VerticalLayout {
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
         grid_analitics = new Grid<>(DSPIncidentData.class, false);
 //        dataView_analitics = grid_analitics.setItems(repoAnalitics.findIncByDate(startDate, endDate));
-        dataView_analitics = grid_analitics.setItems(repoAnalitics.findAll());
+        dataView_analitics = grid_analitics.setItems(incidentAnaliticsRepo.findAll());
         return dataView_analitics;
     };
 
@@ -696,24 +754,20 @@ public class Analitics extends VerticalLayout {
         }
     }
 
+    @SneakyThrows
     private VerticalLayout IncComparelayout() {
         IncComparelayout = new VerticalLayout();
         String periodDate = start_Date.getValue().format(europeanDateFormatter) + " - " + end_Date.getValue().format(europeanDateFormatter);
         H5 VerticalBarChartIncCoverHeader = new H5("Процентное соотношение инцидентов (автоматические/зарег. вручную) за период " + periodDate);
 
-        //Получение количества по инцидентам
-//        int incAutomaticCount = Integer.valueOf(repoAnalitics.findIncAutomaticCount(startDate, endDate));
-//        int incHadleCount = dataView_analitics.getItemCount();
-        incAutomaticCount = 150;
-        incHadleCount = 27;
+        //Получение данных по количеству авто инцидентов для графика BarChart
+        getIncAutoPrcCountAnaliticsData(start_Date,end_Date);
 
-        //Инициализация donut Chart сравнения инцидетов
-        donutChartIncCompare = donutChartIncCompareInit(
-                new ArrayList<Double>(Arrays.asList(incAutomaticCount, incHadleCount)),
-                new ArrayList<>(Arrays.asList("Автоматические", "Зарег. вручную")));
+        //Получение данных по количеству ручных инцидентов для графика BarChart
+        getIncHandlePrcCountAnaliticsData(start_Date,end_Date);
 
-        //Инициализация BarChart сравнения инцидентов
-        VerticalBarChartIncCompare = VerticalBarChartIncCompareInit();
+        //Получение данных по количеству суммарно авто и зарег. вручную инцидентов для графика Donut
+        getIncPrcCountAnaliticsDataDonut(start_Date,end_Date);
 
 
         //ВЫбор типа данных - Общая (ПРОМ + ТЕСТ), ПРОМ, ТЕСТ
@@ -737,26 +791,21 @@ public class Analitics extends VerticalLayout {
         typeStatisticsComboBox.setAllowCustomValue(false);
         typeStatisticsComboBox.addThemeVariants(ComboBoxVariant.LUMO_SMALL);
 
-        typeAnaliticsDataSelect.addValueChangeListener(e-> {
+                typeAnaliticsDataSelect.addValueChangeListener(e-> {
             renderChartsAnaliticsPrc();
-//            //Блок отрисовки на Общих данных
-//            if (typeAnaliticsDataSelect.getValue().equals("Общая (ПРОМ + ТЕСТ)")) {
-//                //Блок отрисовки аналитики по услугам ИТ
-//                renderChartsAnaliticsPrc();
-//                //Блок отрисовки на ПРОМ данных
-//            } else if (typeAnaliticsDataSelect.getValue().equals("ПРОМ")){
-//                renderChartsAnaliticsPrc();
-//                //Блок отрисовки на ТЕСТ данных
-//            } else if (typeAnaliticsDataSelect.getValue().equals("ТЕСТ")){
-//                renderChartsAnaliticsPrc();
-//            }
-
         });
 
         //Блок прорисовки при измении тпа аналитики - Суммарно, По услугам ИТ
         typeStatisticsComboBox.addValueChangeListener(e-> {
             renderChartsAnaliticsPrc();
         });
+
+        //Инициализация donut Chart сравнения инцидетов
+        donutChartIncCompare = donutChartIncCompareInit(typeAnaliticsDataSelect.getValue());
+
+        //Инициализация BarChart сравнения инцидентов
+        VerticalBarChartIncCompare = VerticalBarChartIncCompareInit(typeAnaliticsDataSelect.getValue());
+
 
 
         HorizontalLayout IncCompareHeaderLayout = new HorizontalLayout(VerticalBarChartIncCoverHeader);
@@ -771,59 +820,47 @@ public class Analitics extends VerticalLayout {
         return IncComparelayout;
     }
 
+    @SneakyThrows
     private void renderChartsAnaliticsPrc(){
 
         if(!typeStatisticsComboBox.getValue().equals("Суммарно")) {
             System.out.println("По услугам ИТ");
-            switch (typeAnaliticsDataSelect.getValue()) {
-                case  ("Общая (ПРОМ + ТЕСТ)"):
-                    System.out.println("Общая (ПРОМ + ТЕСТ)");
-                    IncComparelayout.remove(donutChartIncCompare, VerticalBarChartIncCompare);
-                    IncComparelayout.add(VerticalBarChartIncCompare);
-                    break;
-                case ("ПРОМ"):
-                    System.out.println("ПРОМ");
-                    IncComparelayout.remove(donutChartIncCompare, VerticalBarChartIncCompare);
-                    IncComparelayout.add(VerticalBarChartIncCompare);
-                    break;
-                case ("ТЕСТ"):
-                    System.out.println("ТЕСТ");
-                    IncComparelayout.remove(donutChartIncCompare, VerticalBarChartIncCompare);
-                    IncComparelayout.add(VerticalBarChartIncCompare);
-                    break;
-            }
+            IncComparelayout.remove(donutChartIncCompare, VerticalBarChartIncCompare);
+            IncComparelayout.add(VerticalBarChartIncCompareInit(typeAnaliticsDataSelect.getValue()));
         }else {
             System.out.println("Суммарно");
-            switch (typeAnaliticsDataSelect.getValue()) {
-                case  ("Общая (ПРОМ + ТЕСТ)"):
-                    System.out.println("Общая (ПРОМ + ТЕСТ)");
-                    IncComparelayout.remove(VerticalBarChartIncCompare, donutChartIncCompare);
-                    IncComparelayout.add(donutChartIncCompare);
-                    break;
-                case ("ПРОМ"):
-                    System.out.println("ПРОМ");
-                    IncComparelayout.remove(VerticalBarChartIncCompare, donutChartIncCompare);
-                    IncComparelayout.add(donutChartIncCompare);
-                    break;
-                case ("ТЕСТ"):
-                    System.out.println("ТЕСТ");
-                    IncComparelayout.remove(VerticalBarChartIncCompare, donutChartIncCompare);
-                    IncComparelayout.add(donutChartIncCompare);
-                    break;
-            }
-
+            IncComparelayout.remove(VerticalBarChartIncCompare, donutChartIncCompare);
+            IncComparelayout.add(donutChartIncCompareInit(typeAnaliticsDataSelect.getValue()));
         };
 
 
     }
 
-    private ApexCharts VerticalBarChartIncCompareInit() {
-        //Получение данных по количеству авто инцидентов для графика
-        getIncAutoTotalCountAnaliticsData(start_Date,end_Date);
-//        System.out.println("Автоматические: " + incAutoSeriesData + " " + "Ручные: " + incHandleSeriesData);
-//        System.out.println("Автоматические лейблы: " + incAutoLabelsData + " " + "Ручные лейблы: " + incHandleLabelsData);
+    private ApexCharts VerticalBarChartIncCompareInit(String typeDataAnalitic) {
 
-        //Данные по ручным инцидентам формируются в обработчике кнопки
+        switch (typeDataAnalitic){
+            case  ("Общая (ПРОМ + ТЕСТ)"):
+                System.out.println("Общая (ПРОМ + ТЕСТ)");
+                incHandleSeriesDataBar = incHandleSeriesDataBarTotal;
+                incHandleLabelsDataBar = incHandleLabelsDataBarTotal;
+                incAutoSeriesDataBar = incAutoSeriesDataBarTotal;
+                incAutoLabelsDataBar = incAutoLabelsDataBarTotal;
+                break;
+            case  ("ПРОМ"):
+                System.out.println("ПРОМ");
+                incHandleSeriesDataBar = incHandleSeriesDataBarProm;
+                incHandleLabelsDataBar = incHandleLabelsDataBarProm;
+                incAutoSeriesDataBar = incAutoSeriesDataBarProm;
+                incAutoLabelsDataBar = incAutoLabelsDataBarProm;
+                break;
+            case  ("ТЕСТ"):
+                System.out.println("ТЕСТ");
+                incHandleSeriesDataBar = incHandleSeriesDataBarTest;
+                incHandleLabelsDataBar = incHandleLabelsDataBarTest;
+                incAutoSeriesDataBar = incAutoSeriesDataBarTest;
+                incAutoLabelsDataBar = incAutoLabelsDataBarTest;
+                break;
+        }
 
         VerticalBarChartIncCompare = ApexChartsBuilder.get()
                 .withChart(ChartBuilder.get()
@@ -847,8 +884,8 @@ public class Analitics extends VerticalLayout {
                         .build())
                 .withSeries(
                         // Столбцы продуктов ДСП
-                        new Series<>("Автоматические", incAutoSeriesData.stream().toArray(Double[]::new)),
-                        new Series<>( "Зар. вручную", incHandleSeriesData.stream().toArray(Double[]::new)))
+                        new Series<>("Автоматические", incAutoSeriesDataBar.stream().toArray(Double[]::new)),
+                        new Series<>( "Зар. вручную", incHandleSeriesDataBar.stream().toArray(Double[]::new)))
 //                        new Series<>("Автоматические", 90, 80, 70, 60, 50, 40),
 //                        new Series<>( "Зар. вручную", 10, 20, 30, 40, 50, 60))
                         .withYaxis(YAxisBuilder.get()
@@ -858,7 +895,7 @@ public class Analitics extends VerticalLayout {
                         .build())
 //                .withXaxis(XAxisBuilder.get().withCategories("SOWA", "Corax", "MQSeries", "DataPower", "Nginx", "WAS",
 //                        "WildFly", "WebLogic", "Siebel", "OpenShift").build())
-                .withXaxis(XAxisBuilder.get().withCategories(incHandleLabelsData.stream().toArray(String[]::new)).build())
+                .withXaxis(XAxisBuilder.get().withCategories(incHandleLabelsDataBar.stream().toArray(String[]::new)).build())
                 .withFill(FillBuilder.get()
                         .withOpacity(1.0).build())
                 .withTooltip(TooltipBuilder.get()
@@ -873,8 +910,31 @@ public class Analitics extends VerticalLayout {
         return VerticalBarChartIncCompare;
     }
 
-    private ApexCharts donutChartIncCompareInit(List<Double>seriesData, List<String>labelsData ){
+    private ApexCharts donutChartIncCompareInit(String typeDataAnalitic){
 //        String periodDate = start_Date.getValue().format(europeanDateFormatter) + " - " + end_Date.getValue().format(europeanDateFormatter);
+
+        switch (typeDataAnalitic){
+            case  ("Общая (ПРОМ + ТЕСТ)"):
+                System.out.println("Общая (ПРОМ + ТЕСТ)");
+                incAutomaticDonutCount = incAutomaticCountDonutTotal;
+                incHandleDonutCount = incHandleCountDonutTotal;
+
+                break;
+
+            case  ("ПРОМ"):
+                System.out.println("ПРОМ");
+                incAutomaticDonutCount = incAutomaticCountDonutProm;
+                incHandleDonutCount = incHandleCountDonutProm;
+                break;
+
+            case  ("ТЕСТ"):
+                System.out.println("ТЕСТ");
+                incAutomaticDonutCount = incAutomaticCountDonutTest;
+                incHandleDonutCount = incHandleCountDonutTest;
+                break;
+        }
+
+
         donutChartIncCompare = ApexChartsBuilder.get()
                 .withChart(ChartBuilder.get().withType(Type.DONUT)
                         .withZoom(ZoomBuilder.get()
@@ -914,8 +974,9 @@ public class Analitics extends VerticalLayout {
                         .build())
 //                .withSeries(incAutomaticPrc, incHandlePrc)
 //                .withLabels("Автоматические", "Зарег. вручную")
-                .withSeries(seriesData.stream().toArray(Double[]::new))
-                .withLabels(labelsData.stream().toArray(String[]::new))
+                .withSeries(new ArrayList<Double>(Arrays.asList(incAutomaticDonutCount, incHandleDonutCount)).stream()
+                .toArray(Double[]::new))
+                .withLabels(incLabelsDataDonut.stream().toArray(String[]::new))
                 .withResponsive(ResponsiveBuilder.get()
                         .withBreakpoint(480.0)
                         .withOptions(OptionsBuilder.get()
@@ -935,7 +996,40 @@ public class Analitics extends VerticalLayout {
         return donutChartIncCompare;
     }
 
+    @SneakyThrows
+    private void getIncPrcCountAnaliticsDataDonut(DatePicker start_Date, DatePicker end_Date) {
+        startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
+        endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
+
+        incLabelsDataDonut = new ArrayList<String>(Arrays.asList("Автоматические", "Зарег. вручную"));
+        incAutomaticCountDonutTotal = incidentPrcCountRepo.findIncAutoCountDonutTotal();
+        incHandleCountDonutTotal = incidentPrcCountRepo.findIncHandleCountDonutTotal();
+        incAutomaticCountDonutProm = incidentPrcCountRepo.findIncAutoCountDonutProm();
+        incHandleCountDonutProm = incidentPrcCountRepo.findIncHandleCountDonutProm();
+        incAutomaticCountDonutTest = incidentPrcCountRepo.findIncAutoCountDonutTest();
+        incHandleCountDonutTest = incidentPrcCountRepo.findIncHandleCountDonutTest();
+
+    }
+
+    @SneakyThrows
+    private void getTotalCountIncAnaliticsData(DatePicker start_Date, DatePicker end_Date) {
+        startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
+        endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
+
+        seriesDataDonut = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCount()
+                .stream()
+                .map(t -> t.getCount_Inc().doubleValue())
+                .collect(Collectors.toList());
+
+        labelsDataDonut = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCount()
+                .stream()
+                .map(t -> t.getAffected_Item())
+                .collect(Collectors.toList());
+    }
+
+
 }
+
 
 
 

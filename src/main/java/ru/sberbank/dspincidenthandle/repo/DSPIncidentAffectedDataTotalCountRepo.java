@@ -2,16 +2,15 @@ package ru.sberbank.dspincidenthandle.repo;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.sberbank.dspincidenthandle.domain.DSPIncidentData;
-import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataTotalCount;
+import ru.sberbank.dspincidenthandle.domain.IDSPIncidentAffectedDataTotalCount;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Repository
-public interface DSPIncidentDataTotalCountRepo extends CrudRepository<DSPIncidentData, String> {
+public interface DSPIncidentAffectedDataTotalCountRepo extends CrudRepository<DSPIncidentData, String> {
 
 
     //   @Override
@@ -92,11 +91,27 @@ public interface DSPIncidentDataTotalCountRepo extends CrudRepository<DSPInciden
 //            "\tGROUP BY \"HPC_ASSIGNMENT\" ORDER BY \"COUNT_INC\" DESC",
 //            nativeQuery = true)
 
+//Запросы и методы для построения Bar Chart графика аналитики - проценты по инцидентам
     @Query(value = "select p.HPC_AFFECTED_ITEM_NAME as Affected_Item, COUNT (p.NUMBER) AS count_Inc from SMPRIMARY p GROUP BY Affected_Item ORDER BY count_Inc DESC", nativeQuery = true)
-    List<IDSPIncidentDataTotalCount> findIncAutoByAffectedItemCount();
+    List<IDSPIncidentAffectedDataTotalCount> findIncHandleByAffectedItemCount();
 
     @Query(value = "select p.HPC_AFFECTED_ITEM_NAME as Affected_Item, COUNT (p.NUMBER) AS count_Inc from SMPRIMARY p GROUP BY Affected_Item ORDER BY count_Inc DESC", nativeQuery = true)
-    List<IDSPIncidentDataTotalCount> findIncHandleByAffectedItemCount();
+    List<IDSPIncidentAffectedDataTotalCount> findIncHandleByAffectedItemCountBarTotal();
+
+    @Query(value = "select p.HPC_AFFECTED_ITEM_NAME as Affected_Item, COUNT (p.NUMBER) AS count_Inc from SMPRIMARY p GROUP BY Affected_Item ORDER BY count_Inc DESC", nativeQuery = true)
+    List<IDSPIncidentAffectedDataTotalCount> findIncHandleByAffectedItemCountBarProm();
+
+    @Query(value = "select p.HPC_AFFECTED_ITEM_NAME as Affected_Item, COUNT (p.NUMBER) AS count_Inc from SMPRIMARY p GROUP BY Affected_Item ORDER BY count_Inc DESC", nativeQuery = true)
+    List<IDSPIncidentAffectedDataTotalCount> findIncHandleByAffectedItemCountBarTest();
+
+    @Query(value = "select p.HPC_AFFECTED_ITEM_NAME as Affected_Item, COUNT (p.NUMBER) AS count_Inc from SMPRIMARY p GROUP BY Affected_Item ORDER BY count_Inc DESC", nativeQuery = true)
+    List<IDSPIncidentAffectedDataTotalCount> findIncAutoByAffectedItemCountBarTotal();
+
+    @Query(value = "select p.HPC_AFFECTED_ITEM_NAME as Affected_Item, COUNT (p.NUMBER) AS count_Inc from SMPRIMARY p GROUP BY Affected_Item ORDER BY count_Inc DESC", nativeQuery = true)
+    List<IDSPIncidentAffectedDataTotalCount> findIncAutoByAffectedItemCountBarProm();
+
+    @Query(value = "select p.HPC_AFFECTED_ITEM_NAME as Affected_Item, COUNT (p.NUMBER) AS count_Inc from SMPRIMARY p GROUP BY Affected_Item ORDER BY count_Inc DESC", nativeQuery = true)
+    List<IDSPIncidentAffectedDataTotalCount> findIncAutoByAffectedItemCountBarTest();
 //        @Query(value = "select p.HPC_ASSIGNMENT as Assignment, COUNT (p.NUMBER) AS countInc from probsummarym1 p where p.OPEN_TIME BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy hh:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy hh:mm:ss') GROUP BY Assignment ORDER BY countInc DESC", nativeQuery = true)
 //    List<IUspIncidentDataTotalCount> findIncCount(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
