@@ -10,7 +10,7 @@ import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataCountPerMonth;
 
 import java.util.List;
 
-public interface DSPIncidentDataCountPerMonthRepo extends CrudRepository<DSPIncidentData, String> {
+public interface DSPIncidentCountPerMonthRepo extends CrudRepository<DSPIncidentData, String> {
 
 //       @Override
 //    @Query(value = "SELECT\n" +

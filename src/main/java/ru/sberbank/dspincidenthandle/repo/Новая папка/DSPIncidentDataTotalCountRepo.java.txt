@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import ru.sberbank.dspincidenthandle.domain.IDSPIncidentAffectedDataTotalCount;
+import ru.sberbank.dspincidenthandle.domain.IDSPIncidentAffectedDataCount;
 import ru.sberbank.dspincidenthandle.domain.DSPIncidentData;
 
 import java.util.List;

@@ -123,13 +123,13 @@ public class Analitics extends VerticalLayout {
 
 
     @Autowired
-    private DSPIncidentAffectedDataTotalCountRepo incidentAffectedDataTotalCountRepo;
+    private DSPIncidentAffectedCountRepo incidentAffectedDataTotalCountRepo;
     @Autowired
-    private DSPIncidentDataCountPerMonthRepo incidentDataCountPerMonthRepo;
+    private DSPIncidentCountPerMonthRepo incidentDataCountPerMonthRepo;
     @Autowired
     private DSPIncidentAnaliticsRepo incidentAnaliticsRepo;
     @Autowired
-    private DSPIncidentDataTop10Repo incidentDataTop10Repo;
+    private DSPIncidentTop10Repo incidentDataTop10Repo;
     @Autowired
     private DSPIncidentRepo incidentRepo;
     @Autowired
@@ -150,8 +150,8 @@ public class Analitics extends VerticalLayout {
     private VerticalLayout IncComparelayout;
 
 
-    public Analitics(DSPIncidentAffectedDataTotalCountRepo incidentAffectedDataTotalCountRepo, DSPIncidentDataCountPerMonthRepo incidentDataCountPerMonthRepo, DSPIncidentAnaliticsRepo incidentAnaliticsRepo,
-                     DSPIncidentDataTop10Repo incidentDataTop10Repo, DSPIncidentPrcCountRepo incidentPrcCountRepo) {
+    public Analitics(DSPIncidentAffectedCountRepo incidentAffectedDataTotalCountRepo, DSPIncidentCountPerMonthRepo incidentDataCountPerMonthRepo, DSPIncidentAnaliticsRepo incidentAnaliticsRepo,
+                     DSPIncidentTop10Repo incidentDataTop10Repo, DSPIncidentPrcCountRepo incidentPrcCountRepo) {
         this.header = new H4("Аналитика инцидентов ДСП зарегистрированных вручную за период");
         setHorizontalComponentAlignment(Alignment.CENTER, header);
         LocalDate now = LocalDate.now(ZoneId.systemDefault());

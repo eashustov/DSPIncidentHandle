@@ -114,7 +114,7 @@ public class DSPIncidentData {
                 return "Да";
             } else if (HPC_IS_MASS.equals("f")) {
                 return "Нет";
-            }
+            } else {return HPC_IS_MASS;}
           }
         return HPC_IS_MASS = "";
     }
@@ -125,7 +125,7 @@ public class DSPIncidentData {
                 return "Да";
             } else if (SB_ROOT_INCIDENT.equals("f")) {
                 return "Нет";
-            }
+            } else {return SB_ROOT_INCIDENT;}
         }
         return SB_ROOT_INCIDENT = "";
     }
@@ -139,11 +139,11 @@ public class DSPIncidentData {
 
     public String getPROM() {
         if (PROM != null) {
-            if (PROM.equals("t")) {
+            if (PROM.equals("true")) {
                 return "Пром";
-            } else if (PROM.equals("f")) {
+            } else if (PROM.equals("false")) {
                 return "Тест";
-            }
+            } else {return PROM;}
         }
         return PROM = "";
     }

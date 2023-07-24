@@ -130,10 +130,10 @@ public interface DSPIncidentRepo extends CrudRepository<DSPIncidentData, String>
 //   List<UspIncidentData> findAll(@Param("assignmentGroup") String assignmentGroup);
 
    @Query(value = "select * from SMPRIMARY p where p.OPEN_TIME BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy HH:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy HH:mm:ss')", nativeQuery = true)
-   List<DSPIncidentData> findIncByDate(@Param("startDate") String startDate, @Param("endDate") String endDate);
+   List<DSPIncidentData> findIncAllByDate(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
-   @Query(value = "select * from SMPRIMARY p where concat (upper(p.NUMBER), ' ', upper(p.HOST), ' ', upper(p.HPC_ASSIGNEE_NAME), ' ', upper(p.HPC_ASSIGNMENT), ' ', upper(p.AFFECTED_ITEM)) like concat ('%', upper(:searchFilter), '%') and p.OPEN_TIME BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy HH:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy HH:mm:ss')", nativeQuery = true)
-   List<DSPIncidentData> findIncBySearchFilter(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("searchFilter") String searchFilter);
+//   @Query(value = "select * from SMPRIMARY p where concat (upper(p.NUMBER), ' ', upper(p.HOST), ' ', upper(p.HPC_ASSIGNEE_NAME), ' ', upper(p.HPC_ASSIGNMENT), ' ', upper(p.AFFECTED_ITEM)) like concat ('%', upper(:searchFilter), '%') and p.OPEN_TIME BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy HH:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy HH:mm:ss')", nativeQuery = true)
+//   List<DSPIncidentData> findIncAllBySearchFilter(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("searchFilter") String searchFilter);
 
    @Query(value = "select * from SMPRIMARY p where PROBLEM LIKE concat ('%',:triggerDescription, '%') " +
            "AND p.OPEN_TIME BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy HH:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy HH:mm:ss')" , nativeQuery = true)

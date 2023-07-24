@@ -8,7 +8,7 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.vaadin.flow.component.grid.dataview.GridListDataView;
 import com.vaadin.flow.server.StreamResource;
 import ru.sberbank.dspincidenthandle.domain.DSPIncidentData;
-import ru.sberbank.dspincidenthandle.repo.DSPIncidentDataTop10Repo;
+import ru.sberbank.dspincidenthandle.repo.DSPIncidentTop10Repo;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
@@ -45,7 +45,7 @@ public class ExporToCSV {
 
     ;
 
-    public static List<String[]> createCsvDataTop10(DSPIncidentDataTop10Repo dataTop10IncRepo, String startDate, String endDate) {
+    public static List<String[]> createCsvDataTop10(DSPIncidentTop10Repo dataTop10IncRepo, String startDate, String endDate) {
         DateTimeFormatter europeanDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         List<String[]> top10IncList = new ArrayList<>();
         top10IncList.add(new ArrayList<>() {{
@@ -72,7 +72,7 @@ public class ExporToCSV {
 
     }
 
-    public static StreamResource exportTop10ToCSV(DSPIncidentDataTop10Repo dataTop10IncRepo, String startDate, String endDate) {
+    public static StreamResource exportTop10ToCSV(DSPIncidentTop10Repo dataTop10IncRepo, String startDate, String endDate) {
 
         List<String[]> csvData = createCsvDataTop10(dataTop10IncRepo, startDate, endDate);
 

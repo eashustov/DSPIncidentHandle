@@ -10,7 +10,7 @@ import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataTop10;
 import java.util.List;
 
 @Repository
-public interface DSPIncidentDataTop10Repo extends CrudRepository<DSPIncidentData, String> {
+public interface DSPIncidentTop10Repo extends CrudRepository<DSPIncidentData, String> {
 
 
     //   @Override
