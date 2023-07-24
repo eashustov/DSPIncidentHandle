@@ -150,8 +150,11 @@ public class Analitics extends VerticalLayout {
     private VerticalLayout IncComparelayout;
 
 
-    public Analitics(DSPIncidentAffectedCountRepo incidentAffectedDataTotalCountRepo, DSPIncidentCountPerMonthRepo incidentDataCountPerMonthRepo, DSPIncidentAnaliticsRepo incidentAnaliticsRepo,
-                     DSPIncidentTop10Repo incidentDataTop10Repo, DSPIncidentPrcCountRepo incidentPrcCountRepo) {
+    public Analitics(DSPIncidentAffectedCountRepo incidentAffectedDataTotalCountRepo,
+                     DSPIncidentCountPerMonthRepo incidentDataCountPerMonthRepo,
+                     DSPIncidentAnaliticsRepo incidentAnaliticsRepo,
+                     DSPIncidentTop10Repo incidentDataTop10Repo, DSPIncidentPrcCountRepo incidentPrcCountRepo,
+                     DSPIncidentRepo incidentRepo) {
         this.header = new H4("Аналитика инцидентов ДСП зарегистрированных вручную за период");
         setHorizontalComponentAlignment(Alignment.CENTER, header);
         LocalDate now = LocalDate.now(ZoneId.systemDefault());
@@ -172,6 +175,7 @@ public class Analitics extends VerticalLayout {
         this.incidentAnaliticsRepo = incidentAnaliticsRepo;
         this.incidentDataTop10Repo = incidentDataTop10Repo;
         this.incidentPrcCountRepo = incidentPrcCountRepo;
+        this.incidentRepo = incidentRepo;
 
         //Кнопка поиска
         TextField searchField = new TextField();
@@ -689,7 +693,7 @@ public class Analitics extends VerticalLayout {
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
         grid_analitics = new Grid<>(DSPIncidentData.class, false);
 //        dataView_analitics = grid_analitics.setItems(repoAnalitics.findIncByDate(startDate, endDate));
-        dataView_analitics = grid_analitics.setItems(incidentAnaliticsRepo.findAll());
+        dataView_analitics = grid_analitics.setItems(incidentRepo.findAll());
         return dataView_analitics;
     };
 

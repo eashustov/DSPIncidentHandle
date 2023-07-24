@@ -247,11 +247,8 @@ public interface DSPIncidentAnaliticsRepo extends CrudRepository<DSPIncidentData
            "AND upper(\"NUMBER\") || ' ' || upper(\"HOST\") || ' ' || upper(HPC_ASSIGNEE_NAME) || ' ' || upper(HPC_ASSIGNMENT) || ' ' || upper(AFFECTED_ITEM) like '%' || upper(:searchFilter) || '%'", nativeQuery = true)
    List<DSPIncidentData> findIncBySearchFilter(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("searchFilter") String searchFilter);
 
-   @Query(value = "select * from SMPRIMARY LIMIT 500", nativeQuery = true)
-   int findIncAutomaticCount(@Param("startDate") String startDate, @Param("endDate") String endDate);
-
-   @Query(value = "select * from SMPRIMARY LIMIT 500", nativeQuery = true)
-   List<DSPIncidentData> findAll();
+//   @Query(value = "select * from SMPRIMARY LIMIT 500", nativeQuery = true)
+//   List<DSPIncidentData> findAll();
 
 
 }
