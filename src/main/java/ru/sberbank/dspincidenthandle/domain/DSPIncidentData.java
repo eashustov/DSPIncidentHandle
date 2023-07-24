@@ -15,28 +15,32 @@ public class DSPIncidentData {
     @Column(name = "NUMBER")
     private String NUMBER;
     @Column(name = "HPC_IS_MASS")
-    private Boolean HPC_IS_MASS;
+    private String HPC_IS_MASS;
     @Column(name = "SB_ROOT_INCIDENT")
-    private Boolean SB_ROOT_INCIDENT;
+    private String SB_ROOT_INCIDENT;
     @Column(name = "PRIORITY_CODE")
     private String PRIORITY_CODE;
     @Column(name = "HPC_ASSIGNEE_NAME")
     private String HPC_ASSIGNEE_NAME;
     @Column(name = "HPC_AFFECTED_ITEM_NAME")
     private String HPC_AFFECTED_ITEM_NAME;
+    @Column(name = "ACTION")
+    private String ACTION;
     @Column(name = "PLAN_OPEN")
-    @DateTimeFormat(pattern = "yyyy.MM.dd HH:mm")
+    @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss")
     private String PLAN_OPEN;
     @Column(name = "PLAN_END")
-    @DateTimeFormat(pattern = "yyyy.MM.dd HH:mm")
+    @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss")
     private String PLAN_END;
     @Column(name = "HPC_STATUS")
     private String HPC_STATUS;
+    @Column(name = "PROM")
+    private String PROM;
 
 
-    public DSPIncidentData(String NUMBER, Boolean HPC_IS_MASS, Boolean SB_ROOT_INCIDENT, String PRIORITY_CODE,
+    public DSPIncidentData(String NUMBER, String HPC_IS_MASS, String SB_ROOT_INCIDENT, String PRIORITY_CODE,
                            String HPC_ASSIGNEE_NAME, String HPC_AFFECTED_ITEM_NAME, String PLAN_OPEN,
-                           String PLAN_END, String HPC_STATUS) {
+                           String PLAN_END, String HPC_STATUS, String ACTION, String PROM) {
         this.NUMBER = NUMBER;
         this.HPC_IS_MASS = HPC_IS_MASS;
         this.SB_ROOT_INCIDENT = SB_ROOT_INCIDENT;
@@ -46,6 +50,9 @@ public class DSPIncidentData {
         this.PLAN_OPEN = PLAN_OPEN;
         this.PLAN_END = PLAN_END;
         this.HPC_STATUS = HPC_STATUS;
+        this.ACTION = ACTION;
+        this.PROM = PROM;
+
 
     }
 
@@ -102,12 +109,45 @@ public class DSPIncidentData {
     }
 
     public String getHPC_IS_MASS() {
-        return String.valueOf(HPC_IS_MASS);
+        if (HPC_IS_MASS != null) {
+            if (HPC_IS_MASS.equals("t")) {
+                return "Да";
+            } else if (HPC_IS_MASS.equals("f")) {
+                return "Нет";
+            }
+          }
+        return HPC_IS_MASS = "";
     }
 
     public String getSB_ROOT_INCIDENT() {
-        return String.valueOf(SB_ROOT_INCIDENT);
+        if (SB_ROOT_INCIDENT != null) {
+            if (SB_ROOT_INCIDENT.equals("t")) {
+                return "Да";
+            } else if (SB_ROOT_INCIDENT.equals("f")) {
+                return "Нет";
+            }
+        }
+        return SB_ROOT_INCIDENT = "";
     }
 
+    public String getACTION() {
+        if (ACTION != null) {
+            return ACTION;
+        }
+        return ACTION = "";
+    }
 
+    public String getPROM() {
+        if (PROM != null) {
+            if (PROM.equals("t")) {
+                return "Пром";
+            } else if (PROM.equals("f")) {
+                return "Тест";
+            }
+        }
+        return PROM = "";
+    }
 }
+
+
+

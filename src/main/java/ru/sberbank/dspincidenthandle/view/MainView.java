@@ -31,6 +31,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -212,7 +213,7 @@ public class MainView extends VerticalLayout {
         grid.setHeight("500px");
         grid.addThemeVariants(GridVariant.LUMO_COMPACT, GridVariant.LUMO_ROW_STRIPES);
         grid.setColumnReorderingAllowed(true);
-        grid.setSelectionMode(Grid.SelectionMode.MULTI);
+        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
 
 
         ItemContextMenu itemContextMenu = new ItemContextMenu(grid);
@@ -243,6 +244,14 @@ public class MainView extends VerticalLayout {
         Grid.Column<DSPIncidentData> SB_ROOT_INCIDENT = grid
                 .addColumn(DSPIncidentData::getSB_ROOT_INCIDENT).setSortable(true).setResizable(true).setTextAlign(ColumnTextAlign.START)
                 .setHeader("Корневой");
+        Grid.Column<DSPIncidentData> ACTION = grid
+                .addColumn(DSPIncidentData::getACTION).setSortable(true).setResizable(true).setTextAlign(ColumnTextAlign.START)
+                .setHeader("Подробное описание");
+                ACTION.setVisible(false);
+        Grid.Column<DSPIncidentData> PROM = grid
+                .addColumn(DSPIncidentData::getPROM).setSortable(true).setResizable(true).setTextAlign(ColumnTextAlign.START)
+                .setHeader("Тип среды");
+
 
 //        GridListDataView<DSPIncidentData> dataView = grid.setItems(repo.findServerByDate(startDate, endDate));
         GridListDataView<DSPIncidentData> dataView = grid.setItems(repo.findAll());
@@ -273,6 +282,10 @@ public class MainView extends VerticalLayout {
                 .setComponent(createFilterHeader("Массовый", incFilter::setHPCIsMass));
         headerRow.getCell(SB_ROOT_INCIDENT)
                 .setComponent(createFilterHeader("Корневой", incFilter::setSBRootIncident));
+        headerRow.getCell(ACTION)
+                .setComponent(createFilterHeader("Подробное описание", incFilter::setAction));
+        headerRow.getCell(PROM)
+                .setComponent(createFilterHeader("Тип среды", incFilter::setProm));
 
         //Column Visibility
 //        Так можно прикрутить кнопку к меню выбора видимости столбцов. В данном приложении используется MenuBar
@@ -288,6 +301,15 @@ public class MainView extends VerticalLayout {
         columnToggleContextMenu.addColumnToggleItem("Статус", HPC_STATUS);
         columnToggleContextMenu.addColumnToggleItem("Массовый", HPC_IS_MASS);
         columnToggleContextMenu.addColumnToggleItem("Корневой", SB_ROOT_INCIDENT);
+        columnToggleContextMenu.addColumnToggleItem("Подр. описание", ACTION);
+        columnToggleContextMenu.addColumnToggleItem("Тип среды", PROM);
+
+        // Вывод подробной информации по инциденту по выделению строки таблицы
+        grid.setItemDetailsRenderer(new ComponentRenderer<>(incident -> {
+            VerticalLayout layout = new VerticalLayout();
+            layout.add(new Label(incident.getACTION()));
+            return layout;
+        }));
 
     }
 
@@ -326,6 +348,8 @@ public class MainView extends VerticalLayout {
         private String HPCStatus;
         private String HPCIsMass;
         private String SBRootIncident;
+        private String Action;
+        private String Prom;
 
         public IncFilter(GridListDataView<DSPIncidentData> dataView) {
             this.dataViewFiltered = dataView;
@@ -375,6 +399,14 @@ public class MainView extends VerticalLayout {
 
         public void setSBRootIncident(String SBRootIncident) {
             this.SBRootIncident = SBRootIncident;
+            this.dataViewFiltered.refreshAll();
+        }
+        public void setAction(String Action) {
+            this.Action = Action;
+            this.dataViewFiltered.refreshAll();
+        }
+        public void setProm(String Prom) {
+            this.Prom = Prom;
             this.dataViewFiltered.refreshAll();
         }
 
