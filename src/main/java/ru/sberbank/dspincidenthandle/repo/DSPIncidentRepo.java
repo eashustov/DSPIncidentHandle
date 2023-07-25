@@ -124,20 +124,20 @@ public interface DSPIncidentRepo extends CrudRepository<DSPIncidentData, String>
 //           "\tOPENED_BY = 'int_zabbix_si'",
 //           nativeQuery = true)
 
-   @Query(value = "select * from SMPRIMARY p LIMIT 500", nativeQuery = true)
-   List<DSPIncidentData> findAll();
+//   @Query(value = "select * from SMPRIMARY p LIMIT 500", nativeQuery = true)
+//   List<DSPIncidentData> findAll();
 //   @Query(value = "select * from probsummarym1 p WHERE p.HPC_ASSIGNMENT IN (:assignmentGroup) LIMIT 500", nativeQuery = true)
 //   List<UspIncidentData> findAll(@Param("assignmentGroup") String assignmentGroup);
 
-   @Query(value = "select * from SMPRIMARY p where p.OPEN_TIME BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy HH:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy HH:mm:ss')", nativeQuery = true)
+   @Query(value = "select * from SMPRIMARY p where p.PLAN_OPEN BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy HH:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy HH:mm:ss')", nativeQuery = true)
    List<DSPIncidentData> findIncAllByDate(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
 //   @Query(value = "select * from SMPRIMARY p where concat (upper(p.NUMBER), ' ', upper(p.HOST), ' ', upper(p.HPC_ASSIGNEE_NAME), ' ', upper(p.HPC_ASSIGNMENT), ' ', upper(p.AFFECTED_ITEM)) like concat ('%', upper(:searchFilter), '%') and p.OPEN_TIME BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy HH:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy HH:mm:ss')", nativeQuery = true)
 //   List<DSPIncidentData> findIncAllBySearchFilter(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("searchFilter") String searchFilter);
-
-   @Query(value = "select * from SMPRIMARY p where PROBLEM LIKE concat ('%',:triggerDescription, '%') " +
-           "AND p.OPEN_TIME BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy HH:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy HH:mm:ss')" , nativeQuery = true)
-   List<DSPIncidentData> findIncByTrigger(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("triggerDescription") String triggerDescription);
+//
+//   @Query(value = "select * from SMPRIMARY p where PROBLEM LIKE concat ('%',:triggerDescription, '%') " +
+//           "AND p.OPEN_TIME BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy HH:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy HH:mm:ss')" , nativeQuery = true)
+//   List<DSPIncidentData> findIncByTrigger(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("triggerDescription") String triggerDescription);
 
 
 

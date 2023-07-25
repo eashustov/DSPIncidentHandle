@@ -692,8 +692,8 @@ public class Analitics extends VerticalLayout {
         startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
         grid_analitics = new Grid<>(DSPIncidentData.class, false);
-//        dataView_analitics = grid_analitics.setItems(repoAnalitics.findIncByDate(startDate, endDate));
-        dataView_analitics = grid_analitics.setItems(incidentRepo.findAll());
+        dataView_analitics = grid_analitics.setItems(incidentAnaliticsRepo.findAllIncAnaliticByDate(startDate, endDate));
+//        dataView_analitics = grid_analitics.setItems(incidentRepo.findAll());
         return dataView_analitics;
     };
 
