@@ -69,7 +69,7 @@ public interface DSPIncidentAnaliticsRepo extends CrudRepository<DSPIncidentData
         "       '6 Закрыт'\n" +
         "          )\n" +
         "  and HPC_CREATED_BY not in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
-        "  and PLAN_OPEN BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
+        "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
         "order by 7 desc", nativeQuery = true)
 List<DSPIncidentData> findAllIncAnaliticByDate(@Param("startDate") String startDate, @Param("endDate") String endDate);
 //   List<UspIncidentData> findIncByDate(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("assignmentGroup") String assignmentGroup);
@@ -134,13 +134,11 @@ List<DSPIncidentData> findAllIncAnaliticByDate(@Param("startDate") String startD
            "       '6 Закрыт'\n" +
            "          )\n" +
            "  and HPC_CREATED_BY not in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
-           "  and PLAN_OPEN BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
+           "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
            "  and upper (\"NUMBER\") || ' ' || upper(PRIORITY_CODE)  || ' '  || upper(HPC_ASSIGNEE_NAME) || ' ' || upper(HPC_AFFECTED_ITEM_NAME) \n" +
            "  || ' ' || upper(PLAN_OPEN) || ' ' || upper(PLAN_END) || ' ' || upper(HPC_STATUS) || ' ' || upper(ACTION) || ' ' || upper(PROM) like '%' \n" +
            "  || upper(:searchFilter) || '%'\n" +
            " order by 7 desc", nativeQuery = true)
    List<DSPIncidentData> findIncBySearchFilter(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("searchFilter") String searchFilter);
-
-
 
 }

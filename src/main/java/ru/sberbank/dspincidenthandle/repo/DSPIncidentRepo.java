@@ -69,7 +69,7 @@ public interface DSPIncidentRepo extends CrudRepository<DSPIncidentData, String>
            "       '6 Закрыт'\n" +
            "          )\n" +
            "  and HPC_CREATED_BY not in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
-           "  and PLAN_OPEN BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
+           "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
            "order by 7 desc", nativeQuery = true)
    List<DSPIncidentData> findIncAllByDate(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
