@@ -813,21 +813,21 @@ public class Analitics extends VerticalLayout {
 
         switch (typeDataAnalitic){
             case  ("Общая (ПРОМ + ТЕСТ)"):
-                System.out.println("Общая (ПРОМ + ТЕСТ)");
+//                System.out.println("Общая (ПРОМ + ТЕСТ)");
                 incHandleSeriesDataBar = incHandleSeriesDataBarTotal;
                 incHandleLabelsDataBar = incHandleLabelsDataBarTotal;
                 incAutoSeriesDataBar = incAutoSeriesDataBarTotal;
                 incAutoLabelsDataBar = incAutoLabelsDataBarTotal;
                 break;
             case  ("ПРОМ"):
-                System.out.println("ПРОМ");
+//                System.out.println("ПРОМ");
                 incHandleSeriesDataBar = incHandleSeriesDataBarProm;
                 incHandleLabelsDataBar = incHandleLabelsDataBarProm;
                 incAutoSeriesDataBar = incAutoSeriesDataBarProm;
                 incAutoLabelsDataBar = incAutoLabelsDataBarProm;
                 break;
             case  ("ТЕСТ"):
-                System.out.println("ТЕСТ");
+//                System.out.println("ТЕСТ");
                 incHandleSeriesDataBar = incHandleSeriesDataBarTest;
                 incHandleLabelsDataBar = incHandleLabelsDataBarTest;
                 incAutoSeriesDataBar = incAutoSeriesDataBarTest;
@@ -889,20 +889,20 @@ public class Analitics extends VerticalLayout {
 
         switch (typeDataAnalitic){
             case  ("Общая (ПРОМ + ТЕСТ)"):
-                System.out.println("Общая (ПРОМ + ТЕСТ)");
+//                System.out.println("Общая (ПРОМ + ТЕСТ)");
                 incAutomaticDonutCount = incAutomaticCountDonutTotal;
                 incHandleDonutCount = incHandleCountDonutTotal;
 
                 break;
 
             case  ("ПРОМ"):
-                System.out.println("ПРОМ");
+//                System.out.println("ПРОМ");
                 incAutomaticDonutCount = incAutomaticCountDonutProm;
                 incHandleDonutCount = incHandleCountDonutProm;
                 break;
 
             case  ("ТЕСТ"):
-                System.out.println("ТЕСТ");
+//                System.out.println("ТЕСТ");
                 incAutomaticDonutCount = incAutomaticCountDonutTest;
                 incHandleDonutCount = incHandleCountDonutTest;
                 break;
