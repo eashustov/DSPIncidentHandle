@@ -164,7 +164,7 @@ public class Analitics extends VerticalLayout {
         end_Date.setMax(now);
         end_Date.setValue(now);
         start_Date.setMax(now);
-        start_Date.setValue(now.minusMonths(1));
+        start_Date.setValue(now.minusMonths(3));
         start_Date.addValueChangeListener(e -> end_Date.setMin(e.getValue()));
         end_Date.addValueChangeListener(e -> start_Date.setMax(e.getValue()));
         end_Date.setMin(start_Date.getValue());
