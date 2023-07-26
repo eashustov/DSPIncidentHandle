@@ -34,6 +34,7 @@ import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ import java.util.stream.Stream;
 @Route
 @PageTitle("Инциденты ДСП зарегистрированные вручную за период")
 //Сохранение состояния таблицы при обновлении
-//@PreserveOnRefresh
+@PreserveOnRefresh
 public class MainView extends VerticalLayout {
 
     private H4 header;
