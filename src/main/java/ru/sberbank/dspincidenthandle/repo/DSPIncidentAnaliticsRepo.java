@@ -11,13 +11,7 @@ import java.util.List;
 @Repository
 public interface DSPIncidentAnaliticsRepo extends CrudRepository<DSPIncidentData, String> {
 
-@Query(value = "--ЗНО  select * from smprimary.sbrequestm1\n" +
-        "--TRW  select * from smprimary.SBROUTINETASKM1\n" +
-        "--ЗПИ  select * from smprimary.sbimtaskm1\n" +
-        "--ЗНР  select * from smprimary.SBREQUESTTASKM1\n" +
-        "--IM   select * from smprimary.PROBSUMMARYM1\n" +
-        "--IMTS select * from smprimary.SBPROBSUMMARYTSM1\n" +
-        "select HPC_IS_MASS,\n" +
+@Query(value = "select HPC_IS_MASS,\n" +
         "       SB_ROOT_INCIDENT,\n" +
         "       \"NUMBER\",\n" +
         "       PRIORITY_CODE,\n" +
@@ -82,13 +76,7 @@ List<DSPIncidentData> findAllIncAnaliticByDate(@Param("startDate") String startD
 
    //Запрос для поиска автоинцидентов за период
 
-   @Query(value = "--ЗНО  select * from smprimary.sbrequestm1\n" +
-           "--TRW  select * from smprimary.SBROUTINETASKM1\n" +
-           "--ЗПИ  select * from smprimary.sbimtaskm1\n" +
-           "--ЗНР  select * from smprimary.SBREQUESTTASKM1\n" +
-           "--IM   select * from smprimary.PROBSUMMARYM1\n" +
-           "--IMTS select * from smprimary.SBPROBSUMMARYTSM1\n" +
-           "select HPC_IS_MASS,\n" +
+   @Query(value = "select HPC_IS_MASS,\n" +
            "       SB_ROOT_INCIDENT,\n" +
            "       \"NUMBER\",\n" +
            "       PRIORITY_CODE,\n" +
