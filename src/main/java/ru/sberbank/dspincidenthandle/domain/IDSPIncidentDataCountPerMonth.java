@@ -3,7 +3,7 @@ package ru.sberbank.dspincidenthandle.domain;
 public interface IDSPIncidentDataCountPerMonth {
 
     String getHPC_Assignment();
-    String getAffected_Item();
+    String getHPC_Affected_Item_Name();
     String getMonth();
     String getMonth_Number();
     String getYear();

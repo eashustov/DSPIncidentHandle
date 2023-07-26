@@ -582,12 +582,12 @@ public class Analitics extends VerticalLayout {
             ListIterator<IDSPIncidentDataCountPerMonth> totalCounPerMonthAnaliticsDataIter = TotalCounPerMonthAnaliticsData.listIterator();
             while (totalCounPerMonthAnaliticsDataIter.hasNext()) {
                 monthYearCountInc.clear();
-                String affectedItem = totalCounPerMonthAnaliticsDataIter.next().getAffected_Item();
+                String affectedItem = totalCounPerMonthAnaliticsDataIter.next().getHPC_Affected_Item_Name();
 
                 if (!itemExecute.contains(affectedItem)) {
 
                     for (IDSPIncidentDataCountPerMonth e : TotalCounPerMonthAnaliticsData) {
-                        if (e.getAffected_Item().equals(affectedItem)) {
+                        if (e.getHPC_Affected_Item_Name().equals(affectedItem)) {
                             String year = e.getYear();
                             String month = e.getMonth_Number();
                             Integer countInc = e.getCount_Inc();

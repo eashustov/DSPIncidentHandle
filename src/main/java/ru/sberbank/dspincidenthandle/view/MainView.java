@@ -204,11 +204,13 @@ public class MainView extends VerticalLayout {
         startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
         this.grid = new Grid<>(DSPIncidentData.class, false);
+        GridListDataView<DSPIncidentData>dataView = grid.setItems(repo.findIncAllByDate(startDate, endDate));
+        this.dataView = dataView;
         setHorizontalComponentAlignment(Alignment.CENTER, header);
         setJustifyContentMode(JustifyContentMode.START);
 
 //Grid View
-        grid = new Grid<>(DSPIncidentData.class, false);
+//        grid = new Grid<>(DSPIncidentData.class, false);
         grid.setHeight("500px");
         grid.addThemeVariants(GridVariant.LUMO_COMPACT, GridVariant.LUMO_ROW_STRIPES);
         grid.setColumnReorderingAllowed(true);
@@ -251,8 +253,6 @@ public class MainView extends VerticalLayout {
                 .addColumn(DSPIncidentData::getPROM).setSortable(true).setResizable(true).setTextAlign(ColumnTextAlign.START)
                 .setHeader("Тип среды");
 
-
-        GridListDataView<DSPIncidentData>dataView = grid.setItems(repo.findIncAllByDate(startDate, endDate));
 
         incFilter = new IncFilter(dataView);
 
