@@ -69,7 +69,7 @@ import static ru.sberbank.dspincidenthandle.service.ExporToCSV.exportToCSV;
 
 
 @Route(value = "analitics")
-@PageTitle("Аналитика инцидентов ДСП зарегистрированных вручную за период")
+@PageTitle("Аналитика инцидентов ДСП зарегистрированных вручную")
 
 public class Analitics extends VerticalLayout {
     private H4 header;

@@ -49,7 +49,7 @@ import java.util.stream.Stream;
 
 
 @Route
-@PageTitle("Инциденты ДСП зарегистрированные вручную за период")
+@PageTitle("Инциденты ДСП зарегистрированные вручную")
 //Сохранение состояния таблицы при обновлении
 //@PreserveOnRefresh
 public class MainView extends VerticalLayout {
@@ -101,9 +101,13 @@ public class MainView extends VerticalLayout {
                     Stream<DSPIncidentData> DSPIncidentDataList = incFilter.dataViewFiltered.getItems();
                     StringWriter output = new StringWriter();
                     StatefulBeanToCsv<DSPIncidentData> beanToCSV = null;
-                    beanToCSV = new StatefulBeanToCsvBuilder<DSPIncidentData>(output)
-//                                .withIgnoreField(DSPIncidentData.class, DSPIncidentData.class.getDeclaredField(""))
-                            .build();
+                    try {
+                        beanToCSV = new StatefulBeanToCsvBuilder<DSPIncidentData>(output)
+                                .withIgnoreField(DSPIncidentData.class, DSPIncidentData.class.getDeclaredField("ACTION"))
+                                .build();
+                    } catch (NoSuchFieldException exception) {
+                        exception.printStackTrace();
+                    }
                     try {
                         beanToCSV.write(DSPIncidentDataList);
                         var contents = output.toString();
@@ -194,7 +198,9 @@ public class MainView extends VerticalLayout {
 
 // Обновление данных счетчика по отфильтрованным элементам
         incFilter.dataViewFiltered.addItemCountChangeListener(event->{
+            remove(filteredCount);
             filteredCount.setText("Отфильтровано: " + incFilter.dataViewFiltered.getItemCount());
+            add(filteredCount);
         });
     }
 
