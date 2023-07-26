@@ -45,6 +45,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -308,14 +309,14 @@ public class Analitics extends VerticalLayout {
                 .setTextAlign(ColumnTextAlign.START).setHeader("Корневой");
 
 
-//
-//        // Вывод подробной информации по инциденту по выделению строки таблицы
-//        searchGrid.setItemDetailsRenderer(new ComponentRenderer<>(incident -> {
-//            VerticalLayout layout = new VerticalLayout();
-//            layout.add(new Label(incident.getACTION()));
-//            return layout;
-//        }));
-//        MainView.IncidentContextMenu searchGridContextMenu = new MainView.IncidentContextMenu(searchGrid);
+
+        // Вывод подробной информации по инциденту по выделению строки таблицы
+        searchGrid.setItemDetailsRenderer(new ComponentRenderer<>(incident -> {
+            VerticalLayout layout = new VerticalLayout();
+            layout.add(new Label(incident.getACTION()));
+            return layout;
+        }));
+        MainView.ItemContextMenu searchGridContextMenu = new MainView.ItemContextMenu(searchGrid);
 
         //Anchor block
         Anchor searchDownloadToCSV = new Anchor(exportToCSV(searchDataView), "Сохранить в CSV" );
@@ -466,7 +467,7 @@ public class Analitics extends VerticalLayout {
         Grid.Column<IDSPIncidentDataTop10> AFFECTED_ITEM = top10IncGrid
                 .addColumn(IDSPIncidentDataTop10::getAffected_Item).setSortable(true).setResizable(true).setTextAlign(ColumnTextAlign.START).setHeader("ИТ-услуга");
         Grid.Column<IDSPIncidentDataTop10> HOST = top10IncGrid
-                .addColumn(IDSPIncidentDataTop10::getAssignee_Name).setSortable(true).setResizable(true).setTextAlign(ColumnTextAlign.START).setHeader("Сервер");
+                .addColumn(IDSPIncidentDataTop10::getAssignee_Name).setSortable(true).setResizable(true).setTextAlign(ColumnTextAlign.START).setHeader("Исполнитель");
         Grid.Column<IDSPIncidentDataTop10> COUNT_INC = top10IncGrid
                 .addColumn(IDSPIncidentDataTop10::getCount_Inc).setSortable(true).setResizable(true).setTextAlign(ColumnTextAlign.START).setHeader("Количество");
 
@@ -582,12 +583,12 @@ public class Analitics extends VerticalLayout {
             ListIterator<IDSPIncidentDataCountPerMonth> totalCounPerMonthAnaliticsDataIter = TotalCounPerMonthAnaliticsData.listIterator();
             while (totalCounPerMonthAnaliticsDataIter.hasNext()) {
                 monthYearCountInc.clear();
-                String affectedItem = totalCounPerMonthAnaliticsDataIter.next().getHPC_Affected_Item_Name();
+                String affectedItemName = totalCounPerMonthAnaliticsDataIter.next().getHPC_Affected_Item_Name();
 
-                if (!itemExecute.contains(affectedItem)) {
+                if (!itemExecute.contains(affectedItemName)) {
 
                     for (IDSPIncidentDataCountPerMonth e : TotalCounPerMonthAnaliticsData) {
-                        if (e.getHPC_Affected_Item_Name().equals(affectedItem)) {
+                        if (e.getHPC_Affected_Item_Name().equals(affectedItemName)) {
                             String year = e.getYear();
                             String month = e.getMonth_Number();
                             Integer countInc = e.getCount_Inc();
@@ -595,37 +596,10 @@ public class Analitics extends VerticalLayout {
                         }
                     }
 
-                    affectedItem = affectedItem
-                            .replace("CI02021303", "IBM Connections")
-                            .replace("CI02021304", "IBM WebSphere Portal")
-                            .replace("CI02584076", "IBM HTTP Server")
-                            .replace("CI02584077", "LDAP ADAM")
-                            .replace("CI02584078", "Oracle Web Tier")
-                            .replace("CI02021298", "Oracle Application Server BI")
-                            .replace("CI02021301", "Платформа GridGain (native)")
-                            .replace("CI02021292", "WildFly")
-                            .replace("CI02021302", "Nginx")
-                            .replace("CI02021294", "Oracle WebLogic Server")
-                            .replace("CI02021296", "Oracle Siebel CRM")
-                            .replace("CI02021299", "IBM WebSphere Application Server")
-                            .replace("CI02021293", "IBM BPM – Pega")
-                            .replace("CI02021295", "IBM FileNet Content Manager")
-                            .replace("CI02192117", "Apache Kafka")
-                            .replace("CI02021290", "IBM DataPower")
-                            .replace("CI02021291", "IBM WebSphere MQ")
-                            .replace("CI02021300", "Apache Zookeeper")
-                            .replace("CI02192118", "SOWA")
-                            .replace("CI02021306", "Сервисы интеграции приложений WebSphere (IBM App services)")
-                            .replace("CI00737141", "Специализированные платформы серверов приложений (IBM Portal, Oracle Siebel CRM, Teradat, IBM FileNet)")
-                            .replace("CI00737140", "Интеграционные платформы серверов приложений (WMQ, WMB, DataPower, Pega PRPC)")
-                            .replace("CI00737137", "Стандартные платформы серверов приложений (WAS, WLS)")
-                            .replace("CI02008623", "Мониторинг использования лицензий (МИЛИ)")
-                            .replace("CI01563053", "Платформа управления контейнерами (Terra)");
-
-                    itemExecute.add(affectedItem);
+                    itemExecute.add(affectedItemName);
 
 
-                valueMapToMonthData.put(affectedItem, new TreeMap<String, Integer>(monthYearCountInc));
+                valueMapToMonthData.put(affectedItemName, new TreeMap<String, Integer>(monthYearCountInc));
             }
         }
 

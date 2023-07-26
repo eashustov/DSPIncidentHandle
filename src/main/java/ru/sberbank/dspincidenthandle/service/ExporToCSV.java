@@ -27,9 +27,13 @@ public class ExporToCSV {
                     Stream<DSPIncidentData> DSPIncidentList = dataView.getItems();
                     StringWriter output = new StringWriter();
                     StatefulBeanToCsv<DSPIncidentData> beanToCSV = null;
-                    beanToCSV = new StatefulBeanToCsvBuilder<DSPIncidentData>(output)
-//                                .withIgnoreField(DSPIncidentData.class, DSPIncidentData.class.getDeclaredField("ACTION"))
-                            .build();
+                    try {
+                        beanToCSV = new StatefulBeanToCsvBuilder<DSPIncidentData>(output)
+                                    .withIgnoreField(DSPIncidentData.class, DSPIncidentData.class.getDeclaredField("ACTION"))
+                                .build();
+                    } catch (NoSuchFieldException exception) {
+                        exception.printStackTrace();
+                    }
                     try {
                         beanToCSV.write(DSPIncidentList);
                         var contents = output.toString();
@@ -50,7 +54,7 @@ public class ExporToCSV {
         List<String[]> top10IncList = new ArrayList<>();
         top10IncList.add(new ArrayList<>() {{
             add("ИТ-услуга");
-            add("Сервер");
+            add("Исполнитель");
             add("Количество");
         }}.toArray(new String[3]));
         dataTop10IncRepo.findTop10IncCount(startDate, endDate).stream()

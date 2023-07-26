@@ -34,7 +34,6 @@ import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -210,7 +209,6 @@ public class MainView extends VerticalLayout {
         setJustifyContentMode(JustifyContentMode.START);
 
 //Grid View
-//        grid = new Grid<>(DSPIncidentData.class, false);
         grid.setHeight("500px");
         grid.addThemeVariants(GridVariant.LUMO_COMPACT, GridVariant.LUMO_ROW_STRIPES);
         grid.setColumnReorderingAllowed(true);
@@ -418,9 +416,12 @@ public class MainView extends VerticalLayout {
             boolean matchesHPCStatus = matches(oipKafkaData.getHPC_STATUS(), HPCStatus);
             boolean matchesHPCIsMass = matches(oipKafkaData.getHPC_IS_MASS(), HPCIsMass);
             boolean matchesSBRootIncident = matches(oipKafkaData.getSB_ROOT_INCIDENT(), SBRootIncident);
+            boolean matchesAction = matches(oipKafkaData.getACTION(), Action);
+            boolean matchesProm = matches(oipKafkaData.getPROM(), Prom);
 
             return matchesNumber && matchesPriorityCode && matchesHPCAssigneeName && matchesHPCAffectedItemName &&
-                    matchesPlanOpen && matchesPlanEnd && matchesHPCStatus && matchesHPCIsMass && matchesSBRootIncident;
+                    matchesPlanOpen && matchesPlanEnd && matchesHPCStatus && matchesHPCIsMass && matchesSBRootIncident
+                    && matchesAction && matchesProm;
         }
 
         private boolean matches(String value, String searchTerm) {
@@ -454,11 +455,6 @@ public class MainView extends VerticalLayout {
                         "https://servicemanager.ca.sbrf.ru/hpsm/index.do?lang=ru&ctx=docEngine&file=probsummary&query=number%3D%22"
                                 + incident.getNUMBER() + "%22&action=&title=",
                         "Открыть в Service Manager");
-            }));
-            addItem("Открыть аналитику", e -> e.getItem().ifPresent(incident -> {
-                getUI().get().getPage().open(
-                        "analitics",
-                        "Открыть аналитику");
             }));
         }
     }
