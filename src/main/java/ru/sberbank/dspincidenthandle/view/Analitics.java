@@ -228,7 +228,6 @@ public class Analitics extends VerticalLayout {
             formLayout.removeAll();
             remove(formLayout);
             downloadToCSV.setHref(exportToCSV(initGridIncData (start_Date,end_Date)));
-//            getIncHandleTotalCountAnaliticsData(start_Date,end_Date, typeAnaliticsDataSelect.getValue());
             assignmentGroupMapToMonthData = getTotalCounPerMonthAnaliticsData(start_Date,end_Date);
             lineChart = LineChartInit();
             donutChart = donutChartInit();
@@ -455,7 +454,7 @@ public class Analitics extends VerticalLayout {
 //        GridListDataView<IDSPIncidentDataTop10> top10IncDataView = top10IncGrid.setItems(
 //                dataTop10IncRepo.findTop10IncCount(startDate,endDate));
         GridListDataView<IDSPIncidentDataTop10> top10IncDataView = top10IncGrid.setItems(
-                incidentDataTop10Repo.findTop10IncCount());
+                incidentDataTop10Repo.findTop10IncCount(startDate, endDate));
 
         top10IncGrid.addThemeVariants(GridVariant.LUMO_COMPACT, GridVariant.LUMO_ROW_STRIPES);
         top10IncGrid.setColumnReorderingAllowed(true);
@@ -506,29 +505,29 @@ public class Analitics extends VerticalLayout {
         startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
 
-        incHandleSeriesDataBarTotal = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTotal()
+        incHandleSeriesDataBarTotal = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTotal(startDate, endDate)
                         .stream()
                         .map(t -> t.getCount_Inc().doubleValue())
                         .collect(Collectors.toList());
-        incHandleLabelsDataBarTotal = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTotal()
+        incHandleLabelsDataBarTotal = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTotal(startDate, endDate)
                         .stream()
                         .map(t -> t.getAffected_Item())
                         .collect(Collectors.toList());
 
-        incHandleSeriesDataBarProm = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarProm()
+        incHandleSeriesDataBarProm = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarProm(startDate, endDate)
                 .stream()
                 .map(t -> t.getCount_Inc().doubleValue())
                 .collect(Collectors.toList());
-        incHandleLabelsDataBarProm = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarProm()
+        incHandleLabelsDataBarProm = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarProm(startDate, endDate)
                 .stream()
                 .map(t -> t.getAffected_Item())
                 .collect(Collectors.toList());
 
-        incHandleSeriesDataBarTest = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTest()
+        incHandleSeriesDataBarTest = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTest(startDate, endDate)
                 .stream()
                 .map(t -> t.getCount_Inc().doubleValue())
                 .collect(Collectors.toList());
-        incHandleLabelsDataBarTest = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTest()
+        incHandleLabelsDataBarTest = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTest(startDate, endDate)
                 .stream()
                 .map(t -> t.getAffected_Item())
                 .collect(Collectors.toList());
@@ -537,32 +536,31 @@ public class Analitics extends VerticalLayout {
 
     @SneakyThrows
     private void getIncAutoPrcCountAnaliticsData(DatePicker start_Date, DatePicker end_Date){
-//        String assignmentGroup = Files.readString(Paths.get("usp_incident_assignmentGroup.txt"));
         startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
-        incAutoSeriesDataBarTotal = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTotal()
+        incAutoSeriesDataBarTotal = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTotal(startDate, endDate)
                 .stream()
                 .map(t -> t.getCount_Inc().doubleValue())
                 .collect(Collectors.toList());
-        incAutoLabelsDataBarTotal = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTotal()
+        incAutoLabelsDataBarTotal = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTotal(startDate, endDate)
                 .stream()
                 .map(t -> t.getAffected_Item())
                 .collect(Collectors.toList());
 
-        incAutoSeriesDataBarProm = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarProm()
+        incAutoSeriesDataBarProm = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarProm(startDate, endDate)
                 .stream()
                 .map(t -> t.getCount_Inc().doubleValue())
                 .collect(Collectors.toList());
-        incAutoLabelsDataBarProm = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarProm()
+        incAutoLabelsDataBarProm = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarProm(startDate, endDate)
                 .stream()
                 .map(t -> t.getAffected_Item())
                 .collect(Collectors.toList());
 
-        incAutoSeriesDataBarTest = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTest()
+        incAutoSeriesDataBarTest = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTest(startDate, endDate)
                 .stream()
                 .map(t -> t.getCount_Inc().doubleValue())
                 .collect(Collectors.toList());
-        incAutoLabelsDataBarTest = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTest()
+        incAutoLabelsDataBarTest = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTest(startDate, endDate)
                 .stream()
                 .map(t -> t.getAffected_Item())
                 .collect(Collectors.toList());
@@ -571,7 +569,7 @@ public class Analitics extends VerticalLayout {
 
 
     private Map<String,Map<String, Integer>> getTotalCounPerMonthAnaliticsData(DatePicker start_Date, DatePicker end_Date){
-//        String assignmentGroup = Files.readString(Paths.get("usp_incident_assignmentGroup.txt"));
+
         Map<String,Map<String, Integer>> valueMapToMonthData = new HashMap<>();
         Map<String, Integer> monthYearCountInc = new HashMap<>();
         startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
@@ -579,10 +577,8 @@ public class Analitics extends VerticalLayout {
         List<String> itemExecute = new ArrayList<>();
 
         //По ИТ услуге
-//            List<IDSPIncidentDataCountPerMonth> TotalCounPerMonthAnaliticsData = dataCountPerMonthRepo
-//                    .findIncAffectedItemCountPerMonth(startDate, endDate);
             List<IDSPIncidentDataCountPerMonth> TotalCounPerMonthAnaliticsData = incidentDataCountPerMonthRepo
-                    .findIncAffectedItemCountPerMonth();
+                    .findIncAffectedItemCountPerMonth(startDate, endDate);
             ListIterator<IDSPIncidentDataCountPerMonth> totalCounPerMonthAnaliticsDataIter = TotalCounPerMonthAnaliticsData.listIterator();
             while (totalCounPerMonthAnaliticsDataIter.hasNext()) {
                 monthYearCountInc.clear();
@@ -693,7 +689,6 @@ public class Analitics extends VerticalLayout {
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
         grid_analitics = new Grid<>(DSPIncidentData.class, false);
         dataView_analitics = grid_analitics.setItems(incidentAnaliticsRepo.findAllIncAnaliticByDate(startDate, endDate));
-//        dataView_analitics = grid_analitics.setItems(incidentRepo.findAll());
         return dataView_analitics;
     };
 
@@ -1007,12 +1002,12 @@ public class Analitics extends VerticalLayout {
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
 
         incLabelsDataDonut = new ArrayList<String>(Arrays.asList("Автоматические", "Зарег. вручную"));
-        incAutomaticCountDonutTotal = incidentPrcCountRepo.findIncAutoCountDonutTotal();
-        incHandleCountDonutTotal = incidentPrcCountRepo.findIncHandleCountDonutTotal();
-        incAutomaticCountDonutProm = incidentPrcCountRepo.findIncAutoCountDonutProm();
-        incHandleCountDonutProm = incidentPrcCountRepo.findIncHandleCountDonutProm();
-        incAutomaticCountDonutTest = incidentPrcCountRepo.findIncAutoCountDonutTest();
-        incHandleCountDonutTest = incidentPrcCountRepo.findIncHandleCountDonutTest();
+        incAutomaticCountDonutTotal = incidentPrcCountRepo.findIncAutoCountDonutTotal(startDate, endDate);
+        incHandleCountDonutTotal = incidentPrcCountRepo.findIncHandleCountDonutTotal(startDate, endDate);
+        incAutomaticCountDonutProm = incidentPrcCountRepo.findIncAutoCountDonutProm(startDate, endDate);
+        incHandleCountDonutProm = incidentPrcCountRepo.findIncHandleCountDonutProm(startDate, endDate);
+        incAutomaticCountDonutTest = incidentPrcCountRepo.findIncAutoCountDonutTest(startDate, endDate);
+        incHandleCountDonutTest = incidentPrcCountRepo.findIncHandleCountDonutTest(startDate, endDate);
 
     }
 
@@ -1021,12 +1016,12 @@ public class Analitics extends VerticalLayout {
         startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
 
-        seriesDataDonut = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCount()
+        seriesDataDonut = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCount(startDate, endDate)
                 .stream()
                 .map(t -> t.getCount_Inc().doubleValue())
                 .collect(Collectors.toList());
 
-        labelsDataDonut = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCount()
+        labelsDataDonut = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCount(startDate, endDate)
                 .stream()
                 .map(t -> t.getAffected_Item())
                 .collect(Collectors.toList());

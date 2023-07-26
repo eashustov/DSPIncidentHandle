@@ -53,8 +53,7 @@ public class ExporToCSV {
             add("Сервер");
             add("Количество");
         }}.toArray(new String[3]));
-//        dataTop10IncRepo.findTop10IncCount(startDate, endDate).stream()
-        dataTop10IncRepo.findTop10IncCount().stream()
+        dataTop10IncRepo.findTop10IncCount(startDate, endDate).stream()
 
                 .forEach(e -> {
                     String AffectedItem = e.getAffected_Item();

@@ -30,6 +30,7 @@ import '@vaadin/login/theme/lumo/vaadin-login-form.js';
 import '@vaadin/login/theme/lumo/vaadin-login-overlay.js';
 import '@vaadin/message-input/theme/lumo/vaadin-message-input.js';
 import '@vaadin/message-list/theme/lumo/vaadin-message-list.js';
+import '@vaadin/notification/theme/lumo/vaadin-notification.js';
 import '@vaadin/number-field/theme/lumo/vaadin-number-field.js';
 import '@vaadin/password-field/theme/lumo/vaadin-password-field.js';
 import '@vaadin/progress-bar/theme/lumo/vaadin-progress-bar.js';
