@@ -15,7 +15,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ru.sberbank</groupId>
-    <artifactId>uspincidentreport</artifactId>
+    <artifactId>DSPIncidentHandle</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>uspincidentreport</name>
     <description>Demo project for Spring Boot</description>
