@@ -29,8 +29,8 @@ public interface DSPIncidentAnaliticsRepo extends CrudRepository<DSPIncidentData
         "                PRIORITY_CODE,\n" +
         "                substr(HPC_ASSIGNEE_NAME, 1, instr(HPC_ASSIGNEE_NAME, '(') - 2) as HPC_ASSIGNEE_NAME,\n" +
         "                HPC_AFFECTED_ITEM_NAME,\n" +
-        "                to_char(OPEN_TIME + 3.0 / 24, 'dd.MM.yyyy HH24:MI:SS')                plan_open,\n" +
-        "                to_char(HPC_NEXT_BREACH + 3.0 / 24, 'dd.MM.yyyy HH24:MI:SS')          plan_end,\n" +
+        "                to_char(OPEN_TIME + 3.0 / 24, 'DD.MM.RRRR HH24:MI:SS')                plan_open,\n" +
+        "                to_char(HPC_NEXT_BREACH + 3.0 / 24, 'DD.MM.RRRR HH24:MI:SS')          plan_end,\n" +
         "                HPC_CREATED_BY,\n" +
         "                HPC_STATUS,\n" +
         "                HPC_ASSIGNMENT_NAME,\n" +
@@ -44,8 +44,8 @@ public interface DSPIncidentAnaliticsRepo extends CrudRepository<DSPIncidentData
         "                PRIORITY_CODE,\n" +
         "                substr(HPC_ASSIGNEE_NAME, 1, instr(HPC_ASSIGNEE_NAME, '(') - 2) as HPC_ASSIGNEE_NAME,\n" +
         "                HPC_AFFECTED_ITEM_NAME,\n" +
-        "                to_char(OPEN_TIME + 3.0 / 24, 'dd.MM.yyyy HH24:MI:SS')                plan_open,\n" +
-        "                to_char(HPC_NEXT_BREACH + 3.0 / 24, 'dd.MM.yyyy HH24:MI:SS')          plan_end,\n" +
+        "                to_char(OPEN_TIME + 3.0 / 24, 'DD.MM.RRRR HH24:MI:SS')                plan_open,\n" +
+        "                to_char(HPC_NEXT_BREACH + 3.0 / 24, 'DD.MM.RRRR HH24:MI:SS')          plan_end,\n" +
         "                HPC_CREATED_BY,\n" +
         "                HPC_STATUS,\n" +
         "                HPC_ASSIGNMENT_NAME,\n" +
@@ -94,8 +94,8 @@ List<DSPIncidentData> findAllIncAnaliticByDate(@Param("startDate") String startD
            "                PRIORITY_CODE,\n" +
            "                substr(HPC_ASSIGNEE_NAME, 1, instr(HPC_ASSIGNEE_NAME, '(') - 2) as HPC_ASSIGNEE_NAME,\n" +
            "                HPC_AFFECTED_ITEM_NAME,\n" +
-           "                to_char(OPEN_TIME + 3.0 / 24, 'dd.MM.yyyy HH24:MI:SS')                plan_open,\n" +
-           "                to_char(HPC_NEXT_BREACH + 3.0 / 24, 'dd.MM.yyyy HH24:MI:SS')          plan_end,\n" +
+           "                to_char(OPEN_TIME + 3.0 / 24, 'DD.MM.RRRR HH24:MI:SS')                plan_open,\n" +
+           "                to_char(HPC_NEXT_BREACH + 3.0 / 24, 'DD.MM.RRRR HH24:MI:SS')          plan_end,\n" +
            "                HPC_CREATED_BY,\n" +
            "                HPC_STATUS,\n" +
            "                HPC_ASSIGNMENT_NAME,\n" +
@@ -109,8 +109,8 @@ List<DSPIncidentData> findAllIncAnaliticByDate(@Param("startDate") String startD
            "                PRIORITY_CODE,\n" +
            "                substr(HPC_ASSIGNEE_NAME, 1, instr(HPC_ASSIGNEE_NAME, '(') - 2) as HPC_ASSIGNEE_NAME,\n" +
            "                HPC_AFFECTED_ITEM_NAME,\n" +
-           "                to_char(OPEN_TIME + 3.0 / 24, 'dd.MM.yyyy HH24:MI:SS')                plan_open,\n" +
-           "                to_char(HPC_NEXT_BREACH + 3.0 / 24, 'dd.MM.yyyy HH24:MI:SS')          plan_end,\n" +
+           "                to_char(OPEN_TIME + 3.0 / 24, 'DD.MM.RRRR HH24:MI:SS')                plan_open,\n" +
+           "                to_char(HPC_NEXT_BREACH + 3.0 / 24, 'DD.MM.RRRR HH24:MI:SS')          plan_end,\n" +
            "                HPC_CREATED_BY,\n" +
            "                HPC_STATUS,\n" +
            "                HPC_ASSIGNMENT_NAME,\n" +
