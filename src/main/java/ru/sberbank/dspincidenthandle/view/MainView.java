@@ -52,13 +52,13 @@ import java.util.stream.Stream;
 @Route
 @PageTitle("Инциденты ДСП зарегистрированные вручную за период")
 //Сохранение состояния таблицы при обновлении
-@PreserveOnRefresh
+//@PreserveOnRefresh
 public class MainView extends VerticalLayout {
 
     private H4 header;
     @Autowired
     private DSPIncidentRepo repo;
-    public static Grid<DSPIncidentData> grid;
+    private Grid<DSPIncidentData> grid;
     private GridListDataView<DSPIncidentData> dataView;
     IncFilter incFilter;
     String startDate;
@@ -66,8 +66,8 @@ public class MainView extends VerticalLayout {
     DatePicker start_Date;
     DatePicker end_Date;
     DateTimeFormatter europeanDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    private static Span incCount = new Span();
-    private static Span filteredCount = new Span();
+    private Span incCount = new Span();
+    private Span filteredCount = new Span();
 
     //Создание панели инструментов
     MenuBar menuBar = new MenuBar();
@@ -203,7 +203,7 @@ public class MainView extends VerticalLayout {
     void gridInit() {
         startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
-        this.grid = new Grid<>(DSPIncidentData.class, false);
+//        this.grid = new Grid<>(DSPIncidentData.class, false);
         setHorizontalComponentAlignment(Alignment.CENTER, header);
         setJustifyContentMode(JustifyContentMode.START);
 

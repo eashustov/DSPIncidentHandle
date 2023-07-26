@@ -3,6 +3,7 @@ package ru.sberbank.dspincidenthandle.repo;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import ru.sberbank.dspincidenthandle.domain.DSPIncidentData;
 import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataCountPerMonth;
 
@@ -10,6 +11,7 @@ import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataCountPerMonth;
 
 import java.util.List;
 
+@Repository
 public interface DSPIncidentCountPerMonthRepo extends CrudRepository<DSPIncidentData, String> {
 
     @Query(value = "select HPC_AFFECTED_ITEM_NAME, to_char(\"PLAN_OPEN\", 'Month') AS \"MONTH\",\n" +
