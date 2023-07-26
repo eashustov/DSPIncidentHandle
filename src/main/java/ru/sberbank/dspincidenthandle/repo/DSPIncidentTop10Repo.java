@@ -82,7 +82,7 @@ public interface DSPIncidentTop10Repo extends CrudRepository<DSPIncidentData, St
             "       '6 Закрыт'\n" +
             "          )) \n" +
             "WHERE\n" +
-            "\tOPENED_BY not in 'int_zabbix_si' AND PLAN_OPEN BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
+            "\tOPENED_BY not in 'int_zabbix_si' AND TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
             "GROUP BY \"AFFECTED_ITEM\", ASSIGNEE_NAME\n" +
             "ORDER BY \"AFFECTED_ITEM\", \"COUNT_INC\" DESC) top_10)\n" +
             "SELECT \"AFFECTED_ITEM\", \"ASSIGNEE_NAME\", \"COUNT_INC\" FROM RWS WHERE RN <=10", nativeQuery = true)

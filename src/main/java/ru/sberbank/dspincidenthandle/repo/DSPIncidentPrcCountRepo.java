@@ -54,7 +54,7 @@ public interface DSPIncidentPrcCountRepo extends CrudRepository<DSPIncidentData,
             "       '6 Закрыт'\n" +
             "          )\n" +
             "  and HPC_CREATED_BY in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
-            "  and PLAN_OPEN BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')", nativeQuery = true)
+            "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')", nativeQuery = true)
     Integer findIncAutoCountDonutTotal(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query(value = "select \n" +
@@ -100,7 +100,7 @@ public interface DSPIncidentPrcCountRepo extends CrudRepository<DSPIncidentData,
             "       '6 Закрыт'\n" +
             "          )\n" +
             "  and HPC_CREATED_BY not in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
-            "  and PLAN_OPEN BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')", nativeQuery = true)
+            "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')", nativeQuery = true)
     Integer findIncHandleCountDonutTotal(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query(value = "select \n" +
@@ -134,7 +134,7 @@ public interface DSPIncidentPrcCountRepo extends CrudRepository<DSPIncidentData,
             "       '6 Закрыт'\n" +
             "          )\n" +
             "  and HPC_CREATED_BY in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
-            "  and PLAN_OPEN BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')", nativeQuery = true)
+            "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')", nativeQuery = true)
     Integer findIncAutoCountDonutProm(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query(value = "select \n" +
@@ -168,7 +168,7 @@ public interface DSPIncidentPrcCountRepo extends CrudRepository<DSPIncidentData,
             "       '6 Закрыт'\n" +
             "          )\n" +
             "  and HPC_CREATED_BY not in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
-            "  and PLAN_OPEN BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')", nativeQuery = true)
+            "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')", nativeQuery = true)
     Integer findIncHandleCountDonutProm(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query(value = "select \n" +
@@ -202,7 +202,7 @@ public interface DSPIncidentPrcCountRepo extends CrudRepository<DSPIncidentData,
             "       '6 Закрыт'\n" +
             "          )\n" +
             "  and HPC_CREATED_BY in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
-            "  and PLAN_OPEN BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')", nativeQuery = true)
+            "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')", nativeQuery = true)
     Integer findIncAutoCountDonutTest(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query(value = "select \n" +
@@ -236,7 +236,7 @@ public interface DSPIncidentPrcCountRepo extends CrudRepository<DSPIncidentData,
             "       '6 Закрыт'\n" +
             "          )\n" +
             "  and HPC_CREATED_BY not in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
-            "  and PLAN_OPEN BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')", nativeQuery = true)
+            "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')", nativeQuery = true)
     Integer findIncHandleCountDonutTest(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
 }

@@ -52,7 +52,7 @@ public interface DSPIncidentCountPerMonthRepo extends CrudRepository<DSPIncident
             "       '6 Закрыт'\n" +
             "          )\n" +
             "  and HPC_CREATED_BY not in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
-            "  and PLAN_OPEN BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
+            "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
             "  GROUP BY HPC_AFFECTED_ITEM_NAME, to_char(\"PLAN_OPEN\", 'Month'), to_char(\"PLAN_OPEN\", 'MM'), to_char(\"PLAN_OPEN\", 'YYYY')\n" +
             "ORDER BY HPC_AFFECTED_ITEM_NAME, \"YEAR\", \"MONTH_NUMBER\" ASC", nativeQuery = true)
     List<IDSPIncidentDataCountPerMonth> findIncAffectedItemCountPerMonth(@Param("startDate") String startDate, @Param("endDate") String endDate);
