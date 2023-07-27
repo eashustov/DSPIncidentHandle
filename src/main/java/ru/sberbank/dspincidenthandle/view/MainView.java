@@ -179,7 +179,7 @@ public class MainView extends VerticalLayout {
         gridInit();
 
         incCount.setText("Всего инцидентов: " + dataView.getItemCount());
-        filteredCount.setText("Отфильтровано:" + incFilter.dataViewFiltered.getItemCount());
+        filteredCount.setText("Отфильтровано: " + incFilter.dataViewFiltered.getItemCount());
 
 
         //        Добавление компонентов в основной layout
@@ -191,7 +191,7 @@ public class MainView extends VerticalLayout {
             remove(grid, incCount, filteredCount);
             gridInit();
             incCount.setText("Всего инцидентов: " + dataView.getItemCount());
-            filteredCount.setText("Отфильтровано:" + incFilter.dataViewFiltered.getItemCount());
+            filteredCount.setText("Отфильтровано: " + incFilter.dataViewFiltered.getItemCount());
 //            clusterNameDownloadToCSV.setHref(CreateKafkaClusterName.getKafkaClusterName());
             add(grid, incCount, filteredCount);
         });
