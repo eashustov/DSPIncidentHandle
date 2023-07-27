@@ -307,6 +307,9 @@ public class Analitics extends VerticalLayout {
         Grid.Column<DSPIncidentData> SB_ROOT_INCIDENT = searchGrid
                 .addColumn(DSPIncidentData::getSB_ROOT_INCIDENT).setSortable(true).setResizable(true)
                 .setTextAlign(ColumnTextAlign.START).setHeader("Корневой");
+        Grid.Column<DSPIncidentData> PROM = searchGrid
+                .addColumn(DSPIncidentData::getPROM).setSortable(true).setResizable(true)
+                .setTextAlign(ColumnTextAlign.START).setHeader("Тип среды");
 
 
 
