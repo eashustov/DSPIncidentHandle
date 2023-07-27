@@ -195,13 +195,6 @@ public class MainView extends VerticalLayout {
 //            clusterNameDownloadToCSV.setHref(CreateKafkaClusterName.getKafkaClusterName());
             add(grid, incCount, filteredCount);
         });
-
-// Обновление данных счетчика по отфильтрованным элементам
-        incFilter.dataViewFiltered.addItemCountChangeListener(event->{
-            remove(filteredCount);
-            filteredCount.setText("Отфильтровано: " + incFilter.dataViewFiltered.getItemCount());
-            add(filteredCount);
-        });
     }
 
 //Метод инициализации таблицы
@@ -312,6 +305,13 @@ public class MainView extends VerticalLayout {
             layout.add(new Label(incident.getACTION()));
             return layout;
         }));
+
+        // Обновление данных счетчика по отфильтрованным элементам
+        incFilter.dataViewFiltered.addItemCountChangeListener(event->{
+            remove(filteredCount);
+            filteredCount.setText("Отфильтровано: " + incFilter.dataViewFiltered.getItemCount());
+            add(filteredCount);
+        });
 
     }
 
