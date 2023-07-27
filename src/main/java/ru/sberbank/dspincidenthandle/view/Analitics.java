@@ -797,11 +797,11 @@ public class Analitics extends VerticalLayout {
     private void renderChartsAnaliticsPrc(){
 
         if(!typeStatisticsComboBox.getValue().equals("Суммарно")) {
-            System.out.println("По услугам ИТ");
+//            System.out.println("По услугам ИТ");
             IncComparelayout.remove(donutChartIncCompare, VerticalBarChartIncCompare);
             IncComparelayout.add(VerticalBarChartIncCompareInit(typeAnaliticsDataSelect.getValue()));
         }else {
-            System.out.println("Суммарно");
+//            System.out.println("Суммарно");
             IncComparelayout.remove(VerticalBarChartIncCompare, donutChartIncCompare);
             IncComparelayout.add(donutChartIncCompareInit(typeAnaliticsDataSelect.getValue()));
         };
