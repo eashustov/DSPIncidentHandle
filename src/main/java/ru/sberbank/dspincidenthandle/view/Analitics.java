@@ -303,7 +303,7 @@ public class Analitics extends VerticalLayout {
                 .setTextAlign(ColumnTextAlign.START).setHeader("Статус");
         Grid.Column<DSPIncidentData> HPC_IS_MASS = searchGrid
                 .addColumn(DSPIncidentData::getHPC_IS_MASS).setSortable(true).setResizable(true)
-                .setTextAlign(ColumnTextAlign.START).setHeader("Массовый");
+                .setTextAlign(ColumnTextAlign.START).setHeader("ИУУ");
         Grid.Column<DSPIncidentData> SB_ROOT_INCIDENT = searchGrid
                 .addColumn(DSPIncidentData::getSB_ROOT_INCIDENT).setSortable(true).setResizable(true)
                 .setTextAlign(ColumnTextAlign.START).setHeader("Корневой");

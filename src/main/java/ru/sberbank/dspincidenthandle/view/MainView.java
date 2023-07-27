@@ -245,7 +245,7 @@ public class MainView extends VerticalLayout {
                 .setHeader("Статус");
         Grid.Column<DSPIncidentData> HPC_IS_MASS = grid
                 .addColumn(DSPIncidentData::getHPC_IS_MASS).setSortable(true).setResizable(true).setTextAlign(ColumnTextAlign.START)
-                .setHeader("Массовый");
+                .setHeader("ИУУ");
         Grid.Column<DSPIncidentData> SB_ROOT_INCIDENT = grid
                 .addColumn(DSPIncidentData::getSB_ROOT_INCIDENT).setSortable(true).setResizable(true).setTextAlign(ColumnTextAlign.START)
                 .setHeader("Корневой");
@@ -281,7 +281,7 @@ public class MainView extends VerticalLayout {
         headerRow.getCell(HPC_STATUS)
                 .setComponent(createFilterHeader("Статус", incFilter::setHPCStatus));
         headerRow.getCell(HPC_IS_MASS)
-                .setComponent(createFilterHeader("Массовый", incFilter::setHPCIsMass));
+                .setComponent(createFilterHeader("ИУУ", incFilter::setHPCIsMass));
         headerRow.getCell(SB_ROOT_INCIDENT)
                 .setComponent(createFilterHeader("Корневой", incFilter::setSBRootIncident));
         headerRow.getCell(ACTION)
