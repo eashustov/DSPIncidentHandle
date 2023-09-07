@@ -41,12 +41,14 @@ public interface DSPIncidentPrcCountRepo extends CrudRepository<DSPIncidentData,
             "where HPC_ASSIGNMENT_NAME in\n" +
             "      ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',\n" +
             "       'SberInfra УСП Шлюзовые решения (Шитиков В.Е.)', 'SberInfra УСП Интеграционные платформы (Гоголев К.Ю.)',\n" +
-            "       'SberInfra УСП Серверы приложений (Мутин Д.И.)', 'SberInfra УСП Дежурная смена (Зайцев А.М.)')\n" +
+            "       'SberInfra УСП Серверы приложений (Мутин Д.И.)', 'SberInfra УСП Дежурная смена (Зайцев А.М.)',\n" +
+            "       'SberInfra Сопровождение Платформы управления контейнерами (Косов М.В.)')\n" +
             "  and HPC_AFFECTED_ITEM_NAME in\n" +
             "      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',\n" +
             "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)', 'Apache Kafka (CI02192117)',\n" +
             "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
-            "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)')\n" +
+            "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
+            "       'SynGX (CI04178739)')\n" +
             "  and HPC_STATUS in\n" +
             "      (\n" +
             "       '6 Выполнен',\n" +
@@ -87,12 +89,14 @@ public interface DSPIncidentPrcCountRepo extends CrudRepository<DSPIncidentData,
             "where HPC_ASSIGNMENT_NAME in\n" +
             "      ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',\n" +
             "       'SberInfra УСП Шлюзовые решения (Шитиков В.Е.)', 'SberInfra УСП Интеграционные платформы (Гоголев К.Ю.)',\n" +
-            "       'SberInfra УСП Серверы приложений (Мутин Д.И.)', 'SberInfra УСП Дежурная смена (Зайцев А.М.)')\n" +
+            "       'SberInfra УСП Серверы приложений (Мутин Д.И.)', 'SberInfra УСП Дежурная смена (Зайцев А.М.)',\n" +
+            "       'SberInfra Сопровождение Платформы управления контейнерами (Косов М.В.)')\n" +
             "  and HPC_AFFECTED_ITEM_NAME in\n" +
             "      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',\n" +
             "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)', 'Apache Kafka (CI02192117)',\n" +
             "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
-            "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)')\n" +
+            "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
+            "       'SynGX (CI04178739)')\n" +
             "  and HPC_STATUS in\n" +
             "      (\n" +
             "       '6 Выполнен',\n" +
@@ -121,12 +125,14 @@ public interface DSPIncidentPrcCountRepo extends CrudRepository<DSPIncidentData,
             "where HPC_ASSIGNMENT_NAME in\n" +
             "      ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',\n" +
             "       'SberInfra УСП Шлюзовые решения (Шитиков В.Е.)', 'SberInfra УСП Интеграционные платформы (Гоголев К.Ю.)',\n" +
-            "       'SberInfra УСП Серверы приложений (Мутин Д.И.)', 'SberInfra УСП Дежурная смена (Зайцев А.М.)')\n" +
+            "       'SberInfra УСП Серверы приложений (Мутин Д.И.)', 'SberInfra УСП Дежурная смена (Зайцев А.М.)',\n" +
+            "       'SberInfra Сопровождение Платформы управления контейнерами (Косов М.В.)')\n" +
             "  and HPC_AFFECTED_ITEM_NAME in\n" +
             "      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',\n" +
             "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)', 'Apache Kafka (CI02192117)',\n" +
             "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
-            "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)')\n" +
+            "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
+            "       'SynGX (CI04178739)')\n" +
             "  and HPC_STATUS in\n" +
             "      (\n" +
             "       '6 Выполнен',\n" +
@@ -155,12 +161,14 @@ public interface DSPIncidentPrcCountRepo extends CrudRepository<DSPIncidentData,
             "where HPC_ASSIGNMENT_NAME in\n" +
             "      ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',\n" +
             "       'SberInfra УСП Шлюзовые решения (Шитиков В.Е.)', 'SberInfra УСП Интеграционные платформы (Гоголев К.Ю.)',\n" +
-            "       'SberInfra УСП Серверы приложений (Мутин Д.И.)', 'SberInfra УСП Дежурная смена (Зайцев А.М.)')\n" +
+            "       'SberInfra УСП Серверы приложений (Мутин Д.И.)', 'SberInfra УСП Дежурная смена (Зайцев А.М.)',\n" +
+            "       'SberInfra Сопровождение Платформы управления контейнерами (Косов М.В.)')\n" +
             "  and HPC_AFFECTED_ITEM_NAME in\n" +
             "      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',\n" +
             "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)', 'Apache Kafka (CI02192117)',\n" +
             "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
-            "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)')\n" +
+            "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
+            "       'SynGX (CI04178739)')\n" +
             "  and HPC_STATUS in\n" +
             "      (\n" +
             "       '6 Выполнен',\n" +
@@ -189,12 +197,14 @@ public interface DSPIncidentPrcCountRepo extends CrudRepository<DSPIncidentData,
             "where HPC_ASSIGNMENT_NAME in\n" +
             "      ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',\n" +
             "       'SberInfra УСП Шлюзовые решения (Шитиков В.Е.)', 'SberInfra УСП Интеграционные платформы (Гоголев К.Ю.)',\n" +
-            "       'SberInfra УСП Серверы приложений (Мутин Д.И.)', 'SberInfra УСП Дежурная смена (Зайцев А.М.)')\n" +
+            "       'SberInfra УСП Серверы приложений (Мутин Д.И.)', 'SberInfra УСП Дежурная смена (Зайцев А.М.)',\n" +
+            "       'SberInfra Сопровождение Платформы управления контейнерами (Косов М.В.)')\n" +
             "  and HPC_AFFECTED_ITEM_NAME in\n" +
             "      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',\n" +
             "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)', 'Apache Kafka (CI02192117)',\n" +
             "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
-            "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)')\n" +
+            "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
+            "       'SynGX (CI04178739)')\n" +
             "  and HPC_STATUS in\n" +
             "      (\n" +
             "       '6 Выполнен',\n" +
