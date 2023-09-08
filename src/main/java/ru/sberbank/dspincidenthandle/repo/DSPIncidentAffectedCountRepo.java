@@ -60,7 +60,7 @@ public interface DSPIncidentAffectedCountRepo extends CrudRepository<DSPIncident
             "          )\n" +
             "  and HPC_CREATED_BY not in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
             "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
-            "  group by HPC_AFFECTED_ITEM_NAME order by \"count_Inc\" desc", nativeQuery = true)
+            "  group by HPC_AFFECTED_ITEM_NAME order by \"Affected_Item\" asc", nativeQuery = true)
     List<IDSPIncidentAffectedDataCount> findIncHandleByAffectedItemCount(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query(value = "select \n" +
@@ -110,7 +110,7 @@ public interface DSPIncidentAffectedCountRepo extends CrudRepository<DSPIncident
             "          )\n" +
             "  and HPC_CREATED_BY not in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
             "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
-            "  group by HPC_AFFECTED_ITEM_NAME order by \"count_Inc\" desc", nativeQuery = true)
+            "  group by HPC_AFFECTED_ITEM_NAME order by \"Affected_Item\" asc", nativeQuery = true)
     List<IDSPIncidentAffectedDataCount> findIncHandleByAffectedItemCountBarTotal(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query(value = "select \n" +
@@ -148,7 +148,7 @@ public interface DSPIncidentAffectedCountRepo extends CrudRepository<DSPIncident
             "          )\n" +
             "  and HPC_CREATED_BY not in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
             "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
-            "  group by HPC_AFFECTED_ITEM_NAME order by \"count_Inc\" desc", nativeQuery = true)
+            "  group by HPC_AFFECTED_ITEM_NAME order by \"Affected_Item\" asc", nativeQuery = true)
     List<IDSPIncidentAffectedDataCount> findIncHandleByAffectedItemCountBarProm(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query(value = "select \n" +
@@ -186,7 +186,7 @@ public interface DSPIncidentAffectedCountRepo extends CrudRepository<DSPIncident
             "          )\n" +
             "  and HPC_CREATED_BY not in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
             "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
-            "  group by HPC_AFFECTED_ITEM_NAME order by \"count_Inc\" desc", nativeQuery = true)
+            "  group by HPC_AFFECTED_ITEM_NAME order by \"Affected_Item\" asc", nativeQuery = true)
     List<IDSPIncidentAffectedDataCount> findIncHandleByAffectedItemCountBarTest(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query(value = "select \n" +
@@ -236,7 +236,7 @@ public interface DSPIncidentAffectedCountRepo extends CrudRepository<DSPIncident
             "          )\n" +
             "  and HPC_CREATED_BY in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
             "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
-            "  group by HPC_AFFECTED_ITEM_NAME order by \"count_Inc\" desc", nativeQuery = true)
+            "  group by HPC_AFFECTED_ITEM_NAME order by \"Affected_Item\" asc", nativeQuery = true)
     List<IDSPIncidentAffectedDataCount> findIncAutoByAffectedItemCountBarTotal(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query(value = "select \n" +
@@ -274,7 +274,7 @@ public interface DSPIncidentAffectedCountRepo extends CrudRepository<DSPIncident
             "          )\n" +
             "  and HPC_CREATED_BY in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
             "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
-            "  group by HPC_AFFECTED_ITEM_NAME order by \"count_Inc\" desc", nativeQuery = true)
+            "  group by HPC_AFFECTED_ITEM_NAME order by \"Affected_Item\" asc", nativeQuery = true)
     List<IDSPIncidentAffectedDataCount> findIncAutoByAffectedItemCountBarProm(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query(value = "select \n" +
@@ -312,6 +312,6 @@ public interface DSPIncidentAffectedCountRepo extends CrudRepository<DSPIncident
             "          )\n" +
             "  and HPC_CREATED_BY in 'Технологический пользователь АС ZABBIX_SI (00738651)' \n" +
             "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
-            "  group by HPC_AFFECTED_ITEM_NAME order by \"count_Inc\" desc", nativeQuery = true)
+            "  group by HPC_AFFECTED_ITEM_NAME order by \"Affected_Item\" asc", nativeQuery = true)
     List<IDSPIncidentAffectedDataCount> findIncAutoByAffectedItemCountBarTest(@Param("startDate") String startDate, @Param("endDate") String endDate);
 }
