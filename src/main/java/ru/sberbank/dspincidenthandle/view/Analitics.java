@@ -51,6 +51,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.sberbank.dspincidenthandle.domain.IDSPIncidentAffectedDataCount;
 import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataCountPerMonth;
 import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataTop10;
 import ru.sberbank.dspincidenthandle.domain.DSPIncidentData;
@@ -91,22 +92,19 @@ public class Analitics extends VerticalLayout {
     List<Double> seriesDataDonut;
 
     //Данные для BarChart по услугам ИТ
-    List<String> incHandleLabelsDataBar;
+    List<String> incLabelsDataBar = Arrays.asList("Apache Kafka (CI02192117)", "IBM DataPower (CI02021290)",
+            "IBM WebSphere Application Server (CI02021299)",
+            "IBM WebSphere MQ (CI02021291)", "Nginx (CI02021302)", "SOWA (CI02192118)", "SynGX (CI04178739)",
+            "WildFly (CI02021292)", "IBM Websphere MB (CI02192119)", "Платформа управления контейнерами (Terra) (CI01563053)",
+            "Интеграционные платформы серверов приложений (CI00737140)");
     List<Double> incHandleSeriesDataBar;
-    List<String> incAutoLabelsDataBar;
     List<Double> incAutoSeriesDataBar;
-    List<Double> incHandleSeriesDataBarTotal;
-    List<String> incHandleLabelsDataBarTotal;
-    List<Double> incHandleSeriesDataBarProm;
-    List<String> incHandleLabelsDataBarProm;
-    List<Double> incHandleSeriesDataBarTest;
-    List<String> incHandleLabelsDataBarTest;
-    List<Double> incAutoSeriesDataBarTotal;
-    List<String> incAutoLabelsDataBarTotal;
-    List<Double> incAutoSeriesDataBarProm;
-    List<String> incAutoLabelsDataBarProm;
-    List<Double> incAutoSeriesDataBarTest;
-    List<String> incAutoLabelsDataBarTest;
+    List<Double> incHandleSeriesDataBarTotal = new ArrayList<>();
+    List<Double> incHandleSeriesDataBarProm = new ArrayList<>();
+    List<Double> incHandleSeriesDataBarTest = new ArrayList<>();
+    List<Double> incAutoSeriesDataBarTotal = new ArrayList<>();
+    List<Double> incAutoSeriesDataBarProm = new ArrayList<>();
+    List<Double> incAutoSeriesDataBarTest = new ArrayList<>();
 
     //Данные для donut Chart по суммарным данным
     //Получение легенды
@@ -504,73 +502,125 @@ public class Analitics extends VerticalLayout {
     }
 
     @SneakyThrows
-    private void getIncHandlePrcCountAnaliticsData(DatePicker start_Date, DatePicker end_Date){
-//        String assignmentGroup = Files.readString(Paths.get("usp_incident_assignmentGroup.txt"));
+    private void getIncHandlePrcCountAnaliticsData(DatePicker start_Date, DatePicker end_Date) {
         startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
 
-        incHandleSeriesDataBarTotal = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTotal(startDate, endDate)
-                        .stream()
-                        .map(t -> t.getCount_Inc().doubleValue())
-                        .collect(Collectors.toList());
-        incHandleLabelsDataBarTotal = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTotal(startDate, endDate)
-                        .stream()
-                        .map(t -> t.getAffected_Item())
-                        .collect(Collectors.toList());
+        incHandleSeriesDataBarTotal.clear();
+        incHandleSeriesDataBarProm.clear();
+        incHandleSeriesDataBarTest.clear();
+        List<IDSPIncidentAffectedDataCount> incidentHandleAffectedDataCountTotalList = incidentAffectedDataTotalCountRepo
+                .findIncHandleByAffectedItemCountBarTotal(startDate, endDate);
+        List<IDSPIncidentAffectedDataCount> incidentHandleAffectedDataCountPromList = incidentAffectedDataTotalCountRepo
+                .findIncHandleByAffectedItemCountBarProm(startDate, endDate);
+        List<IDSPIncidentAffectedDataCount> incidentHandleAffectedDataCountTestList = incidentAffectedDataTotalCountRepo
+                .findIncHandleByAffectedItemCountBarTest(startDate, endDate);
 
-        incHandleSeriesDataBarProm = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarProm(startDate, endDate)
-                .stream()
-                .map(t -> t.getCount_Inc().doubleValue())
-                .collect(Collectors.toList());
-        incHandleLabelsDataBarProm = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarProm(startDate, endDate)
-                .stream()
-                .map(t -> t.getAffected_Item())
-                .collect(Collectors.toList());
+        for (String label:incLabelsDataBar) {
+            boolean affectedItemPresenceTotal = false;
+            for (IDSPIncidentAffectedDataCount incidentAffectedDataCount : incidentHandleAffectedDataCountTotalList) {
+                if (label.equals(incidentAffectedDataCount.getAffected_Item())) {
+                    affectedItemPresenceTotal = true;
+                    incHandleSeriesDataBarTotal.add(incidentAffectedDataCount.getCount_Inc().doubleValue());
+                    break;
+                }
+            }
 
-        incHandleSeriesDataBarTest = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTest(startDate, endDate)
-                .stream()
-                .map(t -> t.getCount_Inc().doubleValue())
-                .collect(Collectors.toList());
-        incHandleLabelsDataBarTest = incidentAffectedDataTotalCountRepo.findIncHandleByAffectedItemCountBarTest(startDate, endDate)
-                .stream()
-                .map(t -> t.getAffected_Item())
-                .collect(Collectors.toList());
+            if (!affectedItemPresenceTotal) {
+                incHandleSeriesDataBarTotal.add(0.0);
+            }
 
-       }
+
+            boolean affectedItemPresenceProm = false;
+            for (IDSPIncidentAffectedDataCount incidentAffectedDataCount : incidentHandleAffectedDataCountPromList) {
+                if (label.equals(incidentAffectedDataCount.getAffected_Item())) {
+                    affectedItemPresenceProm = true;
+                    incHandleSeriesDataBarProm.add(incidentAffectedDataCount.getCount_Inc().doubleValue());
+                    break;
+                }
+            }
+
+            if (!affectedItemPresenceProm) {
+                incHandleSeriesDataBarProm.add(0.0);
+            }
+
+
+            boolean affectedItemPresenceTest = false;
+            for (IDSPIncidentAffectedDataCount incidentAffectedDataCount : incidentHandleAffectedDataCountTestList) {
+                if (label.equals(incidentAffectedDataCount.getAffected_Item())) {
+                    affectedItemPresenceTest = true;
+                    incHandleSeriesDataBarTest.add(incidentAffectedDataCount.getCount_Inc().doubleValue());
+                    break;
+                }
+            }
+
+            if (!affectedItemPresenceTest) {
+                incHandleSeriesDataBarTest.add(0.0);
+
+            }
+        }
+    }
 
     @SneakyThrows
     private void getIncAutoPrcCountAnaliticsData(DatePicker start_Date, DatePicker end_Date){
         startDate = start_Date.getValue().format(europeanDateFormatter) + " 00:00:00";
         endDate = end_Date.getValue().format(europeanDateFormatter) + " 23:59:59";
-        incAutoSeriesDataBarTotal = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTotal(startDate, endDate)
-                .stream()
-                .map(t -> t.getCount_Inc().doubleValue())
-                .collect(Collectors.toList());
-        incAutoLabelsDataBarTotal = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTotal(startDate, endDate)
-                .stream()
-                .map(t -> t.getAffected_Item())
-                .collect(Collectors.toList());
 
-        incAutoSeriesDataBarProm = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarProm(startDate, endDate)
-                .stream()
-                .map(t -> t.getCount_Inc().doubleValue())
-                .collect(Collectors.toList());
-        incAutoLabelsDataBarProm = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarProm(startDate, endDate)
-                .stream()
-                .map(t -> t.getAffected_Item())
-                .collect(Collectors.toList());
+        incAutoSeriesDataBarTotal.clear();
+        incAutoSeriesDataBarProm.clear();
+        incAutoSeriesDataBarTest.clear();
 
-        incAutoSeriesDataBarTest = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTest(startDate, endDate)
-                .stream()
-                .map(t -> t.getCount_Inc().doubleValue())
-                .collect(Collectors.toList());
-        incAutoLabelsDataBarTest = incidentAffectedDataTotalCountRepo.findIncAutoByAffectedItemCountBarTest(startDate, endDate)
-                .stream()
-                .map(t -> t.getAffected_Item())
-                .collect(Collectors.toList());
+        List<IDSPIncidentAffectedDataCount> incidentAutoAffectedDataCountTotalList = incidentAffectedDataTotalCountRepo
+                .findIncAutoByAffectedItemCountBarTotal(startDate, endDate);
+        List<IDSPIncidentAffectedDataCount> incidentAutoAffectedDataCountPromList = incidentAffectedDataTotalCountRepo
+                .findIncAutoByAffectedItemCountBarProm(startDate, endDate);
+        List<IDSPIncidentAffectedDataCount> incidentAutoAffectedDataCountTestList = incidentAffectedDataTotalCountRepo
+                .findIncAutoByAffectedItemCountBarTest(startDate, endDate);
 
+        for (String label:incLabelsDataBar) {
+            boolean affectedItemPresenceTotal = false;
+            for (IDSPIncidentAffectedDataCount incidentAffectedDataCount : incidentAutoAffectedDataCountTotalList) {
+                if (label.equals(incidentAffectedDataCount.getAffected_Item())) {
+                    affectedItemPresenceTotal = true;
+                    incAutoSeriesDataBarTotal.add(incidentAffectedDataCount.getCount_Inc().doubleValue());
+                    break;
+                }
+            }
+
+            if (!affectedItemPresenceTotal) {
+                incAutoSeriesDataBarTotal.add(0.0);
+            }
+
+
+            boolean affectedItemPresenceProm = false;
+            for (IDSPIncidentAffectedDataCount incidentAffectedDataCount : incidentAutoAffectedDataCountPromList) {
+                if (label.equals(incidentAffectedDataCount.getAffected_Item())) {
+                    affectedItemPresenceProm = true;
+                    incAutoSeriesDataBarProm.add(incidentAffectedDataCount.getCount_Inc().doubleValue());
+                    break;
+                }
+            }
+
+            if (!affectedItemPresenceProm) {
+                incAutoSeriesDataBarProm.add(0.0);
+            }
+
+
+            boolean affectedItemPresenceTest = false;
+            for (IDSPIncidentAffectedDataCount incidentAffectedDataCount : incidentAutoAffectedDataCountTestList) {
+                if (label.equals(incidentAffectedDataCount.getAffected_Item())) {
+                    affectedItemPresenceTest = true;
+                    incAutoSeriesDataBarTest.add(incidentAffectedDataCount.getCount_Inc().doubleValue());
+                    break;
+                }
+            }
+
+            if (!affectedItemPresenceTest) {
+                incAutoSeriesDataBarTest.add(0.0);
+
+            }
+        }
     }
-
 
     private Map<String,Map<String, Integer>> getTotalCounPerMonthAnaliticsData(DatePicker start_Date, DatePicker end_Date){
 
@@ -818,23 +868,17 @@ public class Analitics extends VerticalLayout {
             case  ("Общая (ПРОМ + ТЕСТ)"):
 //                System.out.println("Общая (ПРОМ + ТЕСТ)");
                 incHandleSeriesDataBar = incHandleSeriesDataBarTotal;
-                incHandleLabelsDataBar = incHandleLabelsDataBarTotal;
                 incAutoSeriesDataBar = incAutoSeriesDataBarTotal;
-                incAutoLabelsDataBar = incAutoLabelsDataBarTotal;
                 break;
             case  ("ПРОМ"):
 //                System.out.println("ПРОМ");
                 incHandleSeriesDataBar = incHandleSeriesDataBarProm;
-                incHandleLabelsDataBar = incHandleLabelsDataBarProm;
                 incAutoSeriesDataBar = incAutoSeriesDataBarProm;
-                incAutoLabelsDataBar = incAutoLabelsDataBarProm;
                 break;
             case  ("ТЕСТ"):
 //                System.out.println("ТЕСТ");
                 incHandleSeriesDataBar = incHandleSeriesDataBarTest;
-                incHandleLabelsDataBar = incHandleLabelsDataBarTest;
                 incAutoSeriesDataBar = incAutoSeriesDataBarTest;
-                incAutoLabelsDataBar = incAutoLabelsDataBarTest;
                 break;
         }
 
@@ -872,7 +916,7 @@ public class Analitics extends VerticalLayout {
                         .build())
 //                .withXaxis(XAxisBuilder.get().withCategories("SOWA", "Corax", "MQSeries", "DataPower", "Nginx", "WAS",
 //                        "WildFly", "WebLogic", "Siebel", "OpenShift").build())
-                .withXaxis(XAxisBuilder.get().withCategories(incHandleLabelsDataBar.stream().toArray(String[]::new)).build())
+                .withXaxis(XAxisBuilder.get().withCategories(incLabelsDataBar.stream().toArray(String[]::new)).build())
                 .withFill(FillBuilder.get()
                         .withOpacity(1.0).build())
                 .withTooltip(TooltipBuilder.get()

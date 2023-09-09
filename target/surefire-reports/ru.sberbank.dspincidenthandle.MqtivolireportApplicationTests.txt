@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: ru.sberbank.dspincidenthandle.MqtivolireportApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.845 s - in ru.sberbank.dspincidenthandle.MqtivolireportApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.238 s - in ru.sberbank.dspincidenthandle.MqtivolireportApplicationTests
