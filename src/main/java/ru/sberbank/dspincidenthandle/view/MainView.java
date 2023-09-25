@@ -44,6 +44,8 @@ import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -274,13 +276,16 @@ public class MainView extends VerticalLayout {
         headerRow.getCell(HPC_STATUS)
                 .setComponent(createFilterHeader("Статус", incFilter::setHPCStatus));
         headerRow.getCell(HPC_IS_MASS)
-                .setComponent(createFilterHeader("ИУУ", incFilter::setHPCIsMass));
+                .setComponent(FilterActiveIncident.createFilterHeader("Да; Нет",
+                        incFilter::setHPCIsMass, new HashSet<>(Arrays.asList("Да", "Нет")), "Да; Нет"));
         headerRow.getCell(SB_ROOT_INCIDENT)
-                .setComponent(createFilterHeader("Корневой", incFilter::setSBRootIncident));
+                .setComponent(FilterActiveIncident.createFilterHeader("Да; Нет",
+                        incFilter::setSBRootIncident, new HashSet<>(Arrays.asList("Да", "Нет")), "Да; Нет"));
         headerRow.getCell(ACTION)
                 .setComponent(createFilterHeader("Подробное описание", incFilter::setAction));
         headerRow.getCell(PROM)
-                .setComponent(createFilterHeader("Тип среды", incFilter::setProm));
+                .setComponent(FilterActiveIncident.createFilterHeader("Пром; Тест",
+                        incFilter::setProm, new HashSet<>(Arrays.asList("Пром", "Тест")), "Пром; Тест"));
 
         //Column Visibility
 //        Так можно прикрутить кнопку к меню выбора видимости столбцов. В данном приложении используется MenuBar
