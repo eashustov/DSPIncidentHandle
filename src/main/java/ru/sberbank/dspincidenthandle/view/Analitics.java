@@ -139,6 +139,10 @@ public class Analitics extends VerticalLayout {
     IncTop10Filter incTop10Filter;
 
     ComboBox<String> typeStatisticsComboBox;
+
+    //Обьявление ComboBox выбора типа ИТ услуги для прорисовки
+    ComboBox<String> typeAffectedItemComboBox;
+
     static Map<String, String> triggersSeverityComboBoxHumanItemsMap;
     Anchor downloadToCSV;
 
@@ -817,6 +821,20 @@ public class Analitics extends VerticalLayout {
         typeStatisticsComboBox.setAllowCustomValue(false);
         typeStatisticsComboBox.addThemeVariants(ComboBoxVariant.LUMO_SMALL);
 
+        //Выбор типа ИТ услуги
+        typeAffectedItemComboBox = new ComboBox<>();
+        typeAffectedItemComboBox.setLabel("Выбор услуги");
+        typeAffectedItemComboBox.setPlaceholder("Выбор услуги");
+        List<String> typeAffectedItemList = new ArrayList<>(incLabelsDataBar);
+        typeAffectedItemList.add(0, "Все");
+        typeAffectedItemComboBox.setItems(
+                typeAffectedItemList
+        );
+        typeAffectedItemComboBox.setValue("Все");
+        typeAffectedItemComboBox.setClearButtonVisible(false);
+        typeAffectedItemComboBox.setAllowCustomValue(false);
+        typeAffectedItemComboBox.addThemeVariants(ComboBoxVariant.LUMO_SMALL);
+
                 typeAnaliticsDataSelect.addValueChangeListener(e-> {
             renderChartsAnaliticsPrc();
         });
@@ -826,16 +844,21 @@ public class Analitics extends VerticalLayout {
             renderChartsAnaliticsPrc();
         });
 
+        //Блок прорисовки при измении тпа ИТ услуги
+        typeAffectedItemComboBox.addValueChangeListener(e-> {
+            renderChartsAnaliticsPrc();
+        });
+
         //Инициализация donut Chart сравнения инцидетов
         donutChartIncCompare = donutChartIncCompareInit(typeAnaliticsDataSelect.getValue());
 
         //Инициализация BarChart сравнения инцидентов
-        VerticalBarChartIncCompare = VerticalBarChartIncCompareInit(typeAnaliticsDataSelect.getValue());
+        VerticalBarChartIncCompare = VerticalBarChartIncCompareInit(typeAnaliticsDataSelect.getValue(), typeAffectedItemComboBox.getValue());
 
 
 
         HorizontalLayout IncCompareHeaderLayout = new HorizontalLayout(VerticalBarChartIncCoverHeader);
-        HorizontalLayout comboBoxLayout = new HorizontalLayout(typeAnaliticsDataSelect, typeStatisticsComboBox);
+        HorizontalLayout comboBoxLayout = new HorizontalLayout(typeAnaliticsDataSelect, typeStatisticsComboBox, typeAffectedItemComboBox);
         comboBoxLayout.setVerticalComponentAlignment(Alignment.START, typeStatisticsComboBox);
         setHorizontalComponentAlignment(Alignment.CENTER, comboBoxLayout);
         IncCompareHeaderLayout.setVerticalComponentAlignment(Alignment.END, VerticalBarChartIncCoverHeader);
@@ -852,7 +875,7 @@ public class Analitics extends VerticalLayout {
         if(!typeStatisticsComboBox.getValue().equals("Суммарно")) {
 //            System.out.println("По услугам ИТ");
             IncComparelayout.remove(donutChartIncCompare, VerticalBarChartIncCompare);
-            IncComparelayout.add(VerticalBarChartIncCompareInit(typeAnaliticsDataSelect.getValue()));
+            IncComparelayout.add(VerticalBarChartIncCompareInit(typeAnaliticsDataSelect.getValue(), typeAffectedItemComboBox.getValue()));
         }else {
 //            System.out.println("Суммарно");
             IncComparelayout.remove(VerticalBarChartIncCompare, donutChartIncCompare);
@@ -862,71 +885,115 @@ public class Analitics extends VerticalLayout {
 
     }
 
-    private ApexCharts VerticalBarChartIncCompareInit(String typeDataAnalitic) {
+    private ApexCharts VerticalBarChartIncCompareInit(String typeDataAnalitic, String affectedItem) {
 
-        switch (typeDataAnalitic){
-            case  ("Общая (ПРОМ + ТЕСТ)"):
+        switch (typeDataAnalitic) {
+            case ("Общая (ПРОМ + ТЕСТ)"):
 //                System.out.println("Общая (ПРОМ + ТЕСТ)");
                 incHandleSeriesDataBar = incHandleSeriesDataBarTotal;
                 incAutoSeriesDataBar = incAutoSeriesDataBarTotal;
                 break;
-            case  ("ПРОМ"):
+            case ("ПРОМ"):
 //                System.out.println("ПРОМ");
                 incHandleSeriesDataBar = incHandleSeriesDataBarProm;
                 incAutoSeriesDataBar = incAutoSeriesDataBarProm;
                 break;
-            case  ("ТЕСТ"):
+            case ("ТЕСТ"):
 //                System.out.println("ТЕСТ");
                 incHandleSeriesDataBar = incHandleSeriesDataBarTest;
                 incAutoSeriesDataBar = incAutoSeriesDataBarTest;
                 break;
         }
-
-        VerticalBarChartIncCompare = ApexChartsBuilder.get()
-                .withChart(ChartBuilder.get()
-                        .withType(Type.BAR)
-                        .withStacked(true)
-                        .withStackType(StackType.FULL)
-                        .build())
-                .withPlotOptions(PlotOptionsBuilder.get()
-                        .withBar(BarBuilder.get()
-                                .withHorizontal(false)
-                                .withColumnWidth("55%")
-                                .build())
-                        .build())
-                .withDataLabels(DataLabelsBuilder.get()
-                        .withEnabled(true).build())
-                .withStroke(StrokeBuilder.get()
-                        .withLineCap(LineCap.BUTT)
-                        .withCurve(Curve.SMOOTH)
-                        .withShow(true)
-                        .withWidth(2.0)
-                        .withColors("transparent")
-                        .build())
-                .withSeries(
-                        // Столбцы продуктов ДСП
-                        new Series<>("Автоматические", incAutoSeriesDataBar.stream().toArray(Double[]::new)),
-                        new Series<>( "Зар. вручную", incHandleSeriesDataBar.stream().toArray(Double[]::new)))
+        if (affectedItem.equals("Все")) {
+            VerticalBarChartIncCompare = ApexChartsBuilder.get()
+                    .withChart(ChartBuilder.get()
+                            .withType(Type.BAR)
+                            .withStacked(true)
+                            .withStackType(StackType.FULL)
+                            .build())
+                    .withPlotOptions(PlotOptionsBuilder.get()
+                            .withBar(BarBuilder.get()
+                                    .withHorizontal(false)
+                                    .withColumnWidth("55%")
+                                    .build())
+                            .build())
+                    .withDataLabels(DataLabelsBuilder.get()
+                            .withEnabled(true).build())
+                    .withStroke(StrokeBuilder.get()
+                            .withLineCap(LineCap.BUTT)
+                            .withCurve(Curve.SMOOTH)
+                            .withShow(true)
+                            .withWidth(2.0)
+                            .withColors("transparent")
+                            .build())
+                    .withSeries(
+                            // Столбцы продуктов ДСП
+                            new Series<>("Автоматические", incAutoSeriesDataBar.stream().toArray(Double[]::new)),
+                            new Series<>("Зар. вручную", incHandleSeriesDataBar.stream().toArray(Double[]::new)))
 //                        new Series<>("Автоматические", 90, 80, 70, 60, 50, 40),
 //                        new Series<>( "Зар. вручную", 10, 20, 30, 40, 50, 60))
-                        .withYaxis(YAxisBuilder.get()
-                        .withTitle(TitleBuilder.get()
-                                .withText("%")
-                                .build())
-                        .build())
+                    .withYaxis(YAxisBuilder.get()
+                            .withTitle(TitleBuilder.get()
+                                    .withText("%")
+                                    .build())
+                            .build())
 //                .withXaxis(XAxisBuilder.get().withCategories("SOWA", "Corax", "MQSeries", "DataPower", "Nginx", "WAS",
 //                        "WildFly", "WebLogic", "Siebel", "OpenShift").build())
-                .withXaxis(XAxisBuilder.get().withCategories(incLabelsDataBar.stream().toArray(String[]::new)).build())
-                .withFill(FillBuilder.get()
-                        .withOpacity(1.0).build())
-                .withTooltip(TooltipBuilder.get()
-                        .build())
-                .build();
-        VerticalBarChartIncCompare.setColors("#006400", "#FF0000");
-        VerticalBarChartIncCompare.setMaxWidth("100%");
-        VerticalBarChartIncCompare.setWidth("900px");
-        VerticalBarChartIncCompare.setMaxHeight("100%");
-        VerticalBarChartIncCompare.setHeight("550px");
+                    .withXaxis(XAxisBuilder.get().withCategories(incLabelsDataBar.stream().toArray(String[]::new)).build())
+                    .withFill(FillBuilder.get()
+                            .withOpacity(1.0).build())
+                    .withTooltip(TooltipBuilder.get()
+                            .build())
+                    .build();
+            VerticalBarChartIncCompare.setColors("#006400", "#FF0000");
+            VerticalBarChartIncCompare.setMaxWidth("100%");
+            VerticalBarChartIncCompare.setWidth("900px");
+            VerticalBarChartIncCompare.setMaxHeight("100%");
+            VerticalBarChartIncCompare.setHeight("550px");
+        }
+        else {
+            VerticalBarChartIncCompare = ApexChartsBuilder.get()
+                    .withChart(ChartBuilder.get()
+                            .withType(Type.BAR)
+                            .withStacked(true)
+                            .withStackType(StackType.FULL)
+                            .build())
+                    .withPlotOptions(PlotOptionsBuilder.get()
+                            .withBar(BarBuilder.get()
+                                    .withHorizontal(false)
+                                    .withColumnWidth("20%")
+                                    .build())
+                            .build())
+                    .withDataLabels(DataLabelsBuilder.get()
+                            .withEnabled(true).build())
+                    .withStroke(StrokeBuilder.get()
+                            .withLineCap(LineCap.BUTT)
+                            .withCurve(Curve.SMOOTH)
+                            .withShow(true)
+                            .withWidth(2.0)
+                            .withColors("transparent")
+                            .build())
+                    .withSeries(
+                            // Столбцы продуктов ДСП
+                            new Series<>("Автоматические", incAutoSeriesDataBar.get(incLabelsDataBar.indexOf(affectedItem))),
+                            new Series<>("Зар. вручную", incHandleSeriesDataBar.get(incLabelsDataBar.indexOf(affectedItem))))
+                    .withYaxis(YAxisBuilder.get()
+                            .withTitle(TitleBuilder.get()
+                                    .withText("%")
+                                    .build())
+                            .build())
+                    .withXaxis(XAxisBuilder.get().withCategories(affectedItem).build())
+                    .withFill(FillBuilder.get()
+                            .withOpacity(1.0).build())
+                    .withTooltip(TooltipBuilder.get()
+                            .build())
+                    .build();
+            VerticalBarChartIncCompare.setColors("#006400", "#FF0000");
+            VerticalBarChartIncCompare.setMaxWidth("100%");
+            VerticalBarChartIncCompare.setWidth("900px");
+            VerticalBarChartIncCompare.setMaxHeight("100%");
+            VerticalBarChartIncCompare.setHeight("550px");
+        }
 
         return VerticalBarChartIncCompare;
     }
