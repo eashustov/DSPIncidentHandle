@@ -879,10 +879,12 @@ public class Analitics extends VerticalLayout {
         }else {
 //            System.out.println("Суммарно");
             IncComparelayout.remove(VerticalBarChartIncCompare, donutChartIncCompare);
+            //Ниже функция инициализации BarChart вызывается для получения значений по каждой ИТ услуге
+            // для прорисовки бублика (donutChart)при смене типа данных Аналитики (ПРОМ, ТЕСТ)
+            VerticalBarChartIncCompareInit(typeAnaliticsDataSelect.getValue(), typeAffectedItemComboBox.getValue());
+            //Инициализация бублика (donutChart) аналитики
             IncComparelayout.add(donutChartIncCompareInit(typeAnaliticsDataSelect.getValue(), typeAffectedItemComboBox.getValue()));
         };
-
-
     }
 
     private ApexCharts VerticalBarChartIncCompareInit(String typeDataAnalitic, String affectedItem) {
