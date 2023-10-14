@@ -91,7 +91,7 @@ public class Analitics extends VerticalLayout {
     List<String> labelsDataDonut;
     List<Double> seriesDataDonut;
 
-    //Данные для BarChart по услугам ИТ
+    //Данные для BarChart по ИТ услугам
     List<String> incLabelsDataBar = Arrays.asList("Apache Kafka (CI02192117)", "IBM DataPower (CI02021290)",
             "IBM WebSphere Application Server (CI02021299)",
             "IBM WebSphere MQ (CI02021291)", "Nginx (CI02021302)", "SOWA (CI02192118)", "SynGX (CI04178739)",
@@ -814,7 +814,7 @@ public class Analitics extends VerticalLayout {
         typeStatisticsComboBox.setPlaceholder("Выбор типа статистики");
         typeStatisticsComboBox.setItems(
                 "Суммарно",
-                "По услугам ИТ"
+                "По ИТ услугам"
                 );
         typeStatisticsComboBox.setValue("Суммарно");
         typeStatisticsComboBox.setClearButtonVisible(false);
@@ -823,8 +823,8 @@ public class Analitics extends VerticalLayout {
 
         //Выбор типа ИТ услуги
         typeAffectedItemComboBox = new ComboBox<>();
-        typeAffectedItemComboBox.setLabel("Выбор услуги");
-        typeAffectedItemComboBox.setPlaceholder("Выбор услуги");
+        typeAffectedItemComboBox.setLabel("Выбор ИТ услуги");
+        typeAffectedItemComboBox.setPlaceholder("Выбор ИТ услуги");
         List<String> typeAffectedItemList = new ArrayList<>(incLabelsDataBar);
         typeAffectedItemList.add(0, "Все");
         typeAffectedItemComboBox.setItems(
@@ -839,7 +839,7 @@ public class Analitics extends VerticalLayout {
             renderChartsAnaliticsPrc();
         });
 
-        //Блок прорисовки при измении тпа аналитики - Суммарно, По услугам ИТ
+        //Блок прорисовки при измении тпа аналитики - Суммарно, По ИТ услугам
         typeStatisticsComboBox.addValueChangeListener(e-> {
             renderChartsAnaliticsPrc();
         });
@@ -850,7 +850,7 @@ public class Analitics extends VerticalLayout {
         });
 
         //Инициализация donut Chart сравнения инцидетов
-        donutChartIncCompare = donutChartIncCompareInit(typeAnaliticsDataSelect.getValue());
+        donutChartIncCompare = donutChartIncCompareInit(typeAnaliticsDataSelect.getValue(), typeAffectedItemComboBox.getValue());
 
         //Инициализация BarChart сравнения инцидентов
         VerticalBarChartIncCompare = VerticalBarChartIncCompareInit(typeAnaliticsDataSelect.getValue(), typeAffectedItemComboBox.getValue());
@@ -873,13 +873,13 @@ public class Analitics extends VerticalLayout {
     private void renderChartsAnaliticsPrc(){
 
         if(!typeStatisticsComboBox.getValue().equals("Суммарно")) {
-//            System.out.println("По услугам ИТ");
+//            System.out.println("По ИТ услугам");
             IncComparelayout.remove(donutChartIncCompare, VerticalBarChartIncCompare);
             IncComparelayout.add(VerticalBarChartIncCompareInit(typeAnaliticsDataSelect.getValue(), typeAffectedItemComboBox.getValue()));
         }else {
 //            System.out.println("Суммарно");
             IncComparelayout.remove(VerticalBarChartIncCompare, donutChartIncCompare);
-            IncComparelayout.add(donutChartIncCompareInit(typeAnaliticsDataSelect.getValue()));
+            IncComparelayout.add(donutChartIncCompareInit(typeAnaliticsDataSelect.getValue(), typeAffectedItemComboBox.getValue()));
         };
 
 
@@ -961,7 +961,7 @@ public class Analitics extends VerticalLayout {
                     .withPlotOptions(PlotOptionsBuilder.get()
                             .withBar(BarBuilder.get()
                                     .withHorizontal(false)
-                                    .withColumnWidth("20%")
+                                    .withColumnWidth("15%")
                                     .build())
                             .build())
                     .withDataLabels(DataLabelsBuilder.get()
@@ -998,7 +998,7 @@ public class Analitics extends VerticalLayout {
         return VerticalBarChartIncCompare;
     }
 
-    private ApexCharts donutChartIncCompareInit(String typeDataAnalitic){
+    private ApexCharts donutChartIncCompareInit(String typeDataAnalitic, String affectedItem){
 //        String periodDate = start_Date.getValue().format(europeanDateFormatter) + " - " + end_Date.getValue().format(europeanDateFormatter);
 
         switch (typeDataAnalitic){
@@ -1022,64 +1022,120 @@ public class Analitics extends VerticalLayout {
                 break;
         }
 
-
-        donutChartIncCompare = ApexChartsBuilder.get()
-                .withChart(ChartBuilder.get().withType(Type.DONUT)
-                        .withZoom(ZoomBuilder.get()
-                                .withEnabled(true)
-                                .withAutoScaleYaxis(true)
-                                .build())
-                        .withToolbar(ToolbarBuilder.get()
-                                .withShow(true)
-                                .withTools(new Tools())
-                                .build())
+        if (affectedItem.equals("Все")) {
+            donutChartIncCompare = ApexChartsBuilder.get()
+                    .withChart(ChartBuilder.get().withType(Type.DONUT)
+                            .withZoom(ZoomBuilder.get()
+                                    .withEnabled(true)
+                                    .withAutoScaleYaxis(true)
+                                    .build())
+                            .withToolbar(ToolbarBuilder.get()
+                                    .withShow(true)
+                                    .withTools(new Tools())
+                                    .build())
 //                        .withOffsetX(-100.0)
-                        .withOffsetY(0.0) //-30 Это смешение вверх
-                        .build())
+                            .withOffsetY(0.0) //-30 Это смешение вверх
+                            .build())
 //                .withTitle(TitleSubtitleBuilder.get()
 //                        .withText("Процентное соотношение инцидентов (автоматические/зарег. вручную) за период " + periodDate)
 //                        .withAlign(Align.center)
 //                        .build())
-                .withPlotOptions(PlotOptionsBuilder.get().withPie(PieBuilder.get()
-                        .withDonut(DonutBuilder.get()
-                                .withLabels(LabelsBuilder.get()
-                                        .withShow(true)
-                                        .withName(NameBuilder.get().withShow(true).build())
-                                        .withTotal(TotalBuilder.get().withShow(true).withLabel("Всего")
-                                                .withColor("#000000").build())
-                                        .build())
-                                .build())
-                        .build())
-                        .build())
-                .withLegend(LegendBuilder.get()
-                        .withPosition(Position.BOTTOM)
-                        .withHorizontalAlign(HorizontalAlign.CENTER)
+                    .withPlotOptions(PlotOptionsBuilder.get().withPie(PieBuilder.get()
+                            .withDonut(DonutBuilder.get()
+                                    .withLabels(LabelsBuilder.get()
+                                            .withShow(true)
+                                            .withName(NameBuilder.get().withShow(true).build())
+                                            .withTotal(TotalBuilder.get().withShow(true).withLabel("Всего")
+                                                    .withColor("#000000").build())
+                                            .build())
+                                    .build())
+                            .build())
+                            .build())
+                    .withLegend(LegendBuilder.get()
+                            .withPosition(Position.BOTTOM)
+                            .withHorizontalAlign(HorizontalAlign.CENTER)
 //                        .withHeight(10.0)
 //                        .withFloating(true)
 //                        .withFontSize("15")
 //                        .withOffsetX(0.0)
-                        .withOffsetY(5.0)
-                        .build())
+                            .withOffsetY(5.0)
+                            .build())
 //                .withSeries(incAutomaticPrc, incHandlePrc)
 //                .withLabels("Автоматические", "Зарег. вручную")
-                .withSeries(new ArrayList<Double>(Arrays.asList(incAutomaticDonutCount, incHandleDonutCount)).stream()
-                .toArray(Double[]::new))
-                .withLabels(incLabelsDataDonut.stream().toArray(String[]::new))
-                .withResponsive(ResponsiveBuilder.get()
-                        .withBreakpoint(480.0)
-                        .withOptions(OptionsBuilder.get()
-                                .withLegend(LegendBuilder.get()
-                                        .withPosition(Position.BOTTOM)
-                                        .build())
-                                .build())
-                        .build())
-                .build();
+                    .withSeries(new ArrayList<Double>(Arrays.asList(incAutomaticDonutCount, incHandleDonutCount)).stream()
+                            .toArray(Double[]::new))
+                    .withLabels(incLabelsDataDonut.stream().toArray(String[]::new))
+                    .withResponsive(ResponsiveBuilder.get()
+                            .withBreakpoint(480.0)
+                            .withOptions(OptionsBuilder.get()
+                                    .withLegend(LegendBuilder.get()
+                                            .withPosition(Position.BOTTOM)
+                                            .build())
+                                    .build())
+                            .build())
+                    .build();
 
-        donutChartIncCompare.setColors("#006400","#FF0000");
-        donutChartIncCompare.setMaxWidth("100%");
-        donutChartIncCompare.setWidth("900px");
-        donutChartIncCompare.setMaxHeight("100%");
-        donutChartIncCompare.setHeight("550px");
+            donutChartIncCompare.setColors("#006400", "#FF0000");
+            donutChartIncCompare.setMaxWidth("100%");
+            donutChartIncCompare.setWidth("900px");
+            donutChartIncCompare.setMaxHeight("100%");
+            donutChartIncCompare.setHeight("550px");
+
+        }
+        else {
+            donutChartIncCompare = ApexChartsBuilder.get()
+                    .withChart(ChartBuilder.get().withType(Type.DONUT)
+                            .withZoom(ZoomBuilder.get()
+                                    .withEnabled(true)
+                                    .withAutoScaleYaxis(true)
+                                    .build())
+                            .withToolbar(ToolbarBuilder.get()
+                                    .withShow(true)
+                                    .withTools(new Tools())
+                                    .build())
+//                        .withOffsetX(-100.0)
+                            .withOffsetY(0.0) //-30 Это смешение вверх
+                            .build())
+                    .withTitle(TitleSubtitleBuilder.get()
+                            .withText(affectedItem)
+                            .withAlign(Align.CENTER)
+                            .build())
+                    .withPlotOptions(PlotOptionsBuilder.get().withPie(PieBuilder.get()
+                            .withDonut(DonutBuilder.get()
+                                    .withLabels(LabelsBuilder.get()
+                                            .withShow(true)
+                                            .withName(NameBuilder.get().withShow(true).build())
+                                            .withTotal(TotalBuilder.get().withShow(true).withLabel("Всего")
+                                                    .withColor("#000000").build())
+                                            .build())
+                                    .build())
+                            .build())
+                            .build())
+                    .withLegend(LegendBuilder.get()
+                            .withPosition(Position.BOTTOM)
+                            .withHorizontalAlign(HorizontalAlign.CENTER)
+                            .withOffsetY(5.0)
+                            .build())
+                    .withSeries(new ArrayList<Double>(Arrays.asList(incAutoSeriesDataBar.get(incLabelsDataBar.indexOf(affectedItem)),
+                            incHandleSeriesDataBar.get(incLabelsDataBar.indexOf(affectedItem)))).stream()
+                            .toArray(Double[]::new))
+                    .withLabels(incLabelsDataDonut.stream().toArray(String[]::new))
+                    .withResponsive(ResponsiveBuilder.get()
+                            .withBreakpoint(480.0)
+                            .withOptions(OptionsBuilder.get()
+                                    .withLegend(LegendBuilder.get()
+                                            .withPosition(Position.BOTTOM)
+                                            .build())
+                                    .build())
+                            .build())
+                    .build();
+
+            donutChartIncCompare.setColors("#006400", "#FF0000");
+            donutChartIncCompare.setMaxWidth("100%");
+            donutChartIncCompare.setWidth("900px");
+            donutChartIncCompare.setMaxHeight("100%");
+            donutChartIncCompare.setHeight("550px");
+        }
 
         return donutChartIncCompare;
     }
