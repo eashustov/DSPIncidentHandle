@@ -841,6 +841,7 @@ public class Analitics extends VerticalLayout {
 
         //Блок прорисовки при измении тпа аналитики - Суммарно, По ИТ услугам
         typeStatisticsComboBox.addValueChangeListener(e-> {
+            typeAffectedItemComboBox.setValue("Все");
             renderChartsAnaliticsPrc();
         });
 
@@ -1038,10 +1039,10 @@ public class Analitics extends VerticalLayout {
 //                        .withOffsetX(-100.0)
                             .withOffsetY(0.0) //-30 Это смешение вверх
                             .build())
-//                .withTitle(TitleSubtitleBuilder.get()
-//                        .withText("Процентное соотношение инцидентов (автоматические/зарег. вручную) за период " + periodDate)
-//                        .withAlign(Align.center)
-//                        .build())
+                            .withTitle(TitleSubtitleBuilder.get()
+                            .withText("Все ИТ услуги")
+                            .withAlign(Align.CENTER)
+                            .build())
                     .withPlotOptions(PlotOptionsBuilder.get().withPie(PieBuilder.get()
                             .withDonut(DonutBuilder.get()
                                     .withLabels(LabelsBuilder.get()
