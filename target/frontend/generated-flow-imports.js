@@ -26,6 +26,7 @@ import '@vaadin/flow-frontend/gridConnector.js';
 import '@vaadin/flow-frontend/lit-renderer.ts';
 import '@vaadin/flow-frontend/lumo-includes.ts';
 import '@vaadin/flow-frontend/menubarConnector.js';
+import '@vaadin/flow-frontend/multiselectComboBoxConnector.js';
 import '@vaadin/flow-frontend/vaadin-grid-flow-selection-column.js';
 import '@vaadin/form-layout/theme/lumo/vaadin-form-item.js';
 import '@vaadin/form-layout/theme/lumo/vaadin-form-layout.js';
@@ -49,6 +50,7 @@ import '@vaadin/vaadin-lumo-styles/spacing.js';
 import '@vaadin/vaadin-lumo-styles/style.js';
 import '@vaadin/vaadin-lumo-styles/typography.js';
 import '@vaadin/vertical-layout/theme/lumo/vaadin-vertical-layout.js';
+import 'multiselect-combo-box/theme/lumo/multiselect-combo-box.js';
 let thisScript;
 const elements = document.getElementsByTagName('script');
 for (let i = 0; i < elements.length; i++) {

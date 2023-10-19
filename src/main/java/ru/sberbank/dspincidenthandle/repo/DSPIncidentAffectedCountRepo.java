@@ -48,7 +48,7 @@ public interface DSPIncidentAffectedCountRepo extends CrudRepository<DSPIncident
             "       'SberInfra Сопровождение Платформы управления контейнерами (Косов М.В.)')\n" +
             "  and HPC_AFFECTED_ITEM_NAME in\n" +
             "      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',\n" +
-            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)', 'Apache Kafka (CI02192117)',\n" +
+            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)','«Platform V Corax» (CI04085569)', 'Apache Kafka (CI02192117)',\n" +
             "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
             "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
             "       'SynGX (CI04178739)')\n" +
@@ -99,7 +99,7 @@ public interface DSPIncidentAffectedCountRepo extends CrudRepository<DSPIncident
             "       'SberInfra Сопровождение Платформы управления контейнерами (Косов М.В.)')\n" +
             "  and HPC_AFFECTED_ITEM_NAME in\n" +
             "      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',\n" +
-            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)', 'Apache Kafka (CI02192117)',\n" +
+            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)','«Platform V Corax» (CI04085569)', 'Apache Kafka (CI02192117)',\n" +
             "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
             "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
             "       'SynGX (CI04178739)')\n" +
@@ -138,7 +138,7 @@ public interface DSPIncidentAffectedCountRepo extends CrudRepository<DSPIncident
             "       'SberInfra Сопровождение Платформы управления контейнерами (Косов М.В.)')\n" +
             "  and HPC_AFFECTED_ITEM_NAME in\n" +
             "      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',\n" +
-            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)', 'Apache Kafka (CI02192117)',\n" +
+            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)','«Platform V Corax» (CI04085569)', 'Apache Kafka (CI02192117)',\n" +
             "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
             "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
             "       'SynGX (CI04178739)')\n" +
@@ -177,7 +177,7 @@ public interface DSPIncidentAffectedCountRepo extends CrudRepository<DSPIncident
             "       'SberInfra Сопровождение Платформы управления контейнерами (Косов М.В.)')\n" +
             "  and HPC_AFFECTED_ITEM_NAME in\n" +
             "      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',\n" +
-            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)', 'Apache Kafka (CI02192117)',\n" +
+            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)','«Platform V Corax» (CI04085569)', 'Apache Kafka (CI02192117)',\n" +
             "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
             "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
             "       'SynGX (CI04178739)')\n" +
@@ -228,7 +228,7 @@ public interface DSPIncidentAffectedCountRepo extends CrudRepository<DSPIncident
             "       'SberInfra Сопровождение Платформы управления контейнерами (Косов М.В.)')\n" +
             "  and HPC_AFFECTED_ITEM_NAME in\n" +
             "      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',\n" +
-            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)', 'Apache Kafka (CI02192117)',\n" +
+            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)','«Platform V Corax» (CI04085569)', 'Apache Kafka (CI02192117)',\n" +
             "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
             "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
             "       'SynGX (CI04178739)')\n" +
@@ -267,7 +267,7 @@ public interface DSPIncidentAffectedCountRepo extends CrudRepository<DSPIncident
             "       'SberInfra Сопровождение Платформы управления контейнерами (Косов М.В.)')\n" +
             "  and HPC_AFFECTED_ITEM_NAME in\n" +
             "      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',\n" +
-            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)', 'Apache Kafka (CI02192117)',\n" +
+            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)','«Platform V Corax» (CI04085569)', 'Apache Kafka (CI02192117)',\n" +
             "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
             "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
             "       'SynGX (CI04178739)')\n" +
@@ -306,7 +306,7 @@ public interface DSPIncidentAffectedCountRepo extends CrudRepository<DSPIncident
             "       'SberInfra Сопровождение Платформы управления контейнерами (Косов М.В.)')\n" +
             "  and HPC_AFFECTED_ITEM_NAME in\n" +
             "      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',\n" +
-            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)', 'Apache Kafka (CI02192117)',\n" +
+            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)','«Platform V Corax» (CI04085569)', 'Apache Kafka (CI02192117)',\n" +
             "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
             "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
             "       'SynGX (CI04178739)')\n" +

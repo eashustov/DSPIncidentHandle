@@ -120,6 +120,7 @@
     "construct-style-sheets-polyfill": "3.0.4",
     "date-fns": "2.23.0",
     "lit": "2.1.4",
+    "multiselect-combo-box": "3.0.0-alpha.2",
     "onecolor": "3.1.0"
   },
   "devDependencies": {
@@ -263,6 +264,7 @@
       "construct-style-sheets-polyfill": "3.0.4",
       "date-fns": "2.23.0",
       "lit": "2.1.4",
+      "multiselect-combo-box": "3.0.0-alpha.2",
       "onecolor": "3.1.0"
     },
     "devDependencies": {
@@ -287,7 +289,7 @@
       "workbox-precaching": "6.5.0",
       "workbox-webpack-plugin": "6.5.0"
     },
-    "hash": "6fc9912c0dba43bbd5037e068998249d1fa2cc217a47ee9ee96f36e3ba425329"
+    "hash": "473072820c9dac371407c3ce80c3c90ea5da3743ddc593d138c6e6bb426acae7"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
