@@ -1,0 +1,16 @@
+{
+  "frontendFolder": "/home/eshustov/IdeaProjects/DSPIncidentHandle/./frontend",
+  "themeFolder": "themes",
+  "themeResourceFolder": "/home/eshustov/IdeaProjects/DSPIncidentHandle/./frontend/generated/jar-resources",
+  "staticOutput": "/home/eshustov/IdeaProjects/DSPIncidentHandle/target/classes/META-INF/VAADIN/webapp/VAADIN/static",
+  "generatedFolder": "generated",
+  "statsOutput": "/home/eshustov/IdeaProjects/DSPIncidentHandle/target/classes/META-INF/VAADIN/config",
+  "frontendBundleOutput": "/home/eshustov/IdeaProjects/DSPIncidentHandle/target/classes/META-INF/VAADIN/webapp",
+  "jarResourcesFolder": "/home/eshustov/IdeaProjects/DSPIncidentHandle/./frontend/generated/jar-resources",
+  "generatedFlowImportsFolder": "target/frontend",
+  "themeName": "",
+  "clientServiceWorkerSource": "/home/eshustov/IdeaProjects/DSPIncidentHandle/target/sw.ts",
+  "pwaEnabled": false,
+  "offlineEnabled": false,
+  "offlinePath": "'offline.html'"
+}
