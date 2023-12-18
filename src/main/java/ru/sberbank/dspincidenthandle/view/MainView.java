@@ -19,14 +19,12 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.grid.dataview.GridListDataView;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -39,6 +37,9 @@ import com.vaadin.flow.server.StreamResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.sberbank.dspincidenthandle.domain.DSPIncidentData;
 import ru.sberbank.dspincidenthandle.repo.DSPIncidentRepo;
+import ru.sberbank.dspincidenthandle.security.SecurityService;
+
+import javax.annotation.security.PermitAll;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.time.LocalDate;
@@ -49,12 +50,13 @@ import java.util.HashSet;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-
+@PermitAll
 @Route
 @PageTitle("Инциденты ДСП зарегистрированные вручную")
 //Сохранение состояния таблицы при обновлении
 //@PreserveOnRefresh
 public class MainView extends VerticalLayout {
+    private final SecurityService securityService;
 
     private H4 header;
     @Autowired
@@ -74,7 +76,8 @@ public class MainView extends VerticalLayout {
     MenuBar menuBar = new MenuBar();
 
 
-    public MainView(DSPIncidentRepo repo) {
+    public MainView(DSPIncidentRepo repo, SecurityService securityService) {
+        this.securityService = securityService;
 
         LocalDate now = LocalDate.now(ZoneId.systemDefault());
         start_Date = new DatePicker("Начало");
@@ -95,6 +98,7 @@ public class MainView extends VerticalLayout {
 
 
         this.repo = repo;
+        createLogoutButton();
         this.header = new H4("Инциденты ДСП зарегистрированные вручную за период");
 
         //        Export to CSV list of kafka servers
@@ -197,7 +201,41 @@ public class MainView extends VerticalLayout {
 //            clusterNameDownloadToCSV.setHref(CreateKafkaClusterName.getKafkaClusterName());
             add(grid, incCount, filteredCount);
         });
+
     }
+
+//    Метод инициализации заголовка и кнопки выхода и вертикального меню
+private void createLogoutButton() {
+    H4 logout_space = new H4(" ");
+//    Работает с vaadin 24.2.4
+//    logo.addClassNames(
+//            Lumo.FontSize.LARGE,
+//            LumoUtility.Margin.MEDIUM);
+
+    String u = securityService.getAuthenticatedUser().getUsername();
+    Button logout = new Button("Выход " + u, e -> securityService.logout());
+
+//    var header = new HorizontalLayout(new DrawerToggle(), logo, logout); Здесь заголовок с меню DrawerToggle().
+    var logoutLayout = new HorizontalLayout(logout_space,logout);
+    logoutLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+    logoutLayout.setWidthFull();
+    logoutLayout.expand(logout_space); //Сдвинуть кнопку Выход далеко вправо
+
+    //    Работает с vaadin 24.2.4
+//    header.addClassNames(
+//            LumoUtility.Padding.Vertical.NONE,
+//            LumoUtility.Padding.Horizontal.MEDIUM);
+
+    add(logoutLayout);
+
+}
+//Метод прорисовки бокового меню.
+//    private void createDrawer() {
+//        addToDrawer(new VerticalLayout(
+//                new RouterLink("List", ListView.class),
+//                new RouterLink("Dashboard", DashboardView.class)
+//        ));
+//    }
 
 //Метод инициализации таблицы
     void gridInit() {
@@ -284,7 +322,7 @@ public class MainView extends VerticalLayout {
         headerRow.getCell(ACTION)
                 .setComponent(createFilterHeader("Подробное описание", incFilter::setAction));
         headerRow.getCell(PROM)
-                .setComponent(FilterActiveIncident.createFilterHeader("Пром; Тест",
+                .setComponent(FilterActiveIncident.createFilterHeader("Да; Нет",
                         incFilter::setProm, new HashSet<>(Arrays.asList("Пром", "Тест")), "Пром; Тест"));
 
         //Column Visibility
@@ -316,6 +354,7 @@ public class MainView extends VerticalLayout {
             remove(filteredCount);
             filteredCount.setText("Отфильтровано: " + incFilter.dataViewFiltered.getItemCount());
             add(filteredCount);
+            System.out.println("Отфильтровано: " + incFilter.dataViewFiltered.getItemCount());
         });
 
     }

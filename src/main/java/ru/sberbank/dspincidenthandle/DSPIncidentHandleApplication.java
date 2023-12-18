@@ -12,18 +12,16 @@ public class DSPIncidentHandleApplication {
     private static ConfigurableApplicationContext context;
 
 
-
    //gcInterval
     public static int gcInterval;
 
-    @Value("${gc.interval}")
+    @Value("${gcInterval}")
     private void setGCInterval(int gc_Interval) {
         gcInterval = gc_Interval;
     }
 
     public static void main(String[] args) {
         context = SpringApplication.run(DSPIncidentHandleApplication.class, args);
-
 
         HeapControl ();
 
@@ -74,5 +72,5 @@ public class DSPIncidentHandleApplication {
         thread.start();
     }
 
-
 }
+

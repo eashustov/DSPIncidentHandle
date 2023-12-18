@@ -40,6 +40,7 @@ import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
@@ -51,14 +52,16 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.gatanaso.MultiselectComboBox;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import ru.sberbank.dspincidenthandle.domain.IDSPIncidentAffectedDataCount;
 import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataCountPerMonth;
 import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataTop10;
 import ru.sberbank.dspincidenthandle.domain.DSPIncidentData;
 import ru.sberbank.dspincidenthandle.repo.*;
 import ru.sberbank.dspincidenthandle.service.ExporToCSV;
+import ru.sberbank.dspincidenthandle.security.SecurityService;
 
+import javax.annotation.security.PermitAll;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -69,11 +72,12 @@ import java.util.stream.Collectors;
 
 import static ru.sberbank.dspincidenthandle.service.ExporToCSV.exportToCSV;
 
-
+@PermitAll
 @Route(value = "analitics")
 @PageTitle("Аналитика инцидентов ДСП зарегистрированных вручную")
 
 public class Analitics extends VerticalLayout {
+    private final SecurityService securityService;
     private H4 header;
     ApexCharts donutChart;
     ApexCharts lineChart;
@@ -140,7 +144,7 @@ public class Analitics extends VerticalLayout {
     ComboBox<String> typeStatisticsComboBox;
 
     //Обьявление MultiComboBox выбора типа ИТ услуги для прорисовки
-    MultiselectComboBox<String> typeAffectedItemMultiComboBox;
+    MultiSelectComboBox<String> typeAffectedItemMultiComboBox;
 
     //Обьявление ComboBox выбора списка типа ИТ услуги для прорисовки
     List <String> selectedAffectedItemList;
@@ -168,11 +172,12 @@ public class Analitics extends VerticalLayout {
     VerticalLayout top10Inclayout;
 
 
-    public Analitics(DSPIncidentAffectedCountRepo incidentAffectedDataTotalCountRepo,
+    public Analitics(SecurityService securityService, DSPIncidentAffectedCountRepo incidentAffectedDataTotalCountRepo,
                      DSPIncidentCountPerMonthRepo incidentDataCountPerMonthRepo,
                      DSPIncidentAnaliticsRepo incidentAnaliticsRepo,
                      DSPIncidentTop10Repo incidentDataTop10Repo, DSPIncidentPrcCountRepo incidentPrcCountRepo,
                      DSPIncidentRepo incidentRepo) {
+        this.securityService = securityService;
         this.header = new H4("Аналитика инцидентов ДСП зарегистрированных вручную за период");
         setHorizontalComponentAlignment(Alignment.CENTER, header);
         LocalDate now = LocalDate.now(ZoneId.systemDefault());
@@ -194,6 +199,9 @@ public class Analitics extends VerticalLayout {
         this.incidentDataTop10Repo = incidentDataTop10Repo;
         this.incidentPrcCountRepo = incidentPrcCountRepo;
         this.incidentRepo = incidentRepo;
+
+        //    Метод инициализации заголовка и кнопки выхода
+        createLogoutButton();
 
         //Кнопка поиска
         TextField searchField = new TextField();
@@ -218,10 +226,11 @@ public class Analitics extends VerticalLayout {
         downloadToCSV.add(buttonDownloadCSV);
 
         //Выбор типа ИТ услуги - Мультивыбор
-        typeAffectedItemMultiComboBox = new MultiselectComboBox();
+        typeAffectedItemMultiComboBox = new MultiSelectComboBox();
         typeAffectedItemList.add(0, "Все");
         typeAffectedItemMultiComboBox.setItems(typeAffectedItemList);
         typeAffectedItemMultiComboBox.setPlaceholder("Выбор ИТ услуги");
+
 
         //Отображение. Добавление компонентов
 
@@ -295,6 +304,32 @@ public class Analitics extends VerticalLayout {
             add(formLayout);
 
         });
+
+    }
+
+    //    Метод инициализации заголовка и кнопки выхода
+    private void createLogoutButton() {
+        H4 logout_space = new H4(" ");
+//    Работает с vaadin 24.2.4
+//    logo.addClassNames(
+//            Lumo.FontSize.LARGE,
+//            LumoUtility.Margin.MEDIUM);
+
+        String u = securityService.getAuthenticatedUser().getUsername();
+        Button logout = new Button("Выход " + u, e -> securityService.logout());
+
+        var logoutLayout = new HorizontalLayout(logout_space,logout);
+        logoutLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        logoutLayout.setWidthFull();
+        logoutLayout.expand(logout_space);
+//    header.setWidthFull();
+
+        //    Работает с vaadin 24.2.4
+//    header.addClassNames(
+//            LumoUtility.Padding.Vertical.NONE,
+//            LumoUtility.Padding.Horizontal.MEDIUM);
+
+        add(logoutLayout);
 
     }
 

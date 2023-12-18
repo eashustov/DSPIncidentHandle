@@ -26,7 +26,6 @@ import '@vaadin/grid/theme/lumo/vaadin-grid-tree-toggle.js';
 import '@vaadin/integer-field/theme/lumo/vaadin-integer-field.js';
 import '@vaadin/item/theme/lumo/vaadin-item.js';
 import '@vaadin/list-box/theme/lumo/vaadin-list-box.js';
-import '@vaadin/login/theme/lumo/vaadin-login-form.js';
 import '@vaadin/login/theme/lumo/vaadin-login-overlay.js';
 import '@vaadin/message-input/theme/lumo/vaadin-message-input.js';
 import '@vaadin/message-list/theme/lumo/vaadin-message-list.js';

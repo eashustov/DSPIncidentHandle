@@ -3,7 +3,6 @@ package ru.sberbank.dspincidenthandle.repo;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 import ru.sberbank.dspincidenthandle.domain.DSPIncidentData;
 import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataCountPerMonth;
 
@@ -11,55 +10,101 @@ import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataCountPerMonth;
 
 import java.util.List;
 
-@Repository
 public interface DSPIncidentCountPerMonthRepo extends CrudRepository<DSPIncidentData, String> {
 
-    @Query(value = "select HPC_AFFECTED_ITEM_NAME, to_char(\"PLAN_OPEN\", 'Month') AS \"MONTH\",\n" +
-            "  to_char(\"PLAN_OPEN\", 'MM') AS \"MONTH_NUMBER\", to_char(\"PLAN_OPEN\", 'YYYY') AS \"YEAR\",\n" +
-            "  COUNT (\"NUMBER\")AS \"COUNT_INC\"\n" +
-            "from (\n" +
-            "         select \n" +
-            "                \"NUMBER\",\n" +
-            "                HPC_AFFECTED_ITEM_NAME,\n" +
-            "                OPEN_TIME as PLAN_OPEN,\n" +
-            "                HPC_CREATED_BY,\n" +
-            "                HPC_STATUS,\n" +
-            "                HPC_ASSIGNMENT_NAME\n" +
-            "                \t\t\t\t\n" +
-            "         from SMPRIMARY.PROBSUMMARYM1\n" +
-            "         union all\n" +
-            "         select \n" +
-            "                \"NUMBER\",\n" +
-            "                 HPC_AFFECTED_ITEM_NAME,\n" +
-            "                OPEN_TIME as PLAN_OPEN,\n" +
-            "                HPC_CREATED_BY,\n" +
-            "                HPC_STATUS,\n" +
-            "                HPC_ASSIGNMENT_NAME\n" +
-            "                \n" +
-            "         from SMPRIMARY.SBPROBSUMMARYTSM1\n" +
-            "      )\n" +
-            "where HPC_ASSIGNMENT_NAME in\n" +
-            "      ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',\n" +
-            "       'SberInfra УСП Шлюзовые решения (Шитиков В.Е.)', 'SberInfra УСП Интеграционные платформы (Гоголев К.Ю.)',\n" +
-            "       'SberInfra УСП Серверы приложений (Мутин Д.И.)', 'SberInfra УСП Дежурная смена (Зайцев А.М.)',\n" +
-            "       'SberInfra Сопровождение Платформы управления контейнерами (Косов М.В.)')\n" +
-            "  and HPC_AFFECTED_ITEM_NAME in\n" +
-            "      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',\n" +
-            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)','«Platform V Corax» (CI04085569)', 'Apache Kafka (CI02192117)',\n" +
-            "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
-            "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
-            "       'SynGX (CI04178739)')\n" +
-            "  and HPC_STATUS in\n" +
-            "      (\n" +
-            "       '6 Выполнен',\n" +
-            "       '5 Выполнен',\n" +
-            "       '6 Закрыт'\n" +
-            "          )\n" +
-            "  and HPC_CREATED_BY not in ('Технологический пользователь АС ZABBIX_SI (00738651)'," +
-            " 'INT_SC_SERVICE_PROXY (756759)', 'INT_SC_SERVICE_PROXY (00563040)') \n" +
-            "  and TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
-            "  GROUP BY HPC_AFFECTED_ITEM_NAME, to_char(\"PLAN_OPEN\", 'Month'), to_char(\"PLAN_OPEN\", 'MM'), to_char(\"PLAN_OPEN\", 'YYYY')\n" +
-            "ORDER BY HPC_AFFECTED_ITEM_NAME, \"YEAR\", \"MONTH_NUMBER\" ASC", nativeQuery = true)
+//       @Override
+//    @Query(value = "SELECT\n" +
+//            "\t\"HPC_ASSIGNMENT\", to_char(\"OPEN_TIME\", 'Month') AS \"MONTH\",  to_char(\"OPEN_TIME\", 'MM') AS \"MONTH_NUMBER\", to_char(\"OPEN_TIME\", 'YYYY') AS \"YEAR\", COUNT (\"NUMBER\")AS \"COUNT_INC\"\n" +
+//            "FROM\n" +
+//            "\t(\tSELECT\n" +
+//            "\t\t\tprob1.\"NUMBER\",\n" +
+//            "\t\t\tBRIEF_DESCRIPTION,\n" +
+//            "\t\t\tPRIORITY_CODE,\n" +
+//            "\t\t\tOPEN_TIME,\n" +
+//            "\t\t\tto_char(ACTION)                                                           \n" +
+//            "\t\t\tAS ACTION,\n" +
+//            "\t\t\tREGEXP_SUBSTR(REGEXP_SUBSTR(to_char(ACTION), '^.*(\\s.*){6}.*'), \n" +
+//            "\t\t\t'htt.*$') AS ZABBIX_HISTORY,\n" +
+//            "\t\tREPLACE\n" +
+//            "\t\t\t(\n" +
+//            "\t\t\t\tREGEXP_SUBSTR(REGEXP_SUBSTR(to_char(ACTION), '^.*(\\s.*){4}.*'), \n" +
+//            "\t\t\t\t'Хост:\\s.*$'),\n" +
+//            "\t\t\t\t'Хост: '\n" +
+//            "\t\t\t)\n" +
+//            "\t\t\tAS HOST,\n" +
+//            "\t\t\tREGEXP_SUBSTR(REGEXP_SUBSTR(to_char(ACTION),\n" +
+//            "\t'^.*(\\s.*){1}.*'),\n" +
+//            "\t'Проблема.*$')                                                              \n" +
+//            "\tAS PROBLEM,\n" +
+//            "\tHPC_STATUS,\n" +
+//            "\tsubstr(prob1.hpc_assignee_name, 1, instr(prob1.hpc_assignee_name, '(') - 2) \n" +
+//            "\tAS HPC_ASSIGNEE_NAME,\n" +
+//            "\tsubstr(prob1.hpc_assignment, 1, instr(prob1.hpc_assignment, '(') - 2 )      \n" +
+//            "\tAS HPC_ASSIGNMENT,\n" +
+//            "\tHPC_CREATED_BY_NAME,\n" +
+//            "\t'RESOLUTION'                                                                \n" +
+//            "\tAS RESOLUTION,\n" +
+//            "\tOPENED_BY \n" +
+//            "FROM\n" +
+//            "\tsmprimary.probsummarym1 prob1 \n" +
+//            "WHERE\n" +
+//            "\tprob1.hpc_assignment IN ( :groupAssignment) \n" +
+//            "UNION\n" +
+//            "SELECT\n" +
+//            "\tprob1.\"NUMBER\",\n" +
+//            "\tBRIEF_DESCRIPTION,\n" +
+//            "\tPRIORITY_CODE,\n" +
+//            "\tOPEN_TIME,\n" +
+//            "\tto_char(ACTION)                                                           AS \n" +
+//            "\tACTION,\n" +
+//            "\tREGEXP_SUBSTR(REGEXP_SUBSTR(to_char(ACTION), '^.*(\\s.*){6}.*'), 'htt.*$') AS \n" +
+//            "\tZABBIX_HISTORY,\n" +
+//            "REPLACE\n" +
+//            "\t(\n" +
+//            "\t\tREGEXP_SUBSTR(REGEXP_SUBSTR(to_char(ACTION), '^.*(\\s.*){4}.*'), \n" +
+//            "\t\t'Хост:\\s.*$'),\n" +
+//            "\t\t'Хост: '\n" +
+//            "\t)\n" +
+//            "\tAS HOST,\n" +
+//            "\tREGEXP_SUBSTR(REGEXP_SUBSTR(to_char(ACTION),\n" +
+//            "\t'^.*(\\s.*){1}.*'),\n" +
+//            "\t'Проблема.*$') AS PROBLEM,\n" +
+//            "\tHPC_STATUS,\n" +
+//            "\tsubstr(prob1.hpc_assignee_name,\n" +
+//            "\t1,\n" +
+//            "\tinstr(prob1.hpc_assignee_name,\n" +
+//            "\t'(') - 2)      AS HPC_ASSIGNEE_NAME,\n" +
+//            "\tsubstr(prob1.hpc_assignment,\n" +
+//            "\t1,\n" +
+//            "\tinstr(prob1.hpc_assignment,\n" +
+//            "\t'(') - 2)      AS HPC_ASSIGNMENT,\n" +
+//            "\tHPC_CREATED_BY_NAME,\n" +
+//            "\t'RESOLUTION'   AS RESOLUTION,\n" +
+//            "\t'OPENED_BY'    AS OPENED_BY \n" +
+//            "FROM\n" +
+//            "\tsmprimary.SBPROBSUMMARYTSM1 prob1 \n" +
+//            "WHERE\n" +
+//            "\tprob1.hpc_assignment IN ( :groupAssignment)) \n" +
+//            "WHERE\n" +
+//            "\tOPENED_BY = 'int_zabbix_si' AND OPEN_TIME BETWEEN TO_TIMESTAMP(:startDate ' 00:00:00', 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate '23:59:59', 'DD.MM.RRRR HH24:MI:SS')\n" +
+//            "GROUP BY \"HPC_ASSIGNMENT\", to_char(\"OPEN_TIME\", 'Month'), to_char(\"OPEN_TIME\", 'MM'), to_char(\"OPEN_TIME\", 'YYYY')\n" +
+//            "ORDER BY \"HPC_ASSIGNMENT\", \"YEAR\", \"MONTH_NUMBER\" ASC",
+//            nativeQuery = true)
+//    List<IUspIncidentDataCountPerMonth> findIncCountPerMonth(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("groupAssignment") String groupAssignment);
+
+    @Query(value = "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS month_,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS year_, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p \n" +
+            "GROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm'))\n" +
+            "ORDER BY HPC_AFFECTED_ITEM_NAME, year_, month_number ASC", nativeQuery = true)
     List<IDSPIncidentDataCountPerMonth> findIncAffectedItemCountPerMonth(@Param("startDate") String startDate, @Param("endDate") String endDate);
+
+//       @Query(value = "select p.HPC_ASSIGNMENT as assignment, MONTHNAME(PARSEDATETIME(p.OPEN_TIME, 'dd.MM.yyyy hh:mm:ss')) AS month,  MONTH(PARSEDATETIME(p.OPEN_TIME, 'dd.MM.yyyy hh:mm:ss')) AS monthnumber, YEAR(PARSEDATETIME(p.OPEN_TIME, 'dd.MM.yyyy hh:mm:ss')) AS year, COUNT (p.NUMBER) AS countinc from probsummarym1 p where p.OPEN_TIME BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy hh:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy hh:mm:ss')\n" +
+//               "GROUP BY assignment, MONTHNAME(PARSEDATETIME(p.OPEN_TIME, 'dd.MM.yyyy hh:mm:ss')), MONTH(PARSEDATETIME(p.OPEN_TIME, 'dd.MM.yyyy hh:mm:ss')), YEAR(PARSEDATETIME(p.OPEN_TIME, 'dd.MM.yyyy hh:mm:ss'))\n" +
+//               "ORDER BY assignment, year, monthnumber ASC", nativeQuery = true)
+//    List<IUspIncidentDataCountPerMonth> findIncCountPerMonth(@Param("startDate") String startDate, @Param("endDate") String endDate);
+//@Query(value = "select p.HPC_ASSIGNMENT as assignment, MONTHNAME(PARSEDATETIME(p.OPEN_TIME, 'dd.MM.yyyy HH:mm:ss')) AS month,  MONTH(PARSEDATETIME(p.OPEN_TIME, 'dd.MM.yyyy HH:mm:ss')) AS monthnumber, YEAR(PARSEDATETIME(p.OPEN_TIME, 'dd.MM.yyyy HH:mm:ss')) AS year, COUNT (p.NUMBER) AS countinc from probsummarym1 p WHERE p.HPC_ASSIGNMENT IN (:assignmentGroup) \n" +
+//        "GROUP BY assignment, MONTHNAME(PARSEDATETIME(p.OPEN_TIME, 'dd.MM.yyyy HH:mm:ss')), MONTH(PARSEDATETIME(p.OPEN_TIME, 'dd.MM.yyyy HH:mm:ss')), YEAR(PARSEDATETIME(p.OPEN_TIME, 'dd.MM.yyyy HH:mm:ss'))\n" +
+//        "ORDER BY assignment, year, monthnumber ASC", nativeQuery = true)
+//    List<IUspIncidentDataCountPerMonth> findIncCountPerMonth(@Param("assignmentGroup") String assignmentGroup);
+//    List<IUspIncidentDataCountPerMonth> findIncCountPerMonth(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("assignmentGroup") String assignmentGroup);
 
 }

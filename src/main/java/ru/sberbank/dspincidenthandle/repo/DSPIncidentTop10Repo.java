@@ -14,80 +14,145 @@ import java.util.List;
 public interface DSPIncidentTop10Repo extends CrudRepository<DSPIncidentData, String> {
 
 
-    @Query(value = "WITH RWS AS (\n" +
-            "SELECT top_10.*, row_number() over (PARTITION BY \"AFFECTED_ITEM\" ORDER BY \"COUNT_INC\" DESC) RN\n" +
-            "FROM (\n" +
-            "SELECT\n" +
-            "\t\"AFFECTED_ITEM\", ASSIGNEE_NAME, COUNT (\"NUMBER\")AS \"COUNT_INC\"\n" +
-            "FROM\n" +
-            "\t(\tSELECT\n" +
-            "\t\t\tprob1.\"NUMBER\",\n" +
-            "\t\t\tto_char(OPEN_TIME + 3.0 / 24, 'dd.MM.yyyy HH24:MI:SS')                plan_open,\n" +
-            "\t\t\tHPC_STATUS,\n" +
-            "      substr(prob1.hpc_assignee_name, 1, instr(prob1.hpc_assignee_name, '(') - 2) \n" +
-            "      AS ASSIGNEE_NAME,\n" +
-            "      substr(prob1.hpc_assignment, 1, instr(prob1.hpc_assignment, '(') - 2 )      \n" +
-            "      AS HPC_ASSIGNMENT,\n" +
-            "    \tOPENED_BY,\n" +
-            "      HPC_AFFECTED_ITEM_NAME as AFFECTED_ITEM\n" +
-            "FROM\n" +
-            "\tsmprimary.probsummarym1 prob1 \n" +
-            "where HPC_ASSIGNMENT_NAME in\n" +
-            "      ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',\n" +
-            "       'SberInfra УСП Шлюзовые решения (Шитиков В.Е.)', 'SberInfra УСП Интеграционные платформы (Гоголев К.Ю.)',\n" +
-            "       'SberInfra УСП Серверы приложений (Мутин Д.И.)', 'SberInfra УСП Дежурная смена (Зайцев А.М.)',\n" +
-            "       'SberInfra Сопровождение Платформы управления контейнерами (Косов М.В.)')\n" +
-            "  and HPC_AFFECTED_ITEM_NAME in\n" +
-            "      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',\n" +
-            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)','«Platform V Corax» (CI04085569)', 'Apache Kafka (CI02192117)',\n" +
-            "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
-            "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
-            "       'SynGX (CI04178739)')\n" +
-            "  and HPC_STATUS in\n" +
-            "      (\n" +
-            "       '6 Выполнен',\n" +
-            "       '5 Выполнен',\n" +
-            "       '6 Закрыт'\n" +
-            "          )\n" +
-            "UNION\n" +
-            "SELECT\n" +
-            "\tprob1.\"NUMBER\",\n" +
-            "\tto_char(OPEN_TIME + 3.0 / 24, 'dd.MM.yyyy HH24:MI:SS')                plan_open,\n" +
-            "\tHPC_STATUS,\n" +
-            "\tsubstr(prob1.hpc_assignee_name,\n" +
-            "\t1,\n" +
-            "\tinstr(prob1.hpc_assignee_name,\n" +
-            "\t'(') - 2)      AS ASSIGNEE_NAME,\n" +
-            "\tsubstr(prob1.hpc_assignment,\n" +
-            "\t1,\n" +
-            "\tinstr(prob1.hpc_assignment,\n" +
-            "\t'(') - 2)      AS HPC_ASSIGNMENT,\n" +
-            "\t'OPENED_BY'    AS OPENED_BY,\n" +
-            "\t HPC_AFFECTED_ITEM_NAME as AFFECTED_ITEM\n" +
-            "FROM\n" +
-            "\tsmprimary.SBPROBSUMMARYTSM1 prob1 \n" +
-            "where HPC_ASSIGNMENT_NAME in\n" +
-            "      ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',\n" +
-            "       'SberInfra УСП Шлюзовые решения (Шитиков В.Е.)', 'SberInfra УСП Интеграционные платформы (Гоголев К.Ю.)',\n" +
-            "       'SberInfra УСП Серверы приложений (Мутин Д.И.)', 'SberInfra УСП Дежурная смена (Зайцев А.М.)',\n" +
-            "       'SberInfra Сопровождение Платформы управления контейнерами (Косов М.В.)')\n" +
-            "  and HPC_AFFECTED_ITEM_NAME in\n" +
-            "      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',\n" +
-            "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)','«Platform V Corax» (CI04085569)', 'Apache Kafka (CI02192117)',\n" +
-            "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
-            "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
-            "       'SynGX (CI04178739)')\n" +
-            "  and HPC_STATUS in\n" +
-            "      (\n" +
-            "       '6 Выполнен',\n" +
-            "       '5 Выполнен',\n" +
-            "       '6 Закрыт'\n" +
-            "          )) \n" +
-            "WHERE\n" +
-            "\tOPENED_BY not in 'int_zabbix_si' AND TO_TIMESTAMP(PLAN_OPEN, 'DD.MM.RRRR HH24:MI:SS') BETWEEN TO_TIMESTAMP(:startDate, 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP(:endDate, 'DD.MM.RRRR HH24:MI:SS')\n" +
-            "GROUP BY \"AFFECTED_ITEM\", ASSIGNEE_NAME\n" +
-            "ORDER BY \"AFFECTED_ITEM\", \"COUNT_INC\" DESC) top_10)\n" +
-            "SELECT \"AFFECTED_ITEM\", \"ASSIGNEE_NAME\", \"COUNT_INC\" FROM RWS WHERE RN <=10", nativeQuery = true)
+    //   @Override
+//    @Query(value = "WITH RWS AS (
+//SELECT top_10.*, row_number() over (PARTITION BY "AFFECTED_ITEM" ORDER BY "COUNT_INC" DESC) RN
+//FROM (
+//SELECT
+//                "AFFECTED_ITEM", HOST, COUNT ("NUMBER")AS "COUNT_INC"
+//FROM
+//                (              SELECT
+//                                               prob1."NUMBER",
+//                                               BRIEF_DESCRIPTION,
+//                                               PRIORITY_CODE,
+//                                               OPEN_TIME,
+//                                               to_char(ACTION)
+//                                               AS ACTION,
+//                                               REGEXP_SUBSTR(REGEXP_SUBSTR(to_char(ACTION), '^.*(\s.*){6}.*'),
+//                                               'htt.*$') AS ZABBIX_HISTORY,
+//                               REPLACE
+//                                               (
+//                                                               REGEXP_SUBSTR(REGEXP_SUBSTR(to_char(ACTION), '^.*(\s.*){4}.*'),
+//                                                               'Хост:\s.*$'),
+//                                                               'Хост: '
+//                                               )
+//                                               AS HOST,
+//                                               REGEXP_SUBSTR(REGEXP_SUBSTR(to_char(ACTION),
+//                '^.*(\s.*){1}.*'),
+//                'Проблема.*$')
+//                AS PROBLEM,
+//                HPC_STATUS,
+//                substr(prob1.hpc_assignee_name, 1, instr(prob1.hpc_assignee_name, '(') - 2)
+//                AS HPC_ASSIGNEE_NAME,
+//                substr(prob1.hpc_assignment, 1, instr(prob1.hpc_assignment, '(') - 2 )
+//                AS HPC_ASSIGNMENT,
+//                HPC_CREATED_BY_NAME,
+//                'RESOLUTION'
+//                AS RESOLUTION,
+//                OPENED_BY,
+//                AFFECTED_ITEM
+//FROM
+//                smprimary.probsummarym1 prob1
+//WHERE
+//                prob1.AFFECTED_ITEM IN ( 'CI02021303',
+//                'CI02021304',
+//                'CI02584076',
+//                'CI02584077',
+//                'CI02584078',
+//                'CI02021298',
+//                'CI02021301',
+//                'CI02021292',
+//                'CI02021302',
+//                'CI02021294',
+//                'CI02021296',
+//                'CI02021299',
+//                'CI02021293',
+//                'CI02021295',
+//                'CI02192117',
+//                'CI02021290',
+//                'CI02021291',
+//                'CI02021300',
+//                'CI02192118',
+//                'CI02021306',
+//                'CI00737141',
+//                'CI00737140',
+//                'CI00737137',
+//                'CI02008623',
+//                'CI01563053')
+//UNION
+//SELECT
+//                prob1."NUMBER",
+//                BRIEF_DESCRIPTION,
+//                PRIORITY_CODE,
+//                OPEN_TIME,
+//                to_char(ACTION)                                                           AS
+//                ACTION,
+//                REGEXP_SUBSTR(REGEXP_SUBSTR(to_char(ACTION), '^.*(\s.*){6}.*'), 'htt.*$') AS
+//                ZABBIX_HISTORY,
+//REPLACE
+//                (
+//                               REGEXP_SUBSTR(REGEXP_SUBSTR(to_char(ACTION), '^.*(\s.*){4}.*'),
+//                               'Хост:\s.*$'),
+//                               'Хост: '
+//                )
+//                AS HOST,
+//                REGEXP_SUBSTR(REGEXP_SUBSTR(to_char(ACTION),
+//                '^.*(\s.*){1}.*'),
+//                'Проблема.*$') AS PROBLEM,
+//                HPC_STATUS,
+//                substr(prob1.hpc_assignee_name,
+//                1,
+//                instr(prob1.hpc_assignee_name,
+//                '(') - 2)      AS HPC_ASSIGNEE_NAME,
+//                substr(prob1.hpc_assignment,
+//                1,
+//                instr(prob1.hpc_assignment,'(') - 2)      AS HPC_ASSIGNMENT,
+//                HPC_CREATED_BY_NAME,
+//                'RESOLUTION'   AS RESOLUTION,
+//                'OPENED_BY'    AS OPENED_BY,
+//                AFFECTED_ITEM
+//FROM
+//                smprimary.SBPROBSUMMARYTSM1 prob1
+//WHERE
+//                prob1.AFFECTED_ITEM IN ( 'CI02021303',
+//                'CI02021304',
+//                'CI02584076',
+//                'CI02584077',
+//                'CI02584078',
+//                'CI02021298',
+//                'CI02021301',
+//                'CI02021292',
+//                'CI02021302',
+//                'CI02021294',
+//                'CI02021296',
+//                'CI02021299',
+//                'CI02021293',
+//                'CI02021295',
+//                'CI02192117',
+//                'CI02021290',
+//                'CI02021291',
+//                'CI02021300',
+//                'CI02192118',
+//                'CI02021306',
+//                'CI00737141',
+//                'CI00737140',
+//                'CI00737137',
+//                'CI02008623',
+//                'CI01563053'))
+//WHERE
+//                OPENED_BY = 'int_zabbix_si' AND OPEN_TIME BETWEEN TO_TIMESTAMP('06.01.2022 00:00:00', 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP('06.06.2022 23:59:59', 'DD.MM.RRRR HH24:MI:SS')
+//GROUP BY "AFFECTED_ITEM", HOST
+//ORDER BY "AFFECTED_ITEM", "COUNT_INC" DESC) top_10)
+//SELECT "AFFECTED_ITEM", "HOST", "COUNT_INC" FROM RWS WHERE RN <=10",
+//            nativeQuery = true)
+
+    @Query(value = "select p.HPC_AFFECTED_ITEM_NAME as Affected_Item, p.HPC_ASSIGNEE_NAME as Assignee_Name, COUNT (p.NUMBER) AS count_Inc from SMPRIMARY p GROUP BY Affected_Item, Assignee_Name ORDER BY  Affected_Item, count_Inc DESC", nativeQuery = true)
     List<IDSPIncidentDataTop10> findTop10IncCount(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
+//        @Query(value = "select p.HPC_ASSIGNMENT as Assignment, COUNT (p.NUMBER) AS countInc from probsummarym1 p where p.OPEN_TIME BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy hh:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy hh:mm:ss') GROUP BY Assignment ORDER BY countInc DESC", nativeQuery = true)
+//    List<IUspIncidentDataTotalCount> findIncCount(@Param("startDate") String startDate, @Param("endDate") String endDate);
+
+//    @Query(value = "select p.HPC_ASSIGNMENT as Assignment, COUNT (p.NUMBER) AS countInc from probsummarym1 p WHERE p.HPC_ASSIGNMENT IN (:assignmentGroup) GROUP BY Assignment ORDER BY countInc DESC", nativeQuery = true)
+//    List<IUspIncidentDataTotalCount> findIncCount(@Param("assignmentGroup") String assignmentGroup);
+//    List<IUspIncidentDataTotalCount> findIncCount(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("assignmentGroup") String assignmentGroup);
 }

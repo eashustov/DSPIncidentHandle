@@ -6,5 +6,4 @@ public interface IDSPIncidentAffectedDataCount {
     Integer getCount_Inc();
 
 
-
 }

@@ -36,11 +36,22 @@ const headerImport = `import 'construct-style-sheets-polyfill';
 
 const createLinkReferences = `
 const createLinkReferences = (css, target) => {
-  // Unresolved urls are written as '@import url(text);' to the css
+  // Unresolved urls are written as '@import url(text);' or '@import "text";' to the css
+  // media query can be present on @media tag or on @import directive after url
+  // Note that with Vite production build there is no space between @import and "text"
   // [0] is the full match
   // [1] matches the media query
   // [2] matches the url
-  const importMatcher = /(?:@media\\s(.+?))?(?:\\s{)?\\@import\\surl\\((.+?)\\);(?:})?/g;
+  // [3] matches the quote char surrounding in '@import "..."'
+  // [4] matches the url in '@import "..."'
+  // [5] matches media query on @import statement
+  const importMatcher = /(?:@media\\s(.+?))?(?:\\s{)?\\@import\\s*(?:url\\(\\s*['"]?(.+?)['"]?\\s*\\)|(["'])((?:\\\\.|[^\\\\])*?)\\3)([^;]*);(?:})?/g
+  
+  // Only cleanup if comment exist
+  if(/\\/\\*(.|[\\r\\n])*?\\*\\//gm.exec(css) != null) {
+    // clean up comments
+    css = stripCssComments(css);
+  }
   
   var match;
   var styleCss = css;
@@ -50,9 +61,10 @@ const createLinkReferences = (css, target) => {
     styleCss = styleCss.replace(match[0], "");
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = match[2];
-    if (match[1]) {
-      link.media = match[1];
+    link.href = match[2] || match[4];
+    const media = match[1] || match[5];
+    if (media) {
+      link.media = media;
     }
     // For target document append to head else append to target
     if (target === document) {
@@ -109,8 +121,9 @@ function generateThemeFile(themeFolder, themeName, themeProperties, productionMo
   }
 
   if (themeProperties.parent) {
-    themeFile += `import {applyTheme as applyBaseTheme} from './theme-${themeProperties.parent}.generated.js';`;
+    themeFile += `import {applyTheme as applyBaseTheme} from './theme-${themeProperties.parent}.generated.js';\n`;
   }
+  themeFile += `import stripCssComments from 'strip-css-comments';\n`;
 
   themeFile += createLinkReferences;
   themeFile += injectGlobalCssMethod;
@@ -174,7 +187,7 @@ function generateThemeFile(themeFolder, themeName, themeProperties, productionMo
     }
     themeProperties.documentCss.forEach((cssImport) => {
       const variable = 'module' + i++;
-      imports.push(`import ${variable} from '${cssImport}';\n`);
+      imports.push(`import ${variable} from '${cssImport}?inline';\n`);
       // Due to chrome bug https://bugs.chromium.org/p/chromium/issues/detail?id=336876 font-face will not work
       // inside shadowRoot so we need to inject it there also.
       globalCssCode.push(`if(target !== document) {

@@ -35,7 +35,7 @@ public class FilterActiveIncident {
                 .map(item -> item.getHPC_AFFECTED_ITEM_NAME())
                 .collect(Collectors.toSet()));
 
-        Label acceptedItemLabel = new Label("ИТ-услуга");
+        Label acceptedItemLabel = new Label(labelText);
         acceptedItemLabel.getStyle().set("padding-top", "var(--lumo-space-m)")
                 .set("font-size", "var(--lumo-font-size-xs)");
         filterAffectedItemComboBox = new ComboBox<>();
@@ -83,6 +83,7 @@ public class FilterActiveIncident {
 
         return layout;
     }
+
 
 
 }
