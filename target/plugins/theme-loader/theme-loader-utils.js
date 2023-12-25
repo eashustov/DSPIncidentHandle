@@ -1,10 +1,9 @@
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
+import { existsSync, readFileSync } from 'fs';
+import { resolve, basename } from 'path';
+import { globSync } from 'glob';
 
 // Collect groups [url(] ['|"]optional './|../', file part and end of url
 const urlMatcher = /(url\(\s*)(\'|\")?(\.\/|\.\.\/)(\S*)(\2\s*\))/g;
-
 
 function assetsContains(fileUrl, themeFolder, logger) {
   const themeProperties = getThemeProperties(themeFolder);
@@ -25,7 +24,7 @@ function assetsContains(fileUrl, themeFolder, logger) {
       // if file starts with copyRule target check if file with path after copy target can be found
       if (fileUrl.startsWith(copyRules[copyRule])) {
         const targetFile = fileUrl.replace(copyRules[copyRule], '');
-        const files = glob.sync(path.resolve('node_modules/', module, copyRule), { nodir: true });
+        const files = globSync(resolve('node_modules/', module, copyRule), { nodir: true });
 
         for (let file of files) {
           if (file.endsWith(targetFile)) return true;
@@ -37,28 +36,28 @@ function assetsContains(fileUrl, themeFolder, logger) {
 }
 
 function getThemeProperties(themeFolder) {
-  const themePropertyFile = path.resolve(themeFolder, 'theme.json');
-  if (!fs.existsSync(themePropertyFile)) {
+  const themePropertyFile = resolve(themeFolder, 'theme.json');
+  if (!existsSync(themePropertyFile)) {
     return {};
   }
-  const themePropertyFileAsString = fs.readFileSync(themePropertyFile);
+  const themePropertyFileAsString = readFileSync(themePropertyFile);
   if (themePropertyFileAsString.length === 0) {
     return {};
   }
   return JSON.parse(themePropertyFileAsString);
 }
 
-
 function rewriteCssUrls(source, handledResourceFolder, themeFolder, logger, options) {
   source = source.replace(urlMatcher, function (match, url, quoteMark, replace, fileUrl, endString) {
-    let absolutePath = path.resolve(handledResourceFolder, replace, fileUrl);
-    const existingThemeResource = absolutePath.startsWith(themeFolder) && fs.existsSync(absolutePath);
-    if (
-      existingThemeResource || assetsContains(fileUrl, themeFolder, logger)
-    ) {
+    let absolutePath = resolve(handledResourceFolder, replace, fileUrl);
+    const existingThemeResource = absolutePath.startsWith(themeFolder) && existsSync(absolutePath);
+    if (existingThemeResource || assetsContains(fileUrl, themeFolder, logger)) {
       // Adding ./ will skip css-loader, which should be done for asset files
-      const skipLoader = existingThemeResource ? '' : './';
-      const frontendThemeFolder = skipLoader + 'themes/' + path.basename(themeFolder);
+      // In a production build, the css file is in VAADIN/build and static files are in VAADIN/static, so ../static needs to be added
+      const replacement = options.devMode ? './' : '../static/';
+
+      const skipLoader = existingThemeResource ? '' : replacement;
+      const frontendThemeFolder = skipLoader + 'themes/' + basename(themeFolder);
       logger.debug(
         'Updating url for file',
         "'" + replace + fileUrl + "'",
@@ -68,13 +67,16 @@ function rewriteCssUrls(source, handledResourceFolder, themeFolder, logger, opti
       const pathResolved = absolutePath.substring(themeFolder.length).replace(/\\/g, '/');
 
       // keep the url the same except replace the ./ or ../ to themes/[themeFolder]
-      return url + (quoteMark??'') + frontendThemeFolder + pathResolved + endString;
+      return url + (quoteMark ?? '') + frontendThemeFolder + pathResolved + endString;
     } else if (options.devMode) {
       logger.log("No rewrite for '", match, "' as the file was not found.");
+    } else {
+      // In production, the css is in VAADIN/build but the theme files are in .
+      return url + (quoteMark ?? '') + '../../' + fileUrl + endString;
     }
     return match;
   });
   return source;
 }
 
-module.exports = { rewriteCssUrls };
+export { rewriteCssUrls };
