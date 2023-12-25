@@ -50,6 +50,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.PermitAll;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
@@ -61,7 +62,6 @@ import ru.sberbank.dspincidenthandle.repo.*;
 import ru.sberbank.dspincidenthandle.service.ExporToCSV;
 import ru.sberbank.dspincidenthandle.security.SecurityService;
 
-import javax.annotation.security.PermitAll;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;

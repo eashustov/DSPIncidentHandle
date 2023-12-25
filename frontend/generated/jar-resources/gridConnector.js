@@ -1,15 +1,12 @@
 import { Debouncer } from '@polymer/polymer/lib/utils/debounce.js';
 import { timeOut, animationFrame } from '@polymer/polymer/lib/utils/async.js';
 import { Grid } from '@vaadin/grid/src/vaadin-grid.js';
-import { ItemCache } from '@vaadin/grid/src/vaadin-grid-data-provider-mixin.js';
 import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
 
 (function () {
   const tryCatchWrapper = function (callback) {
     return window.Vaadin.Flow.tryCatchWrapper(callback, 'Vaadin Grid');
   };
-
-  let isItemCacheInitialized = false;
 
   window.Vaadin.Flow.gridConnector = {
     initLazy: (grid) =>
@@ -19,80 +16,28 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
           return;
         }
 
-        // Make sure ItemCache patching is done only once, but delay it for when
-        // a server grid is initialized
-        if (!isItemCacheInitialized) {
-          isItemCacheInitialized = true;
-          // Storing original implementation of the method to be used for client
-          // side only grids
-          ItemCache.prototype.ensureSubCacheForScaledIndexOriginal = ItemCache.prototype.ensureSubCacheForScaledIndex;
-          ItemCache.prototype.ensureSubCacheForScaledIndex = tryCatchWrapper(function (scaledIndex) {
-            if (!this.grid.$connector) {
-              this.ensureSubCacheForScaledIndexOriginal(scaledIndex);
-              return;
-            }
+        const dataProviderController = grid._dataProviderController;
 
-            if (!this.itemCaches[scaledIndex]) {
-              this.grid.$connector.beforeEnsureSubCacheForScaledIndex(this, scaledIndex);
-            }
-          });
+        dataProviderController.ensureFlatIndexHierarchyOriginal = dataProviderController.ensureFlatIndexHierarchy;
+        dataProviderController.ensureFlatIndexHierarchy = tryCatchWrapper(function (flatIndex) {
+          const { item } = this.getFlatIndexContext(flatIndex);
+          if (!item || !this.isExpanded(item)) {
+            return;
+          }
 
-          ItemCache.prototype.isLoadingOriginal = ItemCache.prototype.isLoading;
-          ItemCache.prototype.isLoading = tryCatchWrapper(function () {
-            if (!this.grid.$connector) {
-              return this.isLoadingOriginal();
-            }
+          const isCached = grid.$connector.hasCacheForParentKey(grid.getItemId(item));
+          if (isCached) {
+            // The sub-cache items are already in the connector's cache. Skip the debouncing process.
+            this.ensureFlatIndexHierarchyOriginal(flatIndex);
+          } else {
+            grid.$connector.beforeEnsureFlatIndexHierarchy(flatIndex, item);
+          }
+        });
 
-            return Boolean(
-              this.grid.$connector.hasEnsureSubCacheQueue() ||
-                Object.keys(this.pendingRequests).length ||
-                Object.keys(this.itemCaches).filter((index) => {
-                  return this.itemCaches[index].isLoading();
-                })[0]
-            );
-          });
-
-          ItemCache.prototype.doEnsureSubCacheForScaledIndex = tryCatchWrapper(function (scaledIndex) {
-            if (!this.itemCaches[scaledIndex]) {
-              const subCache = new ItemCache.prototype.constructor(this.grid, this, this.items[scaledIndex]);
-              subCache.itemkeyCaches = {};
-              if (!this.itemkeyCaches) {
-                this.itemkeyCaches = {};
-              }
-              this.itemCaches[scaledIndex] = subCache;
-              this.itemkeyCaches[this.grid.getItemId(subCache.parentItem)] = subCache;
-              this.grid._loadPage(0, subCache);
-            }
-          });
-
-          ItemCache.prototype.getCacheAndIndexByKey = tryCatchWrapper(function (key) {
-            for (let index in this.items) {
-              if (this.grid.getItemId(this.items[index]) === key) {
-                return { cache: this, scaledIndex: index };
-              }
-            }
-            const keys = Object.keys(this.itemkeyCaches);
-            for (let i = 0; i < keys.length; i++) {
-              const expandedKey = keys[i];
-              const subCache = this.itemkeyCaches[expandedKey];
-              let cacheAndIndex = subCache.getCacheAndIndexByKey(key);
-              if (cacheAndIndex) {
-                return cacheAndIndex;
-              }
-            }
-            return undefined;
-          });
-
-          ItemCache.prototype.getLevel = tryCatchWrapper(function () {
-            let cache = this;
-            let level = 0;
-            while (cache.parentCache) {
-              cache = cache.parentCache;
-              level++;
-            }
-            return level;
-          });
-        }
+        dataProviderController.isLoadingOriginal = dataProviderController.isLoading;
+        dataProviderController.isLoading = tryCatchWrapper(function () {
+          return grid.$connector.hasEnsureSubCacheQueue() || this.isLoadingOriginal();
+        });
 
         const rootPageCallbacks = {};
         const treePageCallbacks = {};
@@ -126,7 +71,13 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
         grid.size = 0; // To avoid NaN here and there before we get proper data
         grid.itemIdPath = 'key';
 
+        function createEmptyItemFromKey(key) {
+          return { [grid.itemIdPath]: key };
+        }
+
         grid.$connector = {};
+
+        grid.$connector.hasCacheForParentKey = tryCatchWrapper((parentKey) => cache[parentKey] !== undefined && cache[parentKey].size !== undefined);
 
         grid.$connector.hasEnsureSubCacheQueue = tryCatchWrapper(() => ensureSubCacheQueue.length > 0);
 
@@ -136,13 +87,11 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
           return Object.keys(rootPageCallbacks).length > 0 || (!!rootRequestDebouncer && rootRequestDebouncer.isActive());
         });
 
-        grid.$connector.beforeEnsureSubCacheForScaledIndex = tryCatchWrapper(function (targetCache, scaledIndex) {
+        grid.$connector.beforeEnsureFlatIndexHierarchy = tryCatchWrapper(function (flatIndex, item) {
           // add call to queue
           ensureSubCacheQueue.push({
-            cache: targetCache,
-            scaledIndex: scaledIndex,
-            itemkey: grid.getItemId(targetCache.items[scaledIndex]),
-            level: targetCache.getLevel()
+            flatIndex,
+            itemkey: grid.getItemId(item)
           });
 
           ensureSubCacheDebouncer = Debouncer.debounce(ensureSubCacheDebouncer, animationFrame, () => {
@@ -241,49 +190,26 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
         });
         grid._createPropertyObserver('activeItem', '__activeItemChangedDetails', true);
 
-        grid.$connector._getPageIfSameLevel = tryCatchWrapper(function (parentKey, index, defaultPage) {
-          let cacheAndIndex = grid._cache.getCacheAndIndex(index);
-          let parentItem = cacheAndIndex.cache.parentItem;
-          let parentKeyOfIndex = parentItem ? grid.getItemId(parentItem) : root;
-          if (parentKey !== parentKeyOfIndex) {
-            return defaultPage;
-          } else {
-            return grid._getPageForIndex(cacheAndIndex.scaledIndex);
+        grid.$connector._getSameLevelPage = tryCatchWrapper(function (parentKey, currentCache, currentCacheItemIndex) {
+          const currentParentKey = currentCache.parentItem ? grid.getItemId(currentCache.parentItem) : root;
+          if (currentParentKey === parentKey) {
+            // Level match found, return the page number.
+            return Math.floor(currentCacheItemIndex / grid.pageSize);
           }
-        });
-
-        grid.$connector.getCacheByKey = tryCatchWrapper(function (key) {
-          let cacheAndIndex = grid._cache.getCacheAndIndexByKey(key);
-          if (cacheAndIndex) {
-            return cacheAndIndex.cache;
+          const { parentCache, parentCacheIndex } = currentCache;
+          if (!parentCache) {
+            // There is no parent cache to match level
+            return null;
           }
-          return undefined;
+          // Traverse the tree upwards until a match is found or the end is reached
+          return this._getSameLevelPage(parentKey, parentCache, parentCacheIndex);
         });
 
         grid.$connector.flushEnsureSubCache = tryCatchWrapper(function () {
-          let pendingFetch = ensureSubCacheQueue.splice(0, 1)[0];
-          let itemkey = pendingFetch.itemkey;
-
-          const visibleRows = grid._getVisibleRows();
-          let start = visibleRows[0].index;
-          let end = visibleRows[visibleRows.length - 1].index;
-
-          let buffer = end - start;
-          let firstNeededIndex = Math.max(0, start - buffer);
-          let lastNeededIndex = Math.min(end + buffer, grid._effectiveSize);
-
-          // only fetch if given item is still in visible range
-          for (let index = firstNeededIndex; index <= lastNeededIndex; index++) {
-            let item = grid._cache.getItemForIndex(index);
-
-            if (grid.getItemId(item) === itemkey) {
-              if (grid._isExpanded(item)) {
-                pendingFetch.cache.doEnsureSubCacheForScaledIndex(pendingFetch.scaledIndex);
-                return true;
-              } else {
-                break;
-              }
-            }
+          const pendingFetch = ensureSubCacheQueue.shift();
+          if (pendingFetch) {
+            dataProviderController.ensureFlatIndexHierarchyOriginal(pendingFetch.flatIndex);
+            return true;
           }
           return false;
         });
@@ -320,25 +246,31 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
           // The buffer size could be multiplied by some constant defined by the user,
           // if he needs to reduce the number of items sent to the Grid to improve performance
           // or to increase it to make Grid smoother when scrolling
-          const visibleRows = grid._getVisibleRows();
+          const visibleRows = grid._getRenderedRows();
           let start = visibleRows.length > 0 ? visibleRows[0].index : 0;
           let end = visibleRows.length > 0 ? visibleRows[visibleRows.length - 1].index : 0;
           let buffer = end - start;
 
           let firstNeededIndex = Math.max(0, start - buffer);
-          let lastNeededIndex = Math.min(end + buffer, grid._effectiveSize);
+          let lastNeededIndex = Math.min(end + buffer, grid._flatSize);
 
           let firstNeededPage = page;
           let lastNeededPage = page;
           for (let idx = firstNeededIndex; idx <= lastNeededIndex; idx++) {
-            firstNeededPage = Math.min(
-              firstNeededPage,
-              grid.$connector._getPageIfSameLevel(parentKey, idx, firstNeededPage)
-            );
-            lastNeededPage = Math.max(
-              lastNeededPage,
-              grid.$connector._getPageIfSameLevel(parentKey, idx, lastNeededPage)
-            );
+            const { cache, index } = dataProviderController.getFlatIndexContext(idx);
+            // Try to match level by going up in hierarchy. The page range should include
+            // pages that contain either of the following:
+            //   - visible items of the current cache
+            //   - same level parents of visible descendant items
+            // If the parent items are not considered, Flow would remove the hidden parent
+            // items from the current level cache. This can lead to an infinite loop when using
+            // scrollToIndex feature.
+            const sameLevelPage = grid.$connector._getSameLevelPage(parentKey, cache, index);
+            if (sameLevelPage === null) {
+              continue;
+            }
+            firstNeededPage = Math.min(firstNeededPage, sameLevelPage);
+            lastNeededPage = Math.max(lastNeededPage, sameLevelPage);
           }
 
           let firstPage = Math.max(0, firstNeededPage);
@@ -369,24 +301,15 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
               treePageCallbacks[parentUniqueKey] = {};
             }
 
-            let parentCache = grid.$connector.getCacheByKey(parentUniqueKey);
-            let itemCache =
-              parentCache && parentCache.itemkeyCaches ? parentCache.itemkeyCaches[parentUniqueKey] : undefined;
-            if (cache[parentUniqueKey] && cache[parentUniqueKey][page] && itemCache) {
+            const parentItemContext = dataProviderController.getItemContext(params.parentItem);
+            if (cache[parentUniqueKey] && cache[parentUniqueKey][page] && parentItemContext.subCache) {
               // workaround: sometimes grid-element gives page index that overflows
               page = Math.min(page, Math.floor(cache[parentUniqueKey].size / grid.pageSize));
 
               // Ensure grid isn't in loading state when the callback executes
               ensureSubCacheQueue = [];
+              // Resolve the callback from cache
               callback(cache[parentUniqueKey][page], cache[parentUniqueKey].size);
-
-              // Flush after the callback to have the grid rows up-to-date
-              updateAllGridRowsInDomBasedOnCache();
-              // Prevent sub-caches from being created (& data requests sent) for items
-              // that may no longer be visible
-              ensureSubCacheQueue = [];
-              // Eliminate flickering on eager fetch mode
-              grid.requestContentUpdate();
             } else {
               treePageCallbacks[parentUniqueKey][page] = callback;
 
@@ -432,19 +355,6 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
           }
         });
 
-        const sorterChangeListener = tryCatchWrapper(function (_, oldValue) {
-          if (oldValue !== undefined && !sorterDirectionsSetFromServer) {
-            grid.$server.sortersChanged(
-              grid._sorters.map(function (sorter) {
-                return {
-                  path: sorter.path,
-                  direction: sorter.direction
-                };
-              })
-            );
-          }
-        });
-
         grid.$connector.setSorterDirections = tryCatchWrapper(function (directions) {
           sorterDirectionsSetFromServer = true;
           setTimeout(
@@ -461,9 +371,7 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
                 });
 
                 sorters.forEach((sorter) => {
-                  if (!directions.filter((d) => d.column === sorter.getAttribute('path'))[0]) {
-                    sorter.direction = null;
-                  }
+                  sorter.direction = null;
                 });
 
                 // Apply directions in correct order, depending on configured multi-sort priority.
@@ -471,11 +379,11 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
                 // order for the sort indicators to match the order on the server. For "append"
                 // just keep the order passed from the server.
                 if (grid.multiSortPriority !== 'append') {
-                  directions = directions.reverse()
+                  directions = directions.reverse();
                 }
                 directions.forEach(({ column, direction }) => {
                   sorters.forEach((sorter) => {
-                    if (sorter.getAttribute('path') === column && sorter.direction !== direction) {
+                    if (sorter.getAttribute('path') === column) {
                       sorter.direction = direction;
                     }
                   });
@@ -486,7 +394,6 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
             })
           );
         });
-        grid._createPropertyObserver('_previousSorters', sorterChangeListener);
 
         grid._updateItem = tryCatchWrapper(function (row, item) {
           Grid.prototype._updateItem.call(grid, row, item);
@@ -531,20 +438,6 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
           }
           let parentKey = grid.getItemId(item);
           grid.$server.updateExpandedState(parentKey, expanded);
-
-          if (!expanded) {
-            delete cache[parentKey];
-            let parentCache = grid.$connector.getCacheByKey(parentKey);
-            if (parentCache && parentCache.itemkeyCaches && parentCache.itemkeyCaches[parentKey]) {
-              delete parentCache.itemkeyCaches[parentKey];
-            }
-            if (parentCache && parentCache.itemkeyCaches) {
-              Object.keys(parentCache.itemCaches)
-                .filter((idx) => parentCache.items[idx].key === parentKey)
-                .forEach((idx) => delete parentCache.itemCaches[idx]);
-            }
-            delete lastRequestedRanges[parentKey];
-          }
         });
 
         // Patch grid.expandItem and grid.collapseItem to have
@@ -585,10 +478,9 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
           }
           grid.detailsOpenedItems = detailsOpenedItems;
           if (updatedSelectedItem) {
-            // IE 11 Object doesn't support method values
-            grid.selectedItems = Object.keys(selectedKeys).map(function (e) {
-              return selectedKeys[e];
-            });
+            // Replace the objects in the grid.selectedItems array without replacing the array
+            // itself in order to avoid an unnecessary re-render of the grid.
+            grid.selectedItems.splice(0, grid.selectedItems.length, ...Object.values(selectedKeys));
           }
         };
 
@@ -603,16 +495,16 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
           let items;
           if ((parentKey || root) !== root) {
             items = cache[parentKey][page];
-            let parentCache = grid.$connector.getCacheByKey(parentKey);
-            if (parentCache && parentCache.itemkeyCaches) {
-              let _cache = parentCache.itemkeyCaches[parentKey];
+            const parentItem = createEmptyItemFromKey(parentKey);
+            const parentItemContext = dataProviderController.getItemContext(parentItem);
+            if (parentItemContext && parentItemContext.subCache) {
               const callbacksForParentKey = treePageCallbacks[parentKey];
               const callback = callbacksForParentKey && callbacksForParentKey[page];
-              _updateGridCache(page, items, callback, _cache);
+              _updateGridCache(page, items, callback, parentItemContext.subCache);
             }
           } else {
             items = cache[root][page];
-            _updateGridCache(page, items, rootPageCallbacks[page], grid._cache);
+            _updateGridCache(page, items, rootPageCallbacks[page], dataProviderController.rootCache);
           }
           return items;
         };
@@ -644,9 +536,16 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
          * Updates all visible grid rows in DOM.
          */
         const updateAllGridRowsInDomBasedOnCache = function () {
-          grid._cache.updateSize();
-          grid._effectiveSize = grid._cache.effectiveSize;
+          updateGridFlatSize();
           grid.__updateVisibleRows();
+        };
+
+        /**
+         * Updates the <vaadin-grid>'s internal cache size and flat size.
+         */
+        const updateGridFlatSize = function () {
+          dataProviderController.recalculateFlatSize();
+          grid._flatSize = dataProviderController.flatSize;
         };
 
         /**
@@ -661,7 +560,7 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
 
           const itemKeys = items.map((item) => item.key);
           const indexes = grid
-            ._getVisibleRows()
+            ._getRenderedRows()
             .filter((row) => row._item && itemKeys.includes(row._item.key))
             .map((row) => row.index);
           if (indexes.length > 0) {
@@ -687,9 +586,7 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
             cache[pkey][page] = slice;
 
             grid.$connector.doSelection(slice.filter((item) => item.selected));
-            grid.$connector.doDeselection(
-              slice.filter((item) => !item.selected && selectedKeys[item.key])
-            );
+            grid.$connector.doDeselection(slice.filter((item) => !item.selected && selectedKeys[item.key]));
 
             const updatedItems = updateGridCache(page, pkey);
             if (updatedItems) {
@@ -762,8 +659,9 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
 
               // update grid's cache
               const index = parseInt(cacheLocation.page) * grid.pageSize + parseInt(cacheLocation.index);
-              if (grid._cache.items[index]) {
-                grid._cache.items[index] = updatedItems[i];
+              const { rootCache } = dataProviderController;
+              if (rootCache.items[index]) {
+                rootCache.items[index] = updatedItems[i];
               }
             }
           }
@@ -804,29 +702,24 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
             }
             updateGridItemsInDomBasedOnCache(items);
           }
-          let cacheToClear = grid._cache;
+          let cacheToClear = dataProviderController.rootCache;
           if (parentKey) {
-            const cacheAndIndex = grid._cache.getCacheAndIndexByKey(pkey);
-            cacheToClear = cacheAndIndex.cache.itemCaches[cacheAndIndex.scaledIndex];
+            const parentItem = createEmptyItemFromKey(pkey);
+            const parentItemContext = dataProviderController.getItemContext(parentItem);
+            cacheToClear = parentItemContext.subCache;
           }
           const endIndex = index + updatedPageCount * grid.pageSize;
           for (let itemIndex = index; itemIndex < endIndex; itemIndex++) {
             delete cacheToClear.items[itemIndex];
-            const subcacheToClear = cacheToClear.itemCaches[itemIndex];
-            delete cacheToClear.itemCaches[itemIndex];
-            const itemKeyToRemove = subcacheToClear && subcacheToClear.parentItem.key;
-            if (itemKeyToRemove) {
-              delete cacheToClear.itemkeyCaches[itemKeyToRemove];
-            }
+            cacheToClear.removeSubCache(itemIndex);
           }
-          grid._cache.updateSize();
-          grid._effectiveSize = grid._cache.effectiveSize;
+          updateGridFlatSize();
         });
 
         grid.$connector.reset = tryCatchWrapper(function () {
           grid.size = 0;
           deleteObjectContents(cache);
-          deleteObjectContents(grid._cache.items);
+          deleteObjectContents(dataProviderController.rootCache.items);
           deleteObjectContents(lastRequestedRanges);
           if (ensureSubCacheDebouncer) {
             ensureSubCacheDebouncer.cancel();
@@ -870,30 +763,29 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
 
         grid.$connector.removeFromQueue = tryCatchWrapper(function (item) {
           let itemId = grid.getItemId(item);
-          delete treePageCallbacks[itemId];
-          grid.$connector.removeFromArray(ensureSubCacheQueue, (item) => item.itemkey === itemId);
-          grid.$connector.removeFromArray(parentRequestQueue, (item) => item.parentKey === itemId);
-        });
+          // The treePageCallbacks for the itemId are about to be discarded ->
+          // Resolve the callbacks with an empty array to not leave grid in loading state
+          Object.values(treePageCallbacks[itemId] || {}).forEach((callback) => callback([]));
 
-        grid.$connector.removeFromArray = tryCatchWrapper(function (array, removeTest) {
-          if (array.length) {
-            for (let index = array.length - 1; index--; ) {
-              if (removeTest(array[index])) {
-                array.splice(index, 1);
-              }
-            }
-          }
+          delete treePageCallbacks[itemId];
+          ensureSubCacheQueue = ensureSubCacheQueue.filter((item) => item.itemkey !== itemId);
+          parentRequestQueue = parentRequestQueue.filter((item) => item.parentKey !== itemId);
         });
 
         grid.$connector.confirmParent = tryCatchWrapper(function (id, parentKey, levelSize) {
+          // Create connector cache if it doesn't exist
           if (!cache[parentKey]) {
             cache[parentKey] = {};
           }
+          // Update connector cache size
+          const hasSizeChanged = cache[parentKey].size !== levelSize;
           cache[parentKey].size = levelSize;
           if (levelSize === 0) {
             cache[parentKey][0] = [];
           }
 
+          // If grid has outstanding requests for this parent, then resolve them
+          // and let grid update the flat size and re-render.
           let outstandingRequests = Object.getOwnPropertyNames(treePageCallbacks[parentKey] || {});
           for (let i = 0; i < outstandingRequests.length; i++) {
             let page = outstandingRequests[i];
@@ -915,11 +807,32 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
               callback([], levelSize);
             }
           }
+
+          // If size has changed, and there are no outstanding requests, then
+          // manually update the size of the grid cache and update the effective
+          // size, effectively re-rendering the grid. This is necessary when
+          // individual items are refreshed on the server, in which case there
+          // is no loading request from the grid itself. In that case, if
+          // children were added or removed, the grid will not be aware of it
+          // unless we manually update the size.
+          if (hasSizeChanged && outstandingRequests.length === 0) {
+            const parentItem = createEmptyItemFromKey(parentKey);
+            const parentItemContext = dataProviderController.getItemContext(parentItem);
+            if (parentItemContext && parentItemContext.subCache) {
+              parentItemContext.subCache.size = levelSize;
+            }
+            updateGridFlatSize();
+          }
+
           // Let server know we're done
           grid.$server.confirmParentUpdate(id, parentKey);
 
           if (!grid.loading) {
-            grid.__updateVisibleRows();
+            grid.__confirmParentUpdateDebouncer = Debouncer.debounce(
+              grid.__confirmParentUpdateDebouncer,
+              animationFrame,
+              () => grid.__updateVisibleRows()
+            );
           }
         });
 
@@ -949,16 +862,23 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
                 grid.requestContentUpdate();
               }
 
-              // Makes sure to push all new rows before this stack execution is done so any timeout expiration called after will be applied on a fully updated grid
-              //Resolves https://github.com/vaadin/vaadin-grid-flow/issues/511
-              if (grid._debounceIncreasePool) {
-                grid._debounceIncreasePool.flush();
-              }
             } else if (callback && grid.size === 0) {
               // The grid has 0 items => resolve the callback with an empty array
               delete rootPageCallbacks[page];
               callback([]);
             }
+          }
+
+          if (Object.keys(rootPageCallbacks).length) {
+            // There are still unresolved callbacks waiting for data to the root level,
+            // which means that the range grid requested items for was only partially filled.
+            //
+            // This can happen for example if you preload some items without knowing exactly
+            // how many items the grid web component is going to request.
+            //
+            // Clear the last requested range for the root level to unblock
+            // any possible data requests for the same range in fetchPage.
+            delete lastRequestedRanges[root];
           }
 
           // Let server know we're done
@@ -973,8 +893,7 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
           }
           deleteObjectContents(lastRequestedRanges);
 
-          grid._cache.itemCaches = {};
-          grid._cache.itemkeyCaches = {};
+          dataProviderController.rootCache.removeSubCaches();
 
           updateAllGridRowsInDomBasedOnCache();
         });
@@ -1014,34 +933,94 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
         // Have the multi-selectable state updated on attach
         grid._createPropertyObserver('isAttached', () => grid.$connector.updateMultiSelectable());
 
-        // TODO: should be removed once https://github.com/vaadin/vaadin-grid/issues/1471 gets implemented
-        grid.$connector.setVerticalScrollingEnabled = tryCatchWrapper(function (enabled) {
-          // There are two scollable containers in grid so apply the changes for both
-          setVerticalScrollingEnabled(grid.$.table, enabled);
+        const singleTimeRenderer = (renderer) => {
+          return (root) => {
+            if (renderer) {
+              renderer(root);
+              renderer = null;
+            }
+          };
+        };
+
+        grid.$connector.setHeaderRenderer = tryCatchWrapper(function (column, options) {
+          const { content, showSorter, sorterPath } = options;
+
+          if (content === null) {
+            column.headerRenderer = null;
+            return;
+          }
+
+          column.headerRenderer = singleTimeRenderer((root) => {
+            // Clear previous contents
+            root.innerHTML = '';
+            // Render sorter
+            let contentRoot = root;
+            if (showSorter) {
+              const sorter = document.createElement('vaadin-grid-sorter');
+              sorter.setAttribute('path', sorterPath);
+              const ariaLabel = content instanceof Node ? content.textContent : content;
+              if (ariaLabel) {
+                sorter.setAttribute('aria-label', `Sort by ${ariaLabel}`);
+              }
+              root.appendChild(sorter);
+
+              // Use sorter as content root
+              contentRoot = sorter;
+            }
+            // Add content
+            if (content instanceof Node) {
+              contentRoot.appendChild(content);
+            } else {
+              contentRoot.textContent = content;
+            }
+          });
         });
 
-        const setVerticalScrollingEnabled = function (scrollable, enabled) {
-          // Prevent Y axis scrolling with CSS. This will hide the vertical scrollbar.
-          scrollable.style.overflowY = enabled ? '' : 'hidden';
-          // Clean up an existing listener
-          scrollable.removeEventListener('wheel', scrollable.__wheelListener);
-          // Add a wheel event listener with the horizontal scrolling prevention logic
-          !enabled &&
-            scrollable.addEventListener(
-              'wheel',
-              (scrollable.__wheelListener = tryCatchWrapper((e) => {
-                if (e.deltaX) {
-                  // If there was some horizontal delta related to the wheel event, force the vertical
-                  // delta to 0 and let grid process the wheel event normally
-                  Object.defineProperty(e, 'deltaY', { value: 0 });
-                } else {
-                  // If there was verical delta only, skip the grid's wheel event processing to
-                  // enable scrolling the page even if grid isn't scrolled to end
-                  e.stopImmediatePropagation();
-                }
-              }))
-            );
+        grid.__applySorters = () => {
+          const sorters = grid._mapSorters();
+          const sortersChanged = JSON.stringify(grid._previousSorters) !== JSON.stringify(sorters);
+
+          // Update the _previousSorters in vaadin-grid-sort-mixin so that the __applySorters
+          // method in the mixin will skip calling clearCache().
+          //
+          // In Flow Grid's case, we never want to clear the cache eagerly when the sorter elements
+          // change due to one of the following reasons:
+          //
+          // 1. Sorted by user: The items in the new sort order need to be fetched from the server,
+          // and we want to avoid a heavy re-render before the updated items have actually been fetched.
+          //
+          // 2. Sorted programmatically on the server: The items in the new sort order have already
+          // been fetched and applied to the grid. The sorter element states are updated programmatically
+          // to reflect the new sort order, but there's no need to re-render the grid rows.
+          grid._previousSorters = sorters;
+
+          // Call the original __applySorters method in vaadin-grid-sort-mixin
+          Grid.prototype.__applySorters.call(grid);
+
+          if (sortersChanged && !sorterDirectionsSetFromServer) {
+            grid.$server.sortersChanged(sorters);
+          }
         };
+
+        grid.$connector.setFooterRenderer = tryCatchWrapper(function (column, options) {
+          const { content } = options;
+
+          if (content === null) {
+            column.footerRenderer = null;
+            return;
+          }
+
+          column.footerRenderer = singleTimeRenderer((root) => {
+            // Clear previous contents
+            root.innerHTML = '';
+            // Add content
+            if (content instanceof Node) {
+              root.appendChild(content);
+            } else {
+              root.textContent = content;
+            }
+          });
+        });
 
         grid.addEventListener(
           'vaadin-context-menu-before-open',
@@ -1138,12 +1117,13 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
           }
 
           const target = event.target;
-          const eventContext = grid.getEventContext(event);
-          const section = eventContext.section;
 
           if (isFocusable(target) || target instanceof HTMLLabelElement) {
             return;
           }
+
+          const eventContext = grid.getEventContext(event);
+          const section = eventContext.section;
 
           if (eventContext.item && section !== 'details') {
             event.itemKey = eventContext.item.key;
@@ -1161,6 +1141,14 @@ import { isFocusable } from '@vaadin/grid/src/vaadin-grid-active-item-mixin.js';
             return;
           }
           return (style.row || '') + ' ' + ((column && style[column._flowId]) || '');
+        });
+
+        grid.cellPartNameGenerator = tryCatchWrapper(function (column, rowData) {
+          const part = rowData.item.part;
+          if (!part) {
+            return;
+          }
+          return (part.row || '') + ' ' + ((column && part[column._flowId]) || '');
         });
 
         grid.dropFilter = tryCatchWrapper((rowData) => rowData.item && !rowData.item.dropDisabled);

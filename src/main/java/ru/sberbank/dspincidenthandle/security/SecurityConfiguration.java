@@ -1,6 +1,6 @@
 package ru.sberbank.dspincidenthandle.security;
 
-import com.vaadin.flow.spring.security.VaadinWebSecurityConfigurerAdapter;
+import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -12,8 +12,7 @@ import ru.sberbank.dspincidenthandle.view.LoginView;
 
 @EnableWebSecurity
 @Configuration
-public class SecurityConfiguration
-        extends VaadinWebSecurityConfigurerAdapter {
+public class SecurityConfiguration extends VaadinWebSecurity {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -61,7 +60,6 @@ public class SecurityConfiguration
                 .passwordEncoder(new BCryptPasswordEncoder())
                 .passwordAttribute("userPassword");
     }
-
 //    /**
 //     * Demo UserDetailsManager which only provides two hardcoded
 //     * in memory users and their roles.

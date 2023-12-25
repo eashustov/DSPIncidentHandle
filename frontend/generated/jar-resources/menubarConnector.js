@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2022 Vaadin Ltd.
+ * Copyright 2000-2023 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -69,13 +69,6 @@ import './contextMenuConnector.js';
         // Propagate disabled state from items to parent buttons
         items.forEach((item) => (item.disabled = item.component.disabled));
 
-        // Remove hidden items entirely from the array. Just hiding them
-        // could cause the overflow button to be rendered without items.
-        //
-        // The items-prop needs to be set even when all items are visible
-        // to update the disabled state and re-render buttons.
-        items = items.filter((item) => !item.component.hidden);
-
         // Observe for hidden and disabled attributes in case they are changed by Flow.
         // When a change occurs, the observer will re-generate items on top of the existing tree
         // to sync the new attribute values with the corresponding properties in the items array.
@@ -85,6 +78,13 @@ import './contextMenuConnector.js';
             attributeOldValue: true
           });
         });
+
+        // Remove hidden items entirely from the array. Just hiding them
+        // could cause the overflow button to be rendered without items.
+        //
+        // The items-prop needs to be set even when all items are visible
+        // to update the disabled state and re-render buttons.
+        items = items.filter((item) => !item.component.hidden);
 
         menubar.items = items;
 
@@ -103,9 +103,18 @@ import './contextMenuConnector.js';
     };
   }
 
+  function setClassName (component) {
+    if (component._item) {
+      component._item.className = component.className;
+    }
+  }
+
   window.Vaadin.Flow.menubarConnector = {
     initLazy(...args) {
       return tryCatchWrapper(initLazy)(...args);
+    },
+    setClassName(...args) {
+      return tryCatchWrapper(setClassName)(...args);
     }
   };
 })();

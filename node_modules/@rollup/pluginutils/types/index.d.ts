@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-unresolved
-import { BaseNode } from 'estree';
+import type { BaseNode } from 'estree';
 
 export interface AttachedScope {
   parent?: AttachedScope;
@@ -18,7 +17,7 @@ export interface DataToEsmOptions {
 }
 
 /**
- * A valid `minimatch` pattern, or array of patterns.
+ * A valid `picomatch` glob pattern, or array of patterns.
  */
 export type FilterPattern = ReadonlyArray<string | RegExp> | string | RegExp | null;
 

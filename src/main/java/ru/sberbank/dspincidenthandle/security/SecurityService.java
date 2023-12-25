@@ -2,6 +2,7 @@ package ru.sberbank.dspincidenthandle.security;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +28,7 @@ public class SecurityService {
         UI.getCurrent().getPage().setLocation(LOGOUT_SUCCESS_URL);
         SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
         logoutHandler.logout(
-                VaadinServletRequest.getCurrent().getHttpServletRequest(), null,
+                (HttpServletRequest) VaadinServletRequest.getCurrent().getHttpServletRequest(), null,
                 null);
     }
 }

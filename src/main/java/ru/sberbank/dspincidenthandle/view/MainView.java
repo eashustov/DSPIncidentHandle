@@ -34,12 +34,12 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.sberbank.dspincidenthandle.domain.DSPIncidentData;
 import ru.sberbank.dspincidenthandle.repo.DSPIncidentRepo;
 import ru.sberbank.dspincidenthandle.security.SecurityService;
 
-import javax.annotation.security.PermitAll;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.time.LocalDate;
