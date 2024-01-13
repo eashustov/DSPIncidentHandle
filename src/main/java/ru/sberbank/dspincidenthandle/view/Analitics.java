@@ -73,7 +73,7 @@ import java.util.stream.Collectors;
 import static ru.sberbank.dspincidenthandle.service.ExporToCSV.exportToCSV;
 
 @PermitAll
-@Route(value = "analitics")
+@Route(value = "analitics", layout = MainLayout.class)
 @PageTitle("Аналитика инцидентов ДСП зарегистрированных вручную")
 
 public class Analitics extends VerticalLayout {
@@ -201,7 +201,7 @@ public class Analitics extends VerticalLayout {
         this.incidentRepo = incidentRepo;
 
         //    Метод инициализации заголовка и кнопки выхода
-        createLogoutButton();
+//        createLogoutButton();
 
         //Кнопка поиска
         TextField searchField = new TextField();

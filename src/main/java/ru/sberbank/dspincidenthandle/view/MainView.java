@@ -51,7 +51,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @PermitAll
-@Route
+@Route(value="", layout = MainLayout.class)
 @PageTitle("Инциденты ДСП зарегистрированные вручную")
 //Сохранение состояния таблицы при обновлении
 //@PreserveOnRefresh
@@ -98,7 +98,7 @@ public class MainView extends VerticalLayout {
 
 
         this.repo = repo;
-        createLogoutButton();
+//        createLogoutButton();
         this.header = new H4("Инциденты ДСП зарегистрированные вручную за период");
 
         //        Export to CSV list of kafka servers
@@ -126,8 +126,8 @@ public class MainView extends VerticalLayout {
         );
 
         //Link to Analitics
-        Anchor analiticsChart = new Anchor("analitics", "Аналитика");
-        analiticsChart.setTarget("_blank");
+//        Anchor analiticsChart = new Anchor("analitics", "Аналитика");
+//        analiticsChart.setTarget("_blank");
 
         //Сохранить в csv
         Anchor downloadToCSV = new Anchor(streamResource, "Сохранить в CSV");
@@ -170,9 +170,10 @@ public class MainView extends VerticalLayout {
         menuBar.addItem("Столбцы");
 
         // build top HorizontalLayout
-        HorizontalLayout actions = new HorizontalLayout(analiticsChart,menuBar);
+//        HorizontalLayout actions = new HorizontalLayout(analiticsChart,menuBar);
+        HorizontalLayout actions = new HorizontalLayout(menuBar);
         actions.setVerticalComponentAlignment(Alignment.END, menuBar);
-        actions.setVerticalComponentAlignment(Alignment.CENTER, analiticsChart);
+//        actions.setVerticalComponentAlignment(Alignment.CENTER, analiticsChart);
         setHorizontalComponentAlignment(Alignment.END, actions);
 
         //Build DataLayout
