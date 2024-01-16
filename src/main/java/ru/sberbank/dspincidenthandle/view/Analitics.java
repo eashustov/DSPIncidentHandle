@@ -26,6 +26,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.ComboBoxVariant;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -51,7 +52,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.gatanaso.MultiselectComboBox;
 import ru.sberbank.dspincidenthandle.domain.IDSPIncidentAffectedDataCount;
 import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataCountPerMonth;
 import ru.sberbank.dspincidenthandle.domain.IDSPIncidentDataTop10;
@@ -140,7 +140,7 @@ public class Analitics extends VerticalLayout {
     ComboBox<String> typeStatisticsComboBox;
 
     //Обьявление MultiComboBox выбора типа ИТ услуги для прорисовки
-    MultiselectComboBox<String> typeAffectedItemMultiComboBox;
+    MultiSelectComboBox<String> typeAffectedItemMultiComboBox;
 
     //Обьявление ComboBox выбора списка типа ИТ услуги для прорисовки
     List <String> selectedAffectedItemList;
@@ -218,7 +218,7 @@ public class Analitics extends VerticalLayout {
         downloadToCSV.add(buttonDownloadCSV);
 
         //Выбор типа ИТ услуги - Мультивыбор
-        typeAffectedItemMultiComboBox = new MultiselectComboBox();
+        typeAffectedItemMultiComboBox = new MultiSelectComboBox();
         typeAffectedItemList.add(0, "Все");
         typeAffectedItemMultiComboBox.setItems(typeAffectedItemList);
         typeAffectedItemMultiComboBox.setPlaceholder("Выбор ИТ услуги");
