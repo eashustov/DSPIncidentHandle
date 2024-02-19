@@ -1,0 +1,16 @@
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/domain/DSPIncidentData.java
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/AppShell.java
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/view/Analitics.java
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/repo/DSPIncidentCountPerMonthRepo.java
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/domain/IDSPIncidentDataTop10.java
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/DSPIncidentHandleApplication.java
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/domain/IDSPIncidentDataCountPerMonth.java
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/view/MainView.java
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/repo/DSPIncidentRepo.java
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/repo/DSPIncidentAffectedCountRepo.java
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/view/FilterActiveIncident.java
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/domain/IDSPIncidentAffectedDataCount.java
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/repo/DSPIncidentTop10Repo.java
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/service/ExporToCSV.java
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/repo/DSPIncidentPrcCountRepo.java
+/home/eshustov/IdeaProjects/DSPIncidentHandle/src/main/java/ru/sberbank/dspincidenthandle/repo/DSPIncidentAnaliticsRepo.java
