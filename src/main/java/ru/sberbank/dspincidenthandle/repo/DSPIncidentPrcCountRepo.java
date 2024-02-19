@@ -1,5 +1,6 @@
 package ru.sberbank.dspincidenthandle.repo;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import ru.sberbank.dspincidenthandle.domain.DSPIncidentData;
 
 @Repository
+@Profile("!dev & !prod")
 public interface DSPIncidentPrcCountRepo extends CrudRepository<DSPIncidentData, String>{
 
 //Запросы и методы для Donut Chart аналитики - проценты по инцидентам

@@ -16,7 +16,7 @@ public class DSPIncidentHandleApplication {
    //gcInterval
     public static int gcInterval;
 
-    @Value("${gc.interval}")
+    @Value("${gcInterval}")
     private void setGCInterval(int gc_Interval) {
         gcInterval = gc_Interval;
     }

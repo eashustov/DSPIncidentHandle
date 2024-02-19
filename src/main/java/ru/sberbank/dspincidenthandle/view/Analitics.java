@@ -50,6 +50,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.PermitAll;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.sberbank.dspincidenthandle.domain.IDSPIncidentAffectedDataCount;
@@ -70,7 +71,8 @@ import java.util.stream.Collectors;
 import static ru.sberbank.dspincidenthandle.service.ExporToCSV.exportToCSV;
 
 
-@Route(value = "analitics")
+@PermitAll
+@Route(value = "analitics", layout = MainLayout.class)
 @PageTitle("Аналитика инцидентов ДСП зарегистрированных вручную")
 
 public class Analitics extends VerticalLayout {
@@ -116,17 +118,12 @@ public class Analitics extends VerticalLayout {
     double incHandleDonutCount;
 
 
-    @Autowired
+
     private DSPIncidentAffectedCountRepo incidentAffectedDataTotalCountRepo;
-    @Autowired
     private DSPIncidentCountPerMonthRepo incidentDataCountPerMonthRepo;
-    @Autowired
     private DSPIncidentAnaliticsRepo incidentAnaliticsRepo;
-    @Autowired
     private DSPIncidentTop10Repo incidentDataTop10Repo;
-    @Autowired
     private DSPIncidentRepo incidentRepo;
-    @Autowired
     private DSPIncidentPrcCountRepo incidentPrcCountRepo;
 
 
@@ -167,7 +164,7 @@ public class Analitics extends VerticalLayout {
     //top 10 исполнителей вертикальная сетка
     VerticalLayout top10Inclayout;
 
-
+    @Autowired
     public Analitics(DSPIncidentAffectedCountRepo incidentAffectedDataTotalCountRepo,
                      DSPIncidentCountPerMonthRepo incidentDataCountPerMonthRepo,
                      DSPIncidentAnaliticsRepo incidentAnaliticsRepo,

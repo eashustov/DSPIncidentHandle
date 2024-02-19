@@ -36,6 +36,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.sberbank.dspincidenthandle.domain.DSPIncidentData;
 import ru.sberbank.dspincidenthandle.repo.DSPIncidentRepo;
@@ -50,14 +51,14 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 
-@Route
+@PermitAll
+@Route(value="", layout = MainLayout.class)
 @PageTitle("Инциденты ДСП зарегистрированные вручную")
 //Сохранение состояния таблицы при обновлении
 //@PreserveOnRefresh
 public class MainView extends VerticalLayout {
-
     private H4 header;
-    @Autowired
+
     private DSPIncidentRepo repo;
     private Grid<DSPIncidentData> grid;
     private GridListDataView<DSPIncidentData> dataView;
@@ -74,6 +75,7 @@ public class MainView extends VerticalLayout {
     MenuBar menuBar = new MenuBar();
 
 
+    @Autowired
     public MainView(DSPIncidentRepo repo) {
 
         LocalDate now = LocalDate.now(ZoneId.systemDefault());
@@ -121,10 +123,6 @@ public class MainView extends VerticalLayout {
                 }
         );
 
-        //Link to Analitics
-        Anchor analiticsChart = new Anchor("analitics", "Аналитика");
-        analiticsChart.setTarget("_blank");
-
         //Сохранить в csv
         Anchor downloadToCSV = new Anchor(streamResource, "Сохранить в CSV");
         Button buttonDownloadCSV = new Button(new Icon(VaadinIcon.DOWNLOAD));
@@ -166,9 +164,8 @@ public class MainView extends VerticalLayout {
         menuBar.addItem("Столбцы");
 
         // build top HorizontalLayout
-        HorizontalLayout actions = new HorizontalLayout(analiticsChart,menuBar);
+        HorizontalLayout actions = new HorizontalLayout(menuBar);
         actions.setVerticalComponentAlignment(Alignment.END, menuBar);
-        actions.setVerticalComponentAlignment(Alignment.CENTER, analiticsChart);
         setHorizontalComponentAlignment(Alignment.END, actions);
 
         //Build DataLayout

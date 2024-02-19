@@ -71,9 +71,10 @@
     "onecolor": "3.1.0"
   },
   "npmModules": {
-    "@lit/reactive-element": "2.0.3",
+    "@lit/reactive-element": "2.0.2",
     "@polymer/polymer": "3.5.1",
     "@vaadin/a11y-base": "24.3.2",
+    "@vaadin/app-layout": "24.3.2",
     "@vaadin/button": "24.3.2",
     "@vaadin/checkbox": "24.3.2",
     "@vaadin/combo-box": "24.3.2",
@@ -91,9 +92,11 @@
     "@vaadin/input-container": "24.3.2",
     "@vaadin/item": "24.3.2",
     "@vaadin/list-box": "24.3.2",
+    "@vaadin/login": "24.3.2",
     "@vaadin/menu-bar": "24.3.2",
     "@vaadin/multi-select-combo-box": "24.3.2",
     "@vaadin/overlay": "24.3.2",
+    "@vaadin/password-field": "24.3.2",
     "@vaadin/polymer-legacy-adapter": "24.3.2",
     "@vaadin/radio-group": "24.3.2",
     "@vaadin/router": "1.7.5",
@@ -107,12 +110,14 @@
     "@webcomponents/shadycss": "1.11.2",
     "apexcharts": "3.35.0",
     "date-fns": "2.29.3",
-    "lit-element": "4.0.3",
-    "lit-html": "3.1.1",
+    "lit-element": "4.0.2",
+    "lit-html": "3.1.0",
     "onecolor": "3.1.0",
     "tslib": "2.6.2"
   },
   "bundleImports": [
+    "@vaadin/app-layout/theme/lumo/vaadin-app-layout.js",
+    "@vaadin/app-layout/theme/lumo/vaadin-drawer-toggle.js",
     "@vaadin/button/theme/lumo/vaadin-button.js",
     "@vaadin/checkbox/theme/lumo/vaadin-checkbox.js",
     "@vaadin/combo-box/theme/lumo/vaadin-combo-box.js",
@@ -129,6 +134,7 @@
     "@vaadin/horizontal-layout/theme/lumo/vaadin-horizontal-layout.js",
     "@vaadin/icon/theme/lumo/vaadin-icon.js",
     "@vaadin/icons/vaadin-iconset.js",
+    "@vaadin/login/theme/lumo/vaadin-login-form.js",
     "@vaadin/menu-bar/theme/lumo/vaadin-menu-bar.js",
     "@vaadin/multi-select-combo-box/theme/lumo/vaadin-multi-select-combo-box.js",
     "@vaadin/polymer-legacy-adapter/style-modules.js",
@@ -177,7 +183,7 @@
     
   },
   "entryScripts": [
-    "VAADIN/build/indexhtml-sLPHwCpt.js"
+    "VAADIN/build/indexhtml-U3yrsdUZ.js"
   ],
   "webComponents": [
     
@@ -187,7 +193,7 @@
   },
   "packageJsonHash": "2474e99c04c93e7b30b0628588c3e76c4433ada0248ac84583c77af9b4657a7c",
   "indexHtmlGenerated": [
-    "  <script type=\"module\" crossorigin src=\"./VAADIN/build/indexhtml-sLPHwCpt.js\"></script>"
+    "  <script type=\"module\" crossorigin src=\"./VAADIN/build/indexhtml-U3yrsdUZ.js\"></script>"
   ],
   "pre-compiled": true
 }

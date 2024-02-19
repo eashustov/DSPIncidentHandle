@@ -1,5 +1,6 @@
 package ru.sberbank.dspincidenthandle.repo;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -10,6 +11,7 @@ import ru.sberbank.dspincidenthandle.domain.IDSPIncidentAffectedDataCount;
 import java.util.List;
 
 @Repository
+@Profile("!dev & !prod")
 public interface DSPIncidentAffectedCountRepo extends CrudRepository<DSPIncidentData, String> {
 
     //Запросы и методы для построения Bar Chart графика аналитики - проценты по инцидентам

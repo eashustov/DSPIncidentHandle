@@ -1,5 +1,6 @@
 package ru.sberbank.dspincidenthandle.repo;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -9,6 +10,7 @@ import ru.sberbank.dspincidenthandle.domain.DSPIncidentData;
 import java.util.List;
 
 @Repository
+@Profile("!dev & !prod")
 public interface DSPIncidentAnaliticsRepo extends CrudRepository<DSPIncidentData, String> {
 
 @Query(value = "select HPC_IS_MASS,\n" +
