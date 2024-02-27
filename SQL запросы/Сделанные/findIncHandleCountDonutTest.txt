@@ -11,7 +11,7 @@ from (
                 HPC_CREATED_BY,
                 HPC_STATUS,
                 HPC_ASSIGNMENT_NAME
-         from SMPRIMARY.SBPROBSUMMARYTSM1
+         from SMPRIMARYSAFE.SBPROBSUMMARYTSM1
      )
 where HPC_ASSIGNMENT_NAME in
       ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',

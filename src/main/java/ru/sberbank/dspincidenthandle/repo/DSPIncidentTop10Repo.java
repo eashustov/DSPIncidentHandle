@@ -33,7 +33,7 @@ public interface DSPIncidentTop10Repo extends CrudRepository<DSPIncidentData, St
             "    \tOPENED_BY,\n" +
             "      HPC_AFFECTED_ITEM_NAME as AFFECTED_ITEM\n" +
             "FROM\n" +
-            "\tsmprimary.probsummarym1 prob1 \n" +
+            "\tSMPRIMARYSAFE.probsummarym1 prob1 \n" +
             "where HPC_ASSIGNMENT_NAME in\n" +
             "      ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',\n" +
             "       'SberInfra УСП Шлюзовые решения (Шитиков В.Е.)', 'SberInfra УСП Интеграционные платформы (Гоголев К.Ю.)',\n" +
@@ -67,7 +67,7 @@ public interface DSPIncidentTop10Repo extends CrudRepository<DSPIncidentData, St
             "\t'OPENED_BY'    AS OPENED_BY,\n" +
             "\t HPC_AFFECTED_ITEM_NAME as AFFECTED_ITEM\n" +
             "FROM\n" +
-            "\tsmprimary.SBPROBSUMMARYTSM1 prob1 \n" +
+            "\tSMPRIMARYSAFE.SBPROBSUMMARYTSM1 prob1 \n" +
             "where HPC_ASSIGNMENT_NAME in\n" +
             "      ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',\n" +
             "       'SberInfra УСП Шлюзовые решения (Шитиков В.Е.)', 'SberInfra УСП Интеграционные платформы (Гоголев К.Ю.)',\n" +

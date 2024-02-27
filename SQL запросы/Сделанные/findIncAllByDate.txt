@@ -1,9 +1,9 @@
---ЗНО  select * from smprimary.sbrequestm1
---TRW  select * from smprimary.SBROUTINETASKM1
---ЗПИ  select * from smprimary.sbimtaskm1
---ЗНР  select * from smprimary.SBREQUESTTASKM1
---IM   select * from smprimary.PROBSUMMARYM1
---IMTS select * from smprimary.SBPROBSUMMARYTSM1
+--ЗНО  select * from SMPRIMARYSAFE.sbrequestm1
+--TRW  select * from SMPRIMARYSAFE.SBROUTINETASKM1
+--ЗПИ  select * from SMPRIMARYSAFE.sbimtaskm1
+--ЗНР  select * from SMPRIMARYSAFE.SBREQUESTTASKM1
+--IM   select * from SMPRIMARYSAFE.PROBSUMMARYM1
+--IMTS select * from SMPRIMARYSAFE.SBPROBSUMMARYTSM1
 select HPC_IS_MASS,
        SB_ROOT_INCIDENT,
        "NUMBER",
@@ -29,7 +29,7 @@ from (
                 HPC_ASSIGNMENT_NAME,
                 ACTION,
                 'true' as PROM
-         from SMPRIMARY.PROBSUMMARYM1
+         from SMPRIMARYSAFE.PROBSUMMARYM1
          union all
          select HPC_IS_MASS,
                 SB_ROOT_INCIDENT,
@@ -44,7 +44,7 @@ from (
                 HPC_ASSIGNMENT_NAME,
                 ACTION,
                 'false' as PROM
-         from SMPRIMARY.SBPROBSUMMARYTSM1
+         from SMPRIMARYSAFE.SBPROBSUMMARYTSM1
      )
 where HPC_ASSIGNMENT_NAME in
       ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',

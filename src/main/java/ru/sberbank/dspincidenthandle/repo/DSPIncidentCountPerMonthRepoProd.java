@@ -23,7 +23,7 @@ public interface DSPIncidentCountPerMonthRepoProd extends DSPIncidentCountPerMon
             "                HPC_STATUS,\n" +
             "                HPC_ASSIGNMENT_NAME\n" +
             "                \t\t\t\t\n" +
-            "         from SMPRIMARY.PROBSUMMARYM1\n" +
+            "         from SMPRIMARYSAFE.PROBSUMMARYM1\n" +
             "         union all\n" +
             "         select \n" +
             "                \"NUMBER\",\n" +
@@ -33,7 +33,7 @@ public interface DSPIncidentCountPerMonthRepoProd extends DSPIncidentCountPerMon
             "                HPC_STATUS,\n" +
             "                HPC_ASSIGNMENT_NAME\n" +
             "                \n" +
-            "         from SMPRIMARY.SBPROBSUMMARYTSM1\n" +
+            "         from SMPRIMARYSAFE.SBPROBSUMMARYTSM1\n" +
             "      )\n" +
             "where HPC_ASSIGNMENT_NAME in\n" +
             "      ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',\n" +

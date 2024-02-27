@@ -15,7 +15,7 @@ FROM
     	OPENED_BY,
       HPC_AFFECTED_ITEM_NAME as AFFECTED_ITEM
 FROM
-	smprimary.probsummarym1 prob1 
+	SMPRIMARYSAFE.probsummarym1 prob1
 WHERE
 	HPC_ASSIGNMENT_NAME in
       ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',
@@ -48,7 +48,7 @@ SELECT
 	'OPENED_BY'    AS OPENED_BY,
 	 HPC_AFFECTED_ITEM_NAME as AFFECTED_ITEM
 FROM
-	smprimary.SBPROBSUMMARYTSM1 prob1 
+	SMPRIMARYSAFE.SBPROBSUMMARYTSM1 prob1
 WHERE
 	HPC_ASSIGNMENT_NAME in
       ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',

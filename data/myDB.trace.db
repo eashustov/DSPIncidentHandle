@@ -48,8 +48,8 @@ Caused by: org.h2.mvstore.MVStoreException: The file is locked: /home/eshustov/I
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:286)
 	... 28 more
 2023-12-15 16:19:15 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "SMPRIMARY" not found (this database is empty); SQL statement:
-select * from SMPRIMARY p LIMIT 500 [42104-220]
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "SMPRIMARYSAFE" not found (this database is empty); SQL statement:
+select * from SMPRIMARYSAFE p LIMIT 500 [42104-220]
 2023-12-15 13:20:19.161592Z jdbc[3]: exception
 java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supported.
 	at org.h2.jdbc.JdbcConnection.setClientInfo(JdbcConnection.java:1626)
@@ -72,8 +72,8 @@ java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supporte
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at java.base/java.lang.Thread.run(Thread.java:834)
 2023-12-15 13:20:19.745264Z jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "SMPRIMARY" not found (this database is empty); SQL statement:
-SELECT t.* FROM SMPRIMARY t
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "SMPRIMARYSAFE" not found (this database is empty); SQL statement:
+SELECT t.* FROM SMPRIMARYSAFE t
 LIMIT 1 [42104-224]
 2023-12-15 13:20:20.118168Z jdbc[3]: exception
 java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supported.
@@ -1164,21 +1164,21 @@ java.sql.SQLClientInfoException: Client info name 'ApplicationName' not supporte
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
 	at java.base/java.lang.Thread.run(Thread.java:840)
 2023-12-15 16:40:03 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; ожидалось "identifier"
-Syntax error in SQL statement "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; expected "identifier"; SQL statement:
-select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p 
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; ожидалось "identifier"
+Syntax error in SQL statement "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; expected "identifier"; SQL statement:
+select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p
 GROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))
 ORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC [42001-220]
 2023-12-15 16:40:07 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; ожидалось "identifier"
-Syntax error in SQL statement "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; expected "identifier"; SQL statement:
-select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p 
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; ожидалось "identifier"
+Syntax error in SQL statement "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; expected "identifier"; SQL statement:
+select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p
 GROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))
 ORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC [42001-220]
 2023-12-15 16:40:09 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; ожидалось "identifier"
-Syntax error in SQL statement "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; expected "identifier"; SQL statement:
-select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p 
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; ожидалось "identifier"
+Syntax error in SQL statement "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; expected "identifier"; SQL statement:
+select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p
 GROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))
 ORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC [42001-220]
 2023-12-15 13:41:49.774232Z jdbc[3]: exception
@@ -1333,21 +1333,21 @@ Caused by: org.h2.mvstore.MVStoreException: The file is locked: /home/eshustov/I
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:286)
 	... 88 more
 2023-12-18 09:41:00 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; ожидалось "identifier"
-Syntax error in SQL statement "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; expected "identifier"; SQL statement:
-select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p 
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; ожидалось "identifier"
+Syntax error in SQL statement "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; expected "identifier"; SQL statement:
+select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p
 GROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))
 ORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC [42001-220]
 2023-12-18 09:58:24 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT ('p.NUMBER') AS count_inc from SMPRIMARY p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; ожидалось "identifier"
-Syntax error in SQL statement "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT ('p.NUMBER') AS count_inc from SMPRIMARY p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; expected "identifier"; SQL statement:
-select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT ('p.NUMBER') AS count_inc from SMPRIMARY p 
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT ('p.NUMBER') AS count_inc from SMPRIMARYSAFE p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; ожидалось "identifier"
+Syntax error in SQL statement "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT ('p.NUMBER') AS count_inc from SMPRIMARYSAFE p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC"; expected "identifier"; SQL statement:
+select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year, COUNT ('p.NUMBER') AS count_inc from SMPRIMARYSAFE p
 GROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))
 ORDER BY HPC_AFFECTED_ITEM_NAME, year, month_number ASC [42001-220]
 2023-12-18 10:10:25 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLDataException: Ошибка при разборе "2023.07.11 17:43"
 Error parsing "2023.07.11 17:43"; SQL statement:
-select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year_, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p 
+select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')) AS year_, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p
 GROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd hh:mm'))
 ORDER BY HPC_AFFECTED_ITEM_NAME, year_, month_number ASC [90014-220]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:658)
@@ -1540,9 +1540,9 @@ Caused by: java.time.DateTimeException: Invalid value for ClockHourOfAmPm (valid
 	at java.base/java.time.format.DateTimeFormatter.parse(DateTimeFormatter.java:1880)
 	... 171 more
 2023-12-18 10:24:07 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS year_, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year_, month_number ASC"; ожидалось "identifier"
-Syntax error in SQL statement "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS year_, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year_, month_number ASC"; expected "identifier"; SQL statement:
-select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS year_, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p 
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS year_, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year_, month_number ASC"; ожидалось "identifier"
+Syntax error in SQL statement "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS [*]month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS year_, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p \000aGROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm'))\000aORDER BY HPC_AFFECTED_ITEM_NAME, year_, month_number ASC"; expected "identifier"; SQL statement:
+select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS month,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS year_, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p
 GROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm'))
 ORDER BY HPC_AFFECTED_ITEM_NAME, year_, month_number ASC [42001-220]
 2023-12-18 10:29:14 jdbc[3]: exception
@@ -1581,7 +1581,7 @@ FROM
              OPENED_BY,
              AFFECTED_ITEM, 'RESOLUTION_GUIDE' AS RESOLUTION_GUIDE
          FROM
-             smprimary.probsummarym1 prob1
+             SMPRIMARYSAFE.probsummarym1 prob1
          WHERE
                  prob1.AFFECTED_ITEM IN ( 'CI02021303', 
    'CI02021304', 
@@ -1642,7 +1642,7 @@ FROM
              'OPENED_BY',
              AFFECTED_ITEM, 'RESOLUTION_GUIDE' AS RESOLUTION_GUIDE
          FROM
-             smprimary.SBPROBSUMMARYTSM1 prob1
+             SMPRIMARYSAFE.SBPROBSUMMARYTSM1 prob1
          WHERE
                  prob1.AFFECTED_ITEM IN ( 'CI02021303', 
    'CI02021304', 
@@ -1914,7 +1914,7 @@ FROM
              OPENED_BY,
              AFFECTED_ITEM, 'RESOLUTION_GUIDE' AS RESOLUTION_GUIDE
          FROM
-             smprimary.probsummarym1 prob1
+             SMPRIMARYSAFE.probsummarym1 prob1
          WHERE
                  prob1.AFFECTED_ITEM IN ( 'CI02021303', 
    'CI02021304', 
@@ -1975,7 +1975,7 @@ FROM
              'OPENED_BY',
              AFFECTED_ITEM, 'RESOLUTION_GUIDE' AS RESOLUTION_GUIDE
          FROM
-             smprimary.SBPROBSUMMARYTSM1 prob1
+             SMPRIMARYSAFE.SBPROBSUMMARYTSM1 prob1
          WHERE
                  prob1.AFFECTED_ITEM IN ( 'CI02021303', 
    'CI02021304', 
@@ -3401,8 +3401,8 @@ Caused by: org.h2.mvstore.MVStoreException: The file is locked: /home/eshustov/I
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:286)
 	... 136 more
 2024-02-19 12:23:38 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Схема "SMPRIMARY" не найдена
-Schema "SMPRIMARY" not found; SQL statement:
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Схема "SMPRIMARYSAFE" не найдена
+Schema "SMPRIMARYSAFE" not found; SQL statement:
 select HPC_IS_MASS,
        SB_ROOT_INCIDENT,
        "NUMBER",
@@ -3428,7 +3428,7 @@ from (
                 HPC_ASSIGNMENT_NAME,
                 ACTION,
                 'true' as PROM
-         from SMPRIMARY.PROBSUMMARYM1
+         from SMPRIMARYSAFE.PROBSUMMARYM1
          union all
          select HPC_IS_MASS,
                 SB_ROOT_INCIDENT,
@@ -3443,7 +3443,7 @@ from (
                 HPC_ASSIGNMENT_NAME,
                 ACTION,
                 'false' as PROM
-         from SMPRIMARY.SBPROBSUMMARYTSM1
+         from SMPRIMARYSAFE.SBPROBSUMMARYTSM1
      )
 where HPC_ASSIGNMENT_NAME in
       ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',

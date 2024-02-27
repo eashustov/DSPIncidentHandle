@@ -9,7 +9,7 @@ select HPC_IS_MASS,
        HPC_STATUS,
        ACTION,
        PROM
-from  SMPRIMARY.SBPROBSUMMARYselect 
+from  SMPRIMARYSAFE.SBPROBSUMMARYselect
        HPC_IS_MASS,
        SB_ROOT_INCIDENT,
        "NUMBER",
@@ -35,7 +35,7 @@ select          HPC_IS_MASS,
                 HPC_ASSIGNMENT_NAME,
                 ACTION,
                 'false' as PROM
-         from SMPRIMARY.SBPROBSUMMARYTSM1
+         from SMPRIMARYSAFE.SBPROBSUMMARYTSM1
          )
 where HPC_ASSIGNMENT_NAME in
       ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',

@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 @Profile("dev")
 public interface DSPIncidentCountPerMonthRepoDev extends DSPIncidentCountPerMonthRepo{
-    @Query(value = "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS month_,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS year_, COUNT (p.NUMBER) AS count_inc from SMPRIMARY p \n" +
+    @Query(value = "select p.HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS month_,  MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS month_number, YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')) AS year_, COUNT (p.NUMBER) AS count_inc from SMPRIMARYSAFE p \n" +
             "GROUP BY HPC_AFFECTED_ITEM_NAME, MONTHNAME(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')), MONTH(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm')), YEAR(PARSEDATETIME(p.PLAN_OPEN, 'yyyy.MM.dd HH:mm'))\n" +
             "ORDER BY HPC_AFFECTED_ITEM_NAME, year_, month_number ASC", nativeQuery = true)
     List<IDSPIncidentDataCountPerMonth> findIncAffectedItemCountPerMonth(@Param("startDate") String startDate, @Param("endDate") String endDate);

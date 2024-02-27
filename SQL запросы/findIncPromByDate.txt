@@ -24,7 +24,7 @@ select          HPC_IS_MASS,
                 HPC_ASSIGNMENT_NAME,
                 ACTION,
                 'false' as PROM
-         from SMPRIMARY.PROBSUMMARYM1
+         from SMPRIMARYSAFE.PROBSUMMARYM1
          )
 where HPC_ASSIGNMENT_NAME in
       ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',

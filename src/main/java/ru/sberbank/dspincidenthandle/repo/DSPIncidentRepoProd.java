@@ -36,7 +36,7 @@ public interface DSPIncidentRepoProd extends DSPIncidentRepo{
             "                HPC_ASSIGNMENT_NAME,\n" +
             "                ACTION,\n" +
             "                'true' as PROM\n" +
-            "         from SMPRIMARY.PROBSUMMARYM1\n" +
+            "         from SMPRIMARYSAFE.PROBSUMMARYM1\n" +
             "         union all\n" +
             "         select HPC_IS_MASS,\n" +
             "                SB_ROOT_INCIDENT,\n" +
@@ -51,7 +51,7 @@ public interface DSPIncidentRepoProd extends DSPIncidentRepo{
             "                HPC_ASSIGNMENT_NAME,\n" +
             "                ACTION,\n" +
             "                'false' as PROM\n" +
-            "         from SMPRIMARY.SBPROBSUMMARYTSM1\n" +
+            "         from SMPRIMARYSAFE.SBPROBSUMMARYTSM1\n" +
             "     )\n" +
             "where HPC_ASSIGNMENT_NAME in\n" +
             "      ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',\n" +

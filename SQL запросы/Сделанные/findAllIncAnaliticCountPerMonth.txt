@@ -10,7 +10,7 @@ from (
                 HPC_STATUS,
                 HPC_ASSIGNMENT_NAME
                 				
-         from SMPRIMARY.PROBSUMMARYM1
+         from SMPRIMARYSAFE.PROBSUMMARYM1
          union all
          select 
                 "NUMBER",
@@ -20,7 +20,7 @@ from (
                 HPC_STATUS,
                 HPC_ASSIGNMENT_NAME
                 
-         from SMPRIMARY.SBPROBSUMMARYTSM1
+         from SMPRIMARYSAFE.SBPROBSUMMARYTSM1
       )
  where HPC_ASSIGNMENT_NAME in
       ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',

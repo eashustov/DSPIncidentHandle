@@ -12,6 +12,6 @@ import java.util.List;
 @Profile("dev")
 public interface DSPIncidentTop10RepoDev extends DSPIncidentTop10Repo{
     @Query(value = "select p.HPC_AFFECTED_ITEM_NAME as Affected_Item, p.HPC_ASSIGNEE_NAME as Assignee_Name," +
-            " COUNT (p.NUMBER) AS count_Inc from SMPRIMARY p GROUP BY Affected_Item, Assignee_Name ORDER BY  Affected_Item, count_Inc DESC", nativeQuery = true)
+            " COUNT (p.NUMBER) AS count_Inc from SMPRIMARYSAFE p GROUP BY Affected_Item, Assignee_Name ORDER BY  Affected_Item, count_Inc DESC", nativeQuery = true)
     List<IDSPIncidentDataTop10> findTop10IncCount(@Param("startDate") String startDate, @Param("endDate") String endDate);
 }

@@ -1,9 +1,9 @@
---ЗНО  select * from smprimary.sbrequestm1
---TRW  select * from smprimary.SBROUTINETASKM1
---ЗПИ  select * from smprimary.sbimtaskm1
---ЗНР  select * from smprimary.SBREQUESTTASKM1
---IM   select * from smprimary.PROBSUMMARYM1
---IMTS select * from smprimary.SBPROBSUMMARYTSM1
+--пїЅпїЅпїЅ  select * from SMPRIMARYSAFE.sbrequestm1
+--TRW  select * from SMPRIMARYSAFE.SBROUTINETASKM1
+--пїЅпїЅпїЅ  select * from SMPRIMARYSAFE.sbimtaskm1
+--пїЅпїЅпїЅ  select * from SMPRIMARYSAFE.SBREQUESTTASKM1
+--IM   select * from SMPRIMARYSAFE.PROBSUMMARYM1
+--IMTS select * from SMPRIMARYSAFE.SBPROBSUMMARYTSM1
 select HPC_IS_MASS,
        SB_ROOT_INCIDENT,
        "NUMBER",
@@ -29,7 +29,7 @@ from (
                 HPC_ASSIGNMENT_NAME,
                 ACTION,
                 'true' as PROM
-         from SMPRIMARY.PROBSUMMARYM1
+         from SMPRIMARYSAFE.PROBSUMMARYM1
          union all
          select HPC_IS_MASS,
                 SB_ROOT_INCIDENT,
@@ -44,23 +44,23 @@ from (
                 HPC_ASSIGNMENT_NAME,
                 ACTION,
                 'false' as PROM
-         from SMPRIMARY.SBPROBSUMMARYTSM1
+         from SMPRIMARYSAFE.SBPROBSUMMARYTSM1
      )
 where HPC_ASSIGNMENT_NAME in
-      ('SberInfra УСП Платформы ESB (Бирюков Р.С.)', 'SberInfra УСП Системы очередей сообщений (Долгополов М.Ю.)',
-       'SberInfra УСП Шлюзовые решения (Шитиков В.Е.)', 'SberInfra УСП Интеграционные платформы (Гоголев К.Ю.)',
-       'SberInfra УСП Серверы приложений (Мутин Д.И.)', 'SberInfra УСП Дежурная смена (Зайцев А.М.)')
+      ('SberInfra пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ESB (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ.пїЅ.)', 'SberInfra пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ.пїЅ.)',
+       'SberInfra пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ.пїЅ.)', 'SberInfra пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ.пїЅ.)',
+       'SberInfra пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ пїЅ.пїЅ.)', 'SberInfra пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ.пїЅ.)')
   and HPC_AFFECTED_ITEM_NAME in
-      ('Интеграционные платформы серверов приложений (CI00737140)', 'IBM WebSphere MQ (CI02021291)',
+      ('пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (CI00737140)', 'IBM WebSphere MQ (CI02021291)',
        'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)', 'Apache Kafka (CI02192117)',
        'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',
-       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)')
+       'Nginx (CI02021302)', 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (Terra) (CI01563053)')
   and HPC_STATUS in
       (
-       '6 Выполнен',
-       '5 Выполнен',
-       '6 Закрыт'
+       '6 пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+       '5 пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+       '6 пїЅпїЅпїЅпїЅпїЅпїЅ'
           )
-  and HPC_CREATED_BY not in 'Технологический пользователь АС ZABBIX_SI (00738651)' 
+  and HPC_CREATED_BY not in 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ ZABBIX_SI (00738651)' 
   and PLAN_OPEN BETWEEN TO_TIMESTAMP('06.05.2022 00:00:00', 'DD.MM.RRRR HH24:MI:SS') AND TO_TIMESTAMP('06.06.2022 23:59:59', 'DD.MM.RRRR HH24:MI:SS')
 order by 7 desc

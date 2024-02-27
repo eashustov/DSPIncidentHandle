@@ -11,11 +11,11 @@ import java.util.List;
 @Repository
 @Profile("dev")
 public interface DSPIncidentAnaliticsRepoDev extends DSPIncidentAnaliticsRepo {
-    @Query(value = "select * from SMPRIMARY p where p.PLAN_OPEN BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy HH:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy HH:mm:ss')", nativeQuery = true)
+    @Query(value = "select * from SMPRIMARYSAFE p where p.PLAN_OPEN BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy HH:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy HH:mm:ss')", nativeQuery = true)
     List<DSPIncidentData> findAllIncAnaliticByDate(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     //Запрос для поиска автоинцидентов за период
-    @Query(value = "select * from SMPRIMARY p where p.PLAN_OPEN BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy HH:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy HH:mm:ss')" +
+    @Query(value = "select * from SMPRIMARYSAFE p where p.PLAN_OPEN BETWEEN TO_CHAR(:startDate, 'dd.MM.yyyy HH:mm:ss') AND TO_CHAR(:endDate, 'dd.MM.yyyy HH:mm:ss')" +
             "AND upper(ACTION) like '%' || upper(:searchFilter) || '%'", nativeQuery = true)
     List<DSPIncidentData> findIncBySearchFilter(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("searchFilter") String searchFilter);
 }

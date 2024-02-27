@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 @Profile("dev")
 public interface DSPIncidentRepoDev extends DSPIncidentRepo{
-    @Query(value = "select * from SMPRIMARY p LIMIT 500", nativeQuery = true)
+    @Query(value = "select * from SMPRIMARYSAFE p LIMIT 500", nativeQuery = true)
     List<DSPIncidentData> findIncAllByDate(@Param("startDate") String startDate, @Param("endDate") String endDate);
 }
