@@ -63,7 +63,7 @@ public interface DSPIncidentRepoProd extends DSPIncidentRepo{
             "       'IBM Websphere MB (CI02192119)', 'SOWA (CI02192118)','«Platform V Corax» (CI04085569)', 'Apache Kafka (CI02192117)',\n" +
             "       'IBM DataPower (CI02021290)', 'WildFly (CI02021292)', 'IBM WebSphere Application Server (CI02021299)',\n" +
             "       'Nginx (CI02021302)', 'Платформа управления контейнерами (Terra) (CI01563053)',\n" +
-            "       'SynGX (CI04178739)')\n" +
+            "       'SynGX (CI04178739)', 'SKeeper (CI02021300)', 'SIDEC (CI04452790)', 'IAGW (CI05435889)', 'EAGLE (CI05879203)')\n" +
             "  and HPC_STATUS in\n" +
             "      (\n" +
             "       '6 Выполнен',\n" +
