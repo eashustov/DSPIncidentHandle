@@ -234,8 +234,8 @@ public class Analitics extends VerticalLayout {
         add(header, dateLayout);
 
         //Обработчик поиска
-        searchField.setValueChangeMode(ValueChangeMode.LAZY);
-        searchField.setValueChangeTimeout(3000);
+        searchField.setValueChangeMode(ValueChangeMode.ON_BLUR);
+        searchField.setValueChangeTimeout(3000); //Используется для ValueChangeMode.LAZY
         searchField.addValueChangeListener(changeListener->{
             if (!searchField.getValue().equals(""))
             {
