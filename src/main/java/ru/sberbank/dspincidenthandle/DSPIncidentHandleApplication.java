@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
-public class DSPIncidentHandleApplication {
+public class DSPIncidentHandleApplication extends SpringBootServletInitializer {
 
     private static ConfigurableApplicationContext context;
 
@@ -28,6 +30,15 @@ public class DSPIncidentHandleApplication {
         HeapControl ();
 
     }
+
+    //Блок для запуска на WildFly
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(applicationClass);
+    }
+
+    private static Class<DSPIncidentHandleApplication> applicationClass = DSPIncidentHandleApplication.class;
+    // Конец блока для запуска на WildFly
 
     public static void HeapControl () {
 //        System.out.println("Heap контроль запущен");
