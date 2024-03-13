@@ -151,12 +151,13 @@ public class Analitics extends VerticalLayout {
     private VerticalLayout IncComparelayout;
 
     //Данные для BarChart по ИТ услугам
-    List<String> incLabelsDataBar = Arrays.asList("«Platform V Corax» (CI04085569)", "Apache Kafka (CI02192117)", "SOWA (CI02192118)",
+    List<String> incLabelsDataBar = Arrays.asList("«Platform V Corax» (CI04085569)", "SKeeper (CI02021300)",
+            "SIDEC (CI04452790)", "Apache Kafka (CI02192117)", "SOWA (CI02192118)",
             "IBM WebSphere MQ (CI02021291)", "IBM DataPower (CI02021290)", "IBM Websphere MB (CI02192119)",
             "Интеграционные платформы серверов приложений (CI00737140)",
             "IBM WebSphere Application Server (CI02021299)",
-            "Nginx (CI02021302)","SynGX (CI04178739)",
-            "WildFly (CI02021292)", "Платформа управления контейнерами (Terra) (CI01563053)");
+            "Nginx (CI02021302)","SynGX (CI04178739)", "WildFly (CI02021292)", "Платформа управления контейнерами (Terra) (CI01563053)",
+            "SynGX (CI04178739)", "IAGW (CI05435889)", "EAGLE (CI05879203)");
 
     //Список ИТ услуг для обработки - будут добавляться элементы - Элемент "Все"
     List<String> typeAffectedItemList = new ArrayList<>(incLabelsDataBar);
